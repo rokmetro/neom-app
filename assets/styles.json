@@ -802,8 +802,8 @@
   "image": {
     "tab-assistant": {"src": "images/tab-assistant.png", "type": "flutter.asset", "color": "iconMedium", "size": 18},
     "tab-assistant-selected": {"src": "images/tab-assistant-selected.png", "type": "flutter.asset", "color": "iconPrimary", "size": 18},
-    "tab-feed": {"src": "images/tab-feed.png", "type": "flutter.asset", "color": "iconMedium", "size": 18},
-    "tab-feed-selected": {"src": "images/tab-feed-selected.png", "type": "flutter.asset", "color": "iconPrimary", "size": 18},
+    "tab-favorites": {"src": "images/tab-favorites.png", "type": "flutter.asset", "color": "iconMedium", "size": 18},
+    "tab-favorites-selected": {"src": "images/tab-favorites-selected.png", "type": "flutter.asset", "color": "iconPrimary", "size": 18},
     "tab-more": {"src": "images/tab-more-selected.png", "type": "flutter.asset", "color": "iconMedium", "size": 18},
     "tab-more-selected": {"src": "images/tab-more-selected.png", "type": "flutter.asset", "color": "iconPrimary", "size": 18},
 
