@@ -1098,9 +1098,9 @@
     "guide-polls": {"src": "images/icon-student-guide-quick-polls.png", "type": "flutter.asset", "size": 50, "todo": "color"},
     "guide-saved": {"src": "images/icon-student-guide-saved.png", "type": "flutter.asset", "size": 50, "todo": "color"},
 
-    "role-student": {"src": "images/role-student.png", "type": "flutter.asset"},
-    "role-prospective-student": {"src": "images/role-prospective-student.png", "type": "flutter.asset"},
-    "role-faculty": {"src": "images/role-faculty.png", "type": "flutter.asset"},
+    "role-student": {"src": "images/role-student.png", "type": "flutter.asset", "size": 64},
+    "role-prospective-student": {"src": "images/role-prospective-student.png", "type": "flutter.asset", "size": 64},
+    "role-faculty": {"src": "images/role-faculty.png", "type": "flutter.asset", "size": 64},
     "role-staff": {"src": "images/role-staff.png", "type": "flutter.asset", "size": 64},
     "role-visitor": {"src": "images/icon-persona-visitor-normal.png", "type": "flutter.asset"},
     "role-athletics": {"src": "images/icon-persona-athletics-normal.png", "type": "flutter.asset"},
