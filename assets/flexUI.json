@@ -18,8 +18,7 @@
 			"browse.groups": ["all_groups", "my_groups"],
 			"browse.inbox": ["all_notifications", "unread_notifications"],
 			"browse.recent": ["recent_items"],
-            "browse.surveys": ["public_surveys"],
-
+			"browse.surveys": ["public_surveys"],
 			"settings": ["favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
 			"authenticate.connect": ["phone_or_email"],
