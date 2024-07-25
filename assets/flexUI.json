@@ -19,7 +19,8 @@
 			"browse.inbox": ["all_notifications", "unread_notifications"],
 			"browse.recent": ["recent_items"],
 			"browse.surveys": ["public_surveys"],
-			"settings": ["favorites", "notifications"],
+
+			"settings": ["contact", "favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
 			"authenticate.connect": ["phone_or_email"],
 			"authenticate.connected": ["code", "password", "passkey"],
@@ -172,8 +173,6 @@
 				"state_farm_center"             : false,
 				"create_stadium_poll"           : false,
 				"state_farm_wayfinding"         : false,
-				"all_notifications"             : false,
-				"unread_notifications"          : false,
 				"app_help"                      : false,
 				"home.video_tutorials"          : false,
 				"home.system.welcome_video"     : false,
