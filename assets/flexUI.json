@@ -7,17 +7,18 @@
 			"home": [
 				"all_groups", "my_groups", "event_feed", "my_events",
 				"all_notifications", "unread_notifications",
-				"new_student_checklist", "recent_items"
+				"new_student_checklist", "recent_items", "public_surveys"
 			],
 			"home.system": ["tout", "connect"],
 			"home.connect": ["phone_or_email"],
 			"home.app_help": ["faqs", "feedback", "review"],
 
-			"browse": ["groups", "events", "inbox"],
+			"browse": ["groups", "events", "inbox", "surveys"],
 			"browse.events": ["event_feed", "my_events"],
 			"browse.groups": ["all_groups", "my_groups"],
 			"browse.inbox": ["all_notifications", "unread_notifications"],
 			"browse.recent": ["recent_items"],
+            "browse.surveys": ["public_surveys"],
 
 			"settings": ["favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
@@ -70,17 +71,14 @@
 		},
 		"rules": {
 			"roles" : {
+				"onboarding.login_netid"                   : ["student", "OR", "employee"],
+				"onboarding.login_phone"                   : ["NOT", ["employee", "OR", "student"]],
+				"onboarding.verify_phone"                  : ["NOT", ["employee", "OR", "student"]],
+				"onboarding.confirm_phone"                 : ["NOT", ["employee", "OR", "student"]],
+	
+				"onboarding.sport_prefs"                   : ["fan"],
 
-				"student_courses"                         : ["student"],
-
-				"onboarding.login_netid"                  : ["student", "OR", "employee"],
-				"onboarding.login_phone"                  : ["NOT", ["employee", "OR", "student"]],
-				"onboarding.verify_phone"                 : ["NOT", ["employee", "OR", "student"]],
-				"onboarding.confirm_phone"                : ["NOT", ["employee", "OR", "student"]],
-
-				"onboarding.sport_prefs"                  : ["fan"],
-
-				"features.student"                        : ["student"]
+				"features.student"                         : ["student"]
 			},
 			"groups": {
 				"home.twitter.account.canvas"             : ["${config.settings.groups.canvas}", "AND", ["NOT", "${config.settings.groups.gies}"]],

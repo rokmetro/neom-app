@@ -313,13 +313,15 @@
     "panel.browse.section.mtd.title": "MTD Buses",
     "panel.browse.section.mtd.description": "View MTD bus stop locations, routes, and availability.",
     "panel.browse.section.inbox.title": "Notifications",
-    "panel.browse.section.inbox.description": "Shortcuts to your in-app notifications from groups, academics, athletics events, and more.",
+    "panel.browse.section.inbox.description": "Shortcuts to your in-app notifications from groups and events.",
     "panel.browse.section.polls.title": "Polls",
     "panel.browse.section.polls.description": "Create, participate in, and check out results of polls you and others create.",
     "panel.browse.section.radio_stations.title": "Radio Stations",
     "panel.browse.section.radio_stations.description": "Listen to NEOM U Public Media and student-run WPGU.",
     "panel.browse.section.recent.title": "Recently Viewed",
     "panel.browse.section.recent.description": "Revisit your recent app activity.",
+    "panel.browse.section.surveys.title": "Surveys",
+    "panel.browse.section.surveys.description": "Participate in surveys available to you.",
     "panel.browse.section.state_farm_center.title": "State Farm Center",
     "panel.browse.section.state_farm_center.description": "Going to an event at State Farm Center? Get help parking and finding your way around.",
     "panel.browse.section.wallet.title": "Wallet",
@@ -400,6 +402,8 @@
 
     "panel.browse.entry.recent.recent_items.title": "Recently Viewed",
 
+    "panel.browse.entry.surveys.public_surveys.title": "Surveys",
+
     "panel.browse.entry.state_farm_center.parking.title": "Parking",
     "panel.browse.entry.state_farm_center.wayfinding.title": "Wayfinding",
     "panel.browse.entry.state_farm_center.create_stadium_poll.title": "Create Stadium Poll",
@@ -441,6 +445,8 @@
     "panel.assistant.inaccurate.description.disclaimer": "The NEOM U Assistant may display inaccurate information.\nPlease double-check its responses.",
     "panel.assistant.label.queries.limit.title": "Sorry, you are out of questions for today. Please check back tomorrow to ask more questions!",
     "panel.assistant.label.error.title": "Sorry, something went wrong. For the best results, please restart the app and try your question again.",
+    "panel.assistant.messages.delete.succeeded.msg": "Successfully removed all messages.",
+    "panel.assistant.messages.delete.failed.msg": "Failed to clear all messages.",
     "panel.assistant.button.context.title": "Context",
     "panel.assistant.dialog.context.title": "User Context",
     "panel.assistant.dialog.context.button.add.title": "Add",
@@ -457,6 +463,7 @@
     "panel.wallet.content_type.illini_id_faqs.label": "Illini ID FAQs",
     "panel.wallet.content_type.bus_pass.label": "Bus Pass",
     "panel.wallet.content_type.meal_plan.label": "Meal Plan",
+    "panel.wallet.content_type.illini_cash.label": "Illini Cash",
     "panel.wallet.content_type.add_illini_cash.label": "Add Illini Cash",
 
     "panel.search.header.title":"Search",
@@ -1299,6 +1306,8 @@
     "panel.event2.create.label.cost.description": " (e.g., $10, Donation suggested)",
     "panel.event2.create.button.confirm_url.title": "Confirm URL",
     "panel.event2.create.button.confirm_url.hint": "",
+    "panel.event2.create.button.clear_end_datetime.title": "Clear End Date and Time",
+    "panel.event2.create.button.clear_end_datetime.hint": "",
     "panel.event2.create.confirm_url.empty.message": "Please enter URL string.",
     "panel.event2.create.confirm_url.invalid.message": "Please enter a valid URL.",
     "panel.event2.create.confirm_url.failed.message": "Failed to confirm URL.",
@@ -2300,6 +2309,12 @@
     "panel.parking_lots.label.heading":"Parking Spots",
     "panel.parking_lots.label.empty":"No parking lots available for this event",
     "panel.parking_lots.label.available_spots":"Available Spots: ",
+
+    "panel.public_surveys.home.header.title": "Surveys",
+    "panel.public_surveys.label.description.failed": "Failed to load surveys.",
+    "panel.public_surveys.label.description.empty": "There are no available surveys at the moment.",
+    "panel.public_surveys.content_type.all": "All Surveys",
+    "panel.public_surveys.content_type.completed": "Completed Surveys",
 
     "panel.bus_pass.header.title": "MTD Bus Pass",
     "panel.bus_pass.button.close.title": "close",
@@ -3437,6 +3452,10 @@
     "widget.voter.rv_alert.vote_early.text": "You are at the %s and can vote early",
     "widget.voter.rv_alert.vote_now.text": "You are at the %s and can vote now",
 
+    "widget.public_survey.label.completed_suffix": " (Completed)",
+    "widget.public_survey.label.estimated_completion_time.one": "A minute to complete",
+    "widget.public_survey.label.estimated_completion_time.more": "{{estimated_completion_time}} minutes to complete",
+
     "widget.home.campus_reminders.label.campus_reminders": "Campus Reminders",
     "widget.home.campus_reminders.text.empty.description": "There are no active Campus Reminders.",
     "widget.home.campus_reminders.button.all.title": "View All",
@@ -3471,6 +3490,12 @@
     "widget.home.recent_items.button.clear_all.title":"Clear All",
     "widget.home.recent_items.button.clear_all.hint":"Tap to clear all items",
     "widget.home.recent_items.prompt.clear_all.text":"Are you sure you want to CLEAR your browsing history?",
+
+    "widget.home.public_surveys.label.header.title":"Surveys",
+    "widget.home.public_surveys.label.description.failed": "Failed to load surveys.",
+    "widget.home.public_surveys.label.description.empty": "There are no available surveys at the moment.",
+    "widget.home.public_surveys.button.all.title":"View All",
+    "widget.home.public_surveys.button.all.hint":"Tap to view all surveys",
 
     "widget.home.groups.my.label.header.title":"My Groups",
     "widget.home.groups.all.label.header.title":"All Groups",
@@ -3780,6 +3805,7 @@
     "widget.explore_display_type.header.map.hint":"View map",
 
     "widget.id_card.label.update_i_card": "Update your Illini ID",
+    "widget.id_card.text.card_instructions": "This ID must be presented to university officials upon request.",
     "widget.id_card.label.building_access": "Building Access",
     "widget.id_card.label.building_access.granted": "GRANTED",
     "widget.id_card.label.building_access.denied": "DENIED",

@@ -51,7 +51,7 @@ class RoleGridButton extends TileToggleButton {
     selectedTitleColor: selectedTitleColor,
     selectedBackgroundColor: selectedBackgroundColor,
     selectedBorderColor: Styles().colors.fillColorSecondary,
-    selected: selected, 
+    selected: selected,
     selectionMarkerKey: 'check-circle-filled',
     iconFit: BoxFit.fitWidth,
     iconWidth: 38,
@@ -170,7 +170,7 @@ class RoleGridButton extends TileToggleButton {
     List<String> codes = JsonUtils.listStringsValue(FlexUI()['roles']) ?? [];
     int index = 1;
     for (String code in codes) {
-      
+
       UserRole? role = UserRole.fromString(code);
       bool selected = selectedRoles?.contains(role) ?? false;
       bool isLeftColumn = 0 < (index % 2);

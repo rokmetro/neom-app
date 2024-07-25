@@ -49,14 +49,12 @@ import 'package:neom/ui/polls/CreatePollPanel.dart';
 import 'package:neom/ui/polls/CreateStadiumPollPanel.dart';
 import 'package:neom/ui/polls/PollsHomePanel.dart';
 import 'package:neom/ui/research/ResearchProjectsHomePanel.dart';
-import 'package:neom/ui/wallet/WalletAddIlliniCashPanel.dart';
-import 'package:neom/ui/wallet/WalletIlliniCashPanel.dart';
-import 'package:neom/ui/wallet/WalletMealPlanPanel.dart';
+import 'package:neom/ui/surveys/PublicSurveysPanel.dart';
+import 'package:neom/ui/wallet/WalletHomePanel.dart';
 import 'package:neom/ui/notifications/NotificationsHomePanel.dart';
 import 'package:neom/ui/apphelp/AppHelpVideoTutorialListPanel.dart';
 import 'package:neom/ui/apphelp/AppHelpVideoTutorialPanel.dart';
 import 'package:neom/ui/wallet/WalletICardHomePanel.dart';
-import 'package:neom/ui/wallet/WalletMTDBusPassPanel.dart';
 import 'package:neom/ui/wellness/WellnessHomePanel.dart';
 import 'package:neom/ui/widgets/FavoriteButton.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
@@ -639,6 +637,8 @@ class _BrowseEntry extends StatelessWidget {
 
       case "recent.recent_items":            _onTapRecentItems(context); break;
 
+      case "surveys.public_surveys":         _onTapPublicSurveys(context); break;
+
       case "state_farm_center.parking":      _onTapParking(context); break;
       case "state_farm_center.wayfinding":   _onTapStateFarmWayfinding(context); break;
       case "state_farm_center.create_stadium_poll": _onTapCreateStadiumPoll(context); break;
@@ -869,16 +869,6 @@ class _BrowseEntry extends StatelessWidget {
     Navigator.push(context, CupertinoPageRoute(builder: (context) => MTDStopsHomePanel(contentType: MTDStopsContentType.all,)));
   }
 
-  void _onTapIlliniCash(BuildContext context) {
-    Analytics().logSelect(target: "Illini Cash");
-    WalletIlliniCashPanel.present(context);
-  }
-
-  void _onTapAddIlliniCash(BuildContext context) {
-    Analytics().logSelect(target: "Add Illini Cash");
-    WalletAddIlliniCashPanel.present(context);
-  }
-
   void _onTapCampusGuide(BuildContext context) {
     Analytics().logSelect(target: "Campus Guide");
     Navigator.push(context, CupertinoPageRoute(builder: (context) => CampusGuidePanel()));
@@ -1020,6 +1010,11 @@ class _BrowseEntry extends StatelessWidget {
     Navigator.push(context, CupertinoPageRoute(builder: (context) => HomeRecentItemsPanel()));
   }
 
+  void _onTapPublicSurveys(BuildContext context) {
+    Analytics().logSelect(target: "Public Surveys");
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => PublicSurveysPanel()));
+  }
+
   void _onTapParking(BuildContext context) {
     Analytics().logSelect(target: "Parking");
     Navigator.push(context, CupertinoPageRoute(builder: (context) => ParkingEventsPanel()));
@@ -1039,19 +1034,29 @@ class _BrowseEntry extends StatelessWidget {
     CreateStadiumPollPanel.present(context);
   }
 
+  void _onTapIlliniCash(BuildContext context) {
+    Analytics().logSelect(target: "Illini Cash");
+    WalletHomePanel.present(context, contentType: WalletContentType.illiniCash);
+  }
+
+  void _onTapAddIlliniCash(BuildContext context) {
+    Analytics().logSelect(target: "Add Illini Cash");
+    WalletHomePanel.present(context, contentType: WalletContentType.addIlliniCash);
+  }
+
   void _onTapMealPlan(BuildContext context) {
     Analytics().logSelect(target: "Meal Plan");
-    WalletMealPlanPanel.present(context);
+    WalletHomePanel.present(context, contentType: WalletContentType.mealPlan);
   }
 
   void _onTapBusPass(BuildContext context) {
     Analytics().logSelect(target: "Bus Pass");
-    WalletMTDBusPassPanel.present(context);
+    WalletHomePanel.present(context, contentType: WalletContentType.busPass);
   }
 
   void _onTapIlliniId(BuildContext context) {
     Analytics().logSelect(target: "Illini ID");
-    WalletICardHomeContentPanel.present(context, content: WalletICardContent.i_card);
+    WalletHomePanel.present(context, contentType: WalletContentType.illiniId);
   }
 
   void _onTapLibraryCard(BuildContext context) {
