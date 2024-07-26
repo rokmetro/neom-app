@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - NEOM
 ### Fixed
-- Pre-demo issues [#2](https://github.com/rokmetro/neom-app/issues/2)
 - Fix styling issues from merge with Illinois
 
 ## [0.3.4] - 2024-07-10
