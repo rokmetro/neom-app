@@ -21,6 +21,7 @@ import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/service/surveys.dart';
+import 'package:rokwire_plugin/ui/widgets/survey.dart';
 
 class HomePublicSurveysWidget extends StatefulWidget {
   final String? favoriteId;
@@ -293,7 +294,11 @@ class _HomePublicSurveysWidgetState extends State<HomePublicSurveysWidget> imple
 
   void _onSurvey(Survey survey) {
     Analytics().logSelect(target: 'Survey: ${survey.title}');
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => SurveyPanel(survey: survey)));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => SurveyPanel(
+      survey: survey, 
+      backgroundColor: Styles().colors.surface,
+      textStyles: SurveyWidgetTextStyles.withDefaults(horizontalMultipleChoiceOption: Styles().textStyles.getTextStyle('widget.item.small.thin')),
+    )));
   }
 
   void _onSeeAll() {

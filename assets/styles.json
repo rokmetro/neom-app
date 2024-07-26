@@ -385,6 +385,7 @@
     "widget.info.small.fat": { "font_family": "bold", "size": 14.0, "color": "textPrimary"},
     "widget.info.tiny": { "font_family": "regular", "size": 12.0, "color": "textPrimary"},
     "widget.info.dark.small": { "font_family": "regular", "size": 14.0, "color": "textDark"},
+    "widget.info.dark.tiny": { "font_family": "regular", "size": 12.0, "color": "textDark"},
 
     "widget.tab.selected": {"font_family": "extra_bold", "size": 16.0, "color": "textPrimary"},
     "widget.tab.not_selected": {"font_family": "medium", "size": 16.0, "color": "textPrimary"},
@@ -559,6 +560,7 @@
     "widget.group.input_field.detail": {"extends": "widget.detail.regular"},
 
     "widget.group.members.title": {"extends": "widget.title.large.fat", "color": "textDark"},
+    "widget.group.members.light.title": {"extends": "widget.title.large.fat", "color": "testPrimary"},
     "widget.group.members.card.title": {"extends": "widget.title.large.fat", "color": "textDark"},
     "widget.group.members.search": {"extends": "widget.input_field.text.regular"},
     "widget.group.members.selected_entry": {"font_family": "bold", "size": 18.0, "decoration": "underline", "color": "textPrimary"},

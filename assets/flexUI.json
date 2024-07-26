@@ -117,9 +117,7 @@
 				"features.notifications"          : 4,
 				"features.payment_information"    : 4,
 				"features.authentication"         : 4,
-				"features.sharing"                : 5,
-				"features.assistant"  				      : 4,
-				"features.assistant_personalization"      : 5
+				"features.sharing"                : 5
 			},
 			"auth": {
 				"connect"                             : { "loggedIn": false },
