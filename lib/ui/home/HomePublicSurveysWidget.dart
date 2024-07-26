@@ -149,6 +149,7 @@ class _HomePublicSurveysWidgetState extends State<HomePublicSurveysWidget> imple
           LinkButton(
             title: Localization().getStringEx('widget.home.groups.button.all.title', 'View All'),
             hint: Localization().getStringEx('widget.home.groups.button.all.hint', 'Tap to view all groups'),
+            textStyle: Styles().textStyles.getTextStyle('widget.description.regular.light.underline'),
             onTap: _onSeeAll,
           ),
         ),
