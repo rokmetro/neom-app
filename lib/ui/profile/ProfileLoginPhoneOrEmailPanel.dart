@@ -9,18 +9,25 @@ import 'package:neom/ui/widgets/SlantedWidget.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
+import 'package:rokwire_plugin/service/onboarding.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
-class ProfileLoginPhoneOrEmailPanel extends StatefulWidget {
+class ProfileLoginPhoneOrEmailPanel extends StatefulWidget with OnboardingPanel {
+  @override
+  final Map<String, dynamic>? onboardingContext;
+
   final SettingsLoginPhoneOrEmailMode mode;
   final bool? link;
   final String? identifier;
   final void Function()? onFinish;
 
-  ProfileLoginPhoneOrEmailPanel({this.mode = SettingsLoginPhoneOrEmailMode.both, this.link, this.identifier, this.onFinish });
+  ProfileLoginPhoneOrEmailPanel({this.onboardingContext, this.mode = SettingsLoginPhoneOrEmailMode.both, this.link, this.identifier, this.onFinish });
 
   _ProfileLoginPhoneOrEmailPanelState createState() => _ProfileLoginPhoneOrEmailPanelState();
+
+  @override
+  bool get onboardingCanDisplay => !Auth2().isLoggedIn;
 }
 
 class _ProfileLoginPhoneOrEmailPanelState extends State<ProfileLoginPhoneOrEmailPanel>  {
@@ -282,7 +289,9 @@ class _ProfileLoginPhoneOrEmailPanelState extends State<ProfileLoginPhoneOrEmail
       setState(() { _isLoading = false; });
 
       if (result == Auth2RequestCodeResult.succeeded) {
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileLoginCodePanel(identifier: phoneNumber, linkIdentifier: widget.link, onFinish: widget.onFinish)));
+        Navigator.push(context, CupertinoPageRoute(
+          builder: (context) => ProfileLoginCodePanel(onboardingContext: widget.onboardingContext, identifier: phoneNumber, linkIdentifier: widget.link, onFinish: widget.onFinish)
+        ));
       } else if (result == Auth2RequestCodeResult.failedAccountExist) {
         setErrorMsg(Localization().getStringEx("panel.settings.link.phone.label.failed.exists", "An account is already using this phone number."),
             details: Localization().getStringEx("panel.settings.link.phone.label.failed.exists.detail", "1. You will need to sign in to the other account with this phone number.\n2. Go to \"Settings\" and press \"Forget all of my information\".\nYou can now use this as an alternate login."));
@@ -321,7 +330,9 @@ class _ProfileLoginPhoneOrEmailPanelState extends State<ProfileLoginPhoneOrEmail
 
   void _onEmailInitiated(BuildContext context, String? email, Auth2RequestCodeResult result) {
     if (result == Auth2RequestCodeResult.succeeded) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => ProfileLoginCodePanel(identifier: email, defaultIdentifierType: Auth2Identifier.typeEmail, linkIdentifier: widget.link, onFinish: widget.onFinish)));
+      Navigator.push(context, CupertinoPageRoute(
+        builder: (context) => ProfileLoginCodePanel(onboardingContext: widget.onboardingContext, identifier: email, defaultIdentifierType: Auth2Identifier.typeEmail, linkIdentifier: widget.link, onFinish: widget.onFinish)
+      ));
     } else if (result == Auth2RequestCodeResult.failedAccountExist) {
       setErrorMsg(Localization().getStringEx('panel.settings.profile.error.email.exists', 'The email address you selected is already in use. Please pick a different one.'));
     } else if (result == Auth2RequestCodeResult.failed) {

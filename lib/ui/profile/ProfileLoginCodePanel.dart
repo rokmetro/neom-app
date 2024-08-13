@@ -260,8 +260,8 @@ class _ProfileLoginCodePanelState extends State<ProfileLoginCodePanel> {
 
   void _next() {
     // Hook this panels to Onboarding2
-    Function? onContinue = (widget.onboardingContext != null) ? widget.onboardingContext!["onContinueAction"] : null;
-    Function? onContinueEx = (widget.onboardingContext != null) ? widget.onboardingContext!["onContinueActionEx"] : null;
+    Function? onContinue = widget.onboardingContext?["onContinueAction"];
+    Function? onContinueEx = widget.onboardingContext?["onContinueActionEx"];
     if (onContinueEx != null) {
       onContinueEx(this);
     }

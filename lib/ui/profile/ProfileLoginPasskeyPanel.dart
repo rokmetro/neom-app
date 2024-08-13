@@ -391,7 +391,7 @@ class _ProfileLoginPasskeyPanelState extends State<ProfileLoginPasskeyPanel> {
 
   void _onTapSignUp() {
     Navigator.push(context, CupertinoPageRoute(builder: (BuildContext context) {
-      return ProfileLoginPhoneOrEmailPanel(/*onFinish: () => _next(context), identifier: _identifierController.text*/);
+      return ProfileLoginPhoneOrEmailPanel(onboardingContext: widget.onboardingContext,);
     }));
   }
 
@@ -509,8 +509,8 @@ class _ProfileLoginPasskeyPanelState extends State<ProfileLoginPasskeyPanel> {
 
   void _next(BuildContext context) {
     // Hook this panels to Onboarding2
-    Function? onContinue = (widget.onboardingContext != null) ? widget.onboardingContext!["onContinueAction"] : null;
-    Function? onContinueEx = (widget.onboardingContext != null) ? widget.onboardingContext!["onContinueActionEx"] : null;
+    Function? onContinue = widget.onboardingContext?["onContinueAction"];
+    Function? onContinueEx = widget.onboardingContext?["onContinueActionEx"];
     if (onContinueEx != null) {
       onContinueEx(this);
     }
