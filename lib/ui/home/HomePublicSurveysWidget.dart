@@ -229,7 +229,7 @@ class _HomePublicSurveysWidgetState extends State<HomePublicSurveysWidget> imple
     int pageCount = cardCount ~/ _cardsPerPage;
     for (int index = 0; index < pageCount + 1; index++) {
       List<Widget> pageCards = [];
-      for (int cardIndex = 0; index < _cardsPerPage; cardIndex++) {
+      for (int cardIndex = 0; cardIndex < _cardsPerPage; cardIndex++) {
         if (index * _cardsPerPage + cardIndex >= _contentList!.length) {
           break;
         }
@@ -243,10 +243,14 @@ class _HomePublicSurveysWidgetState extends State<HomePublicSurveysWidget> imple
           )
         ),);
       }
-      pages.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: pageCards,
-      ));
+      if (pageCards.length > 1) {
+        pages.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: pageCards,
+        ));
+      } else {
+        pages.addAll(pageCards);
+      }
     }
 
     if (_dataActivity == _DataActivity.extend) {
