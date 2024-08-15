@@ -693,7 +693,7 @@
     "panel.onboarding.location.label.access_granted":"You have already granted access to this app.",
     "panel.onboarding.location.label.access_denied":"You have already denied access to this app.",
 
-    "panel.onboarding.notifications.label.title":"Event info when you need it",
+    "panel.onboarding.notifications.label.title":"EVENT INFO WHEN YOU NEED IT",
     "panel.onboarding.notifications.label.title.hint":"Header 1",
     "panel.onboarding.notifications.label.description":"Get notified about events you have starred.",
     "panel.onboarding.notifications.button.allow.title":"Receive Notifications",
