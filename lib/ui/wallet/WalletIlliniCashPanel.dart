@@ -62,7 +62,7 @@ class WalletIlliniCashPanel extends StatelessWidget {
   Widget build(BuildContext context) => Scaffold(
     body: CustomScrollView(slivers: <Widget>[
       SliverHeaderBar(
-        leadingIconKey: 'chevron-left-white',
+        leadingIconKey: 'caret-left',
         title: Localization().getStringEx('panel.settings.illini_cash.label.title','Illini Cash'),
         textStyle:  Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat"),
       ),

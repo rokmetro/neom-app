@@ -30,7 +30,7 @@ import 'package:rokwire_plugin/utils/utils.dart';
 
 class HeaderBar extends rokwire.HeaderBar {
 
-  static const String defaultLeadingIconKey = 'chevron-left-white';
+  static const String defaultLeadingIconKey = 'caret-left';
 
   HeaderBar({super.key,
     super.sortKey,
@@ -39,6 +39,7 @@ class HeaderBar extends rokwire.HeaderBar {
     String? leadingLabel,
     String? leadingHint,
     String? leadingIconKey = defaultLeadingIconKey,
+    double? leadingWidth = 9 * kToolbarHeight / 7,
     void Function()? onLeading,
     
     Widget? titleWidget,
@@ -59,6 +60,7 @@ class HeaderBar extends rokwire.HeaderBar {
     leadingLabel: leadingLabel ?? Localization().getStringEx('headerbar.back.title', 'Back'),
     leadingHint: leadingHint ?? Localization().getStringEx('headerbar.back.hint', ''),
     leadingIconKey: leadingIconKey,
+    leadingWidth: leadingWidth,
     onLeading: onLeading,
 
     titleWidget: titleWidget,
@@ -84,7 +86,7 @@ class HeaderBar extends rokwire.HeaderBar {
 
 class SliverToutHeaderBar extends rokwire.SliverToutHeaderBar {
 
-  static const String defaultLeadingIconKey = 'chevron-left-white';
+  static const String defaultLeadingIconKey = 'caret-left';
 
   SliverToutHeaderBar({
     super.key,
@@ -295,6 +297,7 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Styles().colors.fillColorPrimaryVariant,
     leading: _buildHeaderLeading(),
+    titleSpacing: 0,
     title: _buildHeaderTitle(),
     actions: _buildHeaderActions(),
   );

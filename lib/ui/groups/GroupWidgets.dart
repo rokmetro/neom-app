@@ -334,7 +334,7 @@ class HeaderBackButton extends StatelessWidget {
       button: true,
       excludeSemantics: true,
       child: IconButton(
-          icon: Styles().images.getImage('chevron-left-white', excludeFromSemantics: true) ?? Container(),
+          icon: Styles().images.getImage('caret-left', excludeFromSemantics: true) ?? Container(),
           onPressed: (){
             Analytics().logSelect(target: "Back");
             Navigator.pop(context);
