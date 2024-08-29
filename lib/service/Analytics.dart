@@ -163,6 +163,11 @@ class Analytics extends rokwire.Analytics implements NotificationsListener {
   static const String   LogAlertTextName                   = "text";
   static const String   LogAlertSelectionName              = "selection";
 
+  // Search Event
+  // {  "event" : { "name":"search", "page":"...", "term":"..." }}
+  static const String   LogSearchEventName                 = "search";
+  static const String   LogSearchTermName                  = "term";
+
   // Http Response Event
   // "event" : { "name":"http_response", "http_request_url":"...", "http_request_method":"...", "http_response_code":... }
   static const String   LogHttpResponseEventName           = "http_response";
@@ -241,7 +246,7 @@ class Analytics extends rokwire.Analytics implements NotificationsListener {
   static const String   LogAuthLoginNetIdActionName        = "login_netid";
   static const String   LogAuthLoginCodeActionName         = "login_code";
   static const String   LogAuthLoginPasswordActionName     = "login_password";
-  static const String   LogAuthLoginPasskeyActionName      = "login_password";
+  static const String   LogAuthLoginPasskeyActionName      = "login_passkey";
   static const String   LogAuthLogoutActionName            = "logout";
   static const String   LogAuthResult                      = "result";
 
@@ -527,7 +532,7 @@ class Analytics extends rokwire.Analytics implements NotificationsListener {
     }
   }
 
-  // App Naviagtion Service
+  // App Navigation Service
 
   void _onAppNavigationEvent(Map<String, dynamic> param) {
     AppNavigationEvent? event = param[AppNavigation.notifyParamEvent];
@@ -560,7 +565,7 @@ class Analytics extends rokwire.Analytics implements NotificationsListener {
         Animation<double>? animation = (animationController != null) ? Tween<double>(begin: 0, end: 500).animate(animationController) : null;
         panel = ((App.instance?.currentContext != null) && (animation != null)) ? route.pageBuilder(App.instance!.currentContext!, animation, animation) : null;
       }
-      else {
+      else if (route != null && route is! DialogRoute) {
         // _ModalBottomSheetRoute presented by showModalBottomSheet
         WidgetBuilder? builder = (route as dynamic).builder;
         panel = ((builder != null) && (App.instance?.currentContext != null)) ? builder(App.instance!.currentContext!) : null;
@@ -843,6 +848,22 @@ class Analytics extends rokwire.Analytics implements NotificationsListener {
       LogEventName          : LogAlertEventName,
       LogAlertTextName      : text,
       LogAlertSelectionName : selection,
+    };
+
+    // Add optional attribute, if applied
+    if (attributes != null) {
+      event.addAll(attributes);
+    }
+
+    // Log the event
+    logEvent(event);
+  }
+
+  void logSearch(String term, { Map<String, dynamic>? attributes }) {
+    // Build event data
+    Map<String, dynamic> event = {
+      LogEventName          : LogSearchEventName,
+      LogSearchTermName     : term,
     };
 
     // Add optional attribute, if applied

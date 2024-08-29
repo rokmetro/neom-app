@@ -4,7 +4,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased - NEOM
+## Unreleased - NEOM U
+
+## [0.4.5] = 2024-08-20
+### Added
+- Added public, start date, end date, estimated completion time fields to survey creation tool
+### Changed
+- Match styling between numeric survey questions and horizontal multiple choice questions
+### Fixed
+- Yes/No survey questions defaulting to "No" response
+- Incorrect survey card message when no surveys available
+
+## [0.4.4] = 2024-08-19
+### Added
+- Added enter key listener to email/phone and code panels
+### Changed
+- Updated list of available user roles
+### Fixed
+- Survey question follow up issues on web
+- Numeric survey question styling
+- Fix valid user roles checking during onboarding
+
+## [0.4.3] - 2024-08-16
+### Changed
+- Added "Debug" user role - only show surveys to all other roles
+### Fixed
+- Firebase Messaging exception on web for iOS
+- Failing logout API calls
+- Text color fixes
+
+## [0.4.2] - 2024-08-14
 ### Added
 - NEOM web deployment [#3](https://github.com/rokmetro/neom-app/issues/3)
 ### Fixed
@@ -23,8 +52,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pre-demo issues [#2](https://github.com/rokmetro/neom-app/issues/2)
 
 ## Unreleased - Illinois
+### Fixed
+- Android: crash on startup [#4320](https://github.com/rokwire/illinois-app/issues/4320).
 
-## [6.1.6] - 2024-08-00
+## [6.1.8] - 2024-08-28
+### Changed
+- Acknowledged unknown laundry room appliance status [#4311](https://github.com/rokwire/illinois-app/issues/4311).
+- Hide Laundries from Map panel [#4312](https://github.com/rokwire/illinois-app/issues/4312).
+- Rename "All Events" to "Events" in Map panel [#4312](https://github.com/rokwire/illinois-app/issues/4312).
+
+## [6.1.7] - 2024-08-22
+### Changed
+- Upgraded Flutter to 3.24.0 [#4302](https://github.com/rokwire/illinois-app/issues/4302).
+- Upgraded outdated Flutter plugins [#4302](https://github.com/rokwire/illinois-app/issues/4302).
+### Fixed
+- Fixed GoogleMap scrolling and zooming on iOS [#4306](https://github.com/rokwire/illinois-app/issues/4306).
+### Added
+- Created search analytics event [#4305](https://github.com/rokwire/illinois-app/issues/4305).
+
+## [6.1.6] - 2024-08-08
 ### Added
 - Added My Stored Data in Profile [#4264](https://github.com/rokwire/illinois-app/issues/4264).
 
@@ -52,6 +98,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.1.0] - 2024-07-22
 ### Added
 - Created Public Surveys UI / round 0 [#4243](https://github.com/rokwire/illinois-app/issues/4243).
+
+## [6.0.36] - 2024-08-15
+### Changed
+- Hide entire section content in Event2Card when sub-events fail to load or if they are empty [#4283](https://github.com/rokwire/illinois-app/issues/4283).
+### Fixed
+- Fixed navigation in MTD Bus Pass when bus pass load fails [#4297](https://github.com/rokwire/illinois-app/issues/4297).
 
 ## [6.0.35] - 2024-08-14
 ### Changed

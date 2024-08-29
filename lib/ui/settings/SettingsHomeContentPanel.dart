@@ -30,7 +30,6 @@ import 'package:neom/ui/settings/SettingsCalendarContentWidget.dart';
 import 'package:neom/ui/settings/SettingsContactsContentWidget.dart';
 import 'package:neom/ui/settings/SettingsFoodFiltersContentWidget.dart';
 import 'package:neom/ui/settings/SettingsICardContentWidget.dart';
-import 'package:neom/ui/settings/SettingsInterestsContentWidget.dart';
 import 'package:neom/ui/settings/SettingsLanguageContentWidget.dart';
 import 'package:neom/ui/settings/SettingsMapsContentWidget.dart';
 import 'package:neom/ui/settings/SettingsNotificationPreferencesContentWidget.dart';
@@ -47,7 +46,7 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
-enum SettingsContent { interests, food_filters, sports, favorites, assessments, calendar, recent_items, appointments, i_card, language, contact, maps, research, privacy, notifications}
+enum SettingsContent { food_filters, sports, favorites, assessments, calendar, recent_items, appointments, i_card, language, contact, maps, research, privacy, notifications}
 
 class SettingsHomeContentPanel extends StatefulWidget with AnalyticsInfo {
   static final List<SettingsContent> _dropdownSettings = [ //SettingsContent visible in the dropdown. Some can be accessed only from outside. Example: SettingsHomeContentPanel.present(context, content: SettingsContent.food_filters);
@@ -317,8 +316,6 @@ class _SettingsHomeContentPanelState extends State<SettingsHomeContentPanel> imp
 
   SettingsContent? _getSettingsValueFromCode(String? code) {
     switch (code) {
-      case "interests":
-        return SettingsContent.interests;
       case "food":
         return SettingsContent.food_filters;
       case "sports":
@@ -341,8 +338,6 @@ class _SettingsHomeContentPanelState extends State<SettingsHomeContentPanel> imp
 
   Widget get _contentWidget {
     switch (_selectedContent) {
-      case SettingsContent.interests:
-        return SettingsInterestsContentWidget();
       case SettingsContent.food_filters:
         return SettingsFoodFiltersContentWidget();
       case SettingsContent.sports:
@@ -390,8 +385,6 @@ class _SettingsHomeContentPanelState extends State<SettingsHomeContentPanel> imp
 
   String _getContentLabel(SettingsContent section) {
     switch (section) {
-      case SettingsContent.interests:
-        return Localization().getStringEx('panel.settings.home.settings.sections.interests.label', 'My Interests');
       case SettingsContent.food_filters:
         return Localization().getStringEx('panel.settings.home.settings.sections.food_filter.label', 'My Food Filter');
       case SettingsContent.sports:
