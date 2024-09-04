@@ -21,7 +21,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/service/FlexUI.dart';
 import 'package:neom/ui/attributes/ContentAttributesPanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:neom/ui/widgets/TextTabBar.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:neom/service/Analytics.dart';
@@ -50,26 +50,34 @@ class GroupsHomePanel extends StatefulWidget {
   _GroupsHomePanelState createState() => _GroupsHomePanelState();
 }
 
-class _GroupsHomePanelState extends State<GroupsHomePanel> implements NotificationsListener {
-  final Color _dimmedBackgroundColor = Color(0x99000000);
-
+class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderStateMixin implements NotificationsListener {
   int _groupsLoadingProgress = 0;
   Set<Completer<void>>? _reloadGroupsContentCompleters;
-  bool _myGroupsBusy = false;
 
   String? _newGroupId;
   GlobalKey? _newGroupKey;
 
   rokwire.GroupsContentType? _selectedContentType;
-  bool _contentTypesVisible = false;
 
   List<Group>? _allGroups;
   List<Group>? _userGroups;
 
   Map<String, dynamic> _contentAttributesSelection = <String, dynamic>{};
 
+  ScrollController _scrollController = ScrollController();
+  late TabController _tabController;
+  int _selectedTab = 0;
+
+  final List<String> _tabNames = [
+    Localization().getStringEx("panel.groups_home.button.all_groups.title", 'All Groups'),
+    Localization().getStringEx("panel.groups_home.button.my_groups.title", 'My Groups'),
+  ];
+
   @override
   void initState() {
+    _tabController = TabController(length: 2, initialIndex: _selectedTab, vsync: this);
+    _tabController.addListener(_onTabChanged);
+
     super.initState();
     NotificationService().subscribe(this, [
       Groups.notifyUserMembershipUpdated,
@@ -88,8 +96,12 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
 
   @override
   void dispose() {
-    super.dispose();
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    _scrollController.dispose();
+
     NotificationService().unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -167,10 +179,6 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
     _updateState();
   }
 
-  bool get _showMyGroups {
-    return FlexUI().isAuthenticationAvailable;
-  }
-
   void _buildMyGroupsAndPending({List<Group>? myGroups, List<Group>? myPendingGroups}) {
     if (_userGroups != null) {
       for (Group group in _userGroups!) {
@@ -215,66 +223,29 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
   // Content Building
 
   Widget _buildContent(){
-    return
-      Column(children: <Widget>[
-        _buildGroupsContentSelection(),
-        Expanded(child: Stack(alignment: Alignment.topCenter, children: [
-          Column(children: [
-            _buildFunctionalBar(),
-            Expanded(child: _isLoading
-              ? Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorPrimary), ),)
-              : Container(color: Styles().colors.background, child:
-                  RefreshIndicator(onRefresh: _onPullToRefresh, child:
-                    SingleChildScrollView(scrollDirection: Axis.vertical, physics: AlwaysScrollableScrollPhysics(), child:
-                      Column(children: <Widget>[ _buildGroupsContent(), ],),
-                    ),
-                  ),
-                ),
-            )
-          ]),
-          _buildContentTypesContainer()
-        ]))
-      ]);
-  }
-
-  Widget _buildContentTypesContainer() {
-    return Visibility(visible: _contentTypesVisible, child: Stack(children: [
-        GestureDetector(onTap: _changeContentTypesVisibility, child: Container(color: _dimmedBackgroundColor)),
-        _buildTypesValuesWidget()
-    ]));
-  }
-
-  Widget _buildTypesValuesWidget() {
-    List<Widget> typeWidgetList = <Widget>[];
-    typeWidgetList.add(Container(color: Styles().colors.fillColorSecondary, height: 2));
-    for (rokwire.GroupsContentType type in rokwire.GroupsContentType.values) {
-      if ((_selectedContentType != type)) {
-        typeWidgetList.add(_buildContentItem(type));
-      }
-    }
-    return Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: SingleChildScrollView(child: Column(children: typeWidgetList)));
-  }
-
-  Widget _buildContentItem(rokwire.GroupsContentType contentType) {
-    return RibbonButton(
-        backgroundColor: Styles().colors.surface,
-        border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
-        rightIconKey: null,
-        label: _getContentLabel(contentType),
-        onTap: () => _onTapContentType(contentType));
-  }
-
-  Widget _buildGroupsContentSelection() {
-    return Padding(padding: EdgeInsets.only(left: 16, top: 16, right: 16), child: RibbonButton(
-      progress: _myGroupsBusy,
-      textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.secondary"),
-      backgroundColor: Styles().colors.surface,
-      borderRadius: BorderRadius.all(Radius.circular(5)),
-      border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
-      rightIconKey: _contentTypesVisible ? 'chevron-up' : 'chevron-down',
-      label: _getContentLabel(_selectedContentType),
-      onTap: _canTapGroupsContentType ? _changeContentTypesVisibility : null
-    ));
+    List<Widget> tabs = _tabNames.map((e) => TextTabButton(title: e)).toList();
+    return Column(children: <Widget>[
+      TextTabBar(tabs: tabs, controller: _tabController, isScrollable: false, onTap: (index){_onTabChanged();}),
+      Expanded(child: Column(children: [
+        _buildFunctionalBar(),
+        _isLoading ? Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorPrimary), ),) : Container(color: Styles().colors.background, child:
+          RefreshIndicator(onRefresh: _onPullToRefresh, child:
+            SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              physics: AlwaysScrollableScrollPhysics(),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildAllGroupsContent(),
+                  _buildMyGroupsContent(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ]))
+    ]);
   }
 
   Widget _buildFunctionalBar() {
@@ -435,18 +406,6 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
     }
   }
 
-  Widget _buildGroupsContent() {
-    if (_selectedContentType == rokwire.GroupsContentType.my) {
-      return _buildMyGroupsContent();
-    }
-    else if (_selectedContentType == rokwire.GroupsContentType.all) {
-      return _buildAllGroupsContent();
-    }
-    else {
-      return Container();
-    }
-  }
-
   Widget _buildMyGroupsContent(){
     List<Group> myGroups = <Group>[], myPendingGroups = <Group>[];
     _buildMyGroupsAndPending(myGroups: myGroups, myPendingGroups: myPendingGroups);
@@ -579,64 +538,6 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
     }
   }
 
-  String _getContentLabel(rokwire.GroupsContentType? contentType) {
-    switch (contentType) {
-      case rokwire.GroupsContentType.all:
-        return Localization().getStringEx("panel.groups_home.button.all_groups.title", 'All Groups');
-      case rokwire.GroupsContentType.my:
-        return Localization().getStringEx("panel.groups_home.button.my_groups.title", 'My Groups');
-      default:
-        return '';
-    }
-  }
-  
-  void _changeContentTypesVisibility() {
-    _contentTypesVisible = !_contentTypesVisible;
-    _updateState();
-  }
-
-  void _onTapContentType(rokwire.GroupsContentType contentType) {
-    Analytics().logSelect(target: _getContentLabel(contentType));
-    if (contentType == rokwire.GroupsContentType.all) {
-      _onSelectAllGroups();
-    }
-    else if (contentType == rokwire.GroupsContentType.my) {
-      _onSelectMyGroups();
-    }
-    _changeContentTypesVisibility();
-  }
-
-  void _onSelectAllGroups(){
-    if(_selectedContentType != rokwire.GroupsContentType.all){
-      setState(() {
-        _selectedContentType = rokwire.GroupsContentType.all;
-      });
-    }
-  }
-
-  void _onSelectMyGroups() {
-    if(_selectedContentType != rokwire.GroupsContentType.my){
-      // if (Auth2().isOidcLoggedIn) {
-        setState(() { _selectedContentType = rokwire.GroupsContentType.my; });
-      // }
-      // else {
-      //   setState(() { _myGroupsBusy = true; });
-      //
-      //   Auth2().authenticateWithOidc().then((Auth2OidcAuthenticateResult? result) {
-      //     if (mounted) {
-      //       setState(() {
-      //         _myGroupsBusy = false;
-      //         if (result == Auth2OidcAuthenticateResult.succeeded) {
-      //           _selectedContentType = rokwire.GroupsContentType.my;
-      //         }
-      //       });
-      //     }
-      //   });
-      //
-      // }
-    }
-  }
-
   void _onTapCreate(){
     Analytics().logSelect(target: "Create Group");
     Navigator.push(context, MaterialPageRoute(builder: (context)=>GroupCreatePanel()));
@@ -653,13 +554,19 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> implements Notificati
       Navigator.push(context, PageRouteBuilder( opaque: false, pageBuilder: (context, _, __) => ModalImagePanel(imageUrl: group!.imageURL!, onCloseAnalytics: () => Analytics().logSelect(target: "Close Image"))));
     }
   }
+
+  void _onTabChanged({bool manual = true}) {
+    if (!_tabController.indexIsChanging && _selectedTab != _tabController.index) {
+      setState(() {
+        _selectedContentType = _selectedTab == 0 ? rokwire.GroupsContentType.all : rokwire.GroupsContentType.my;
+        _selectedTab = _tabController.index;
+      });
+    }
+    _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.linear);
+  }
   
   bool get _canCreateGroup {
     return Auth2().isLoggedIn;
-  }
-
-  bool get _canTapGroupsContentType {
-    return _showMyGroups && !_myGroupsBusy;
   }
 
   ///////////////////////////////////
