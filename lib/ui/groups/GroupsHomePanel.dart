@@ -75,6 +75,9 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
 
   @override
   void initState() {
+    if (widget.contentType == rokwire.GroupsContentType.my) {
+      _selectedTab = 1;
+    }
     _tabController = TabController(length: 2, initialIndex: _selectedTab, vsync: this);
     _tabController.addListener(_onTabChanged);
 
@@ -226,25 +229,17 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
     List<Widget> tabs = _tabNames.map((e) => TextTabButton(title: e)).toList();
     return Column(children: <Widget>[
       TextTabBar(tabs: tabs, controller: _tabController, isScrollable: false, onTap: (index){_onTabChanged();}),
-      Expanded(child: Column(children: [
-        _buildFunctionalBar(),
-        _isLoading ? Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorPrimary), ),) : Container(color: Styles().colors.background, child:
-          RefreshIndicator(onRefresh: _onPullToRefresh, child:
-            SingleChildScrollView(
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              physics: AlwaysScrollableScrollPhysics(),
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildAllGroupsContent(),
-                  _buildMyGroupsContent(),
-                ],
-              ),
-            ),
-          ),
+      _buildFunctionalBar(),
+      _isLoading ? Center(child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorPrimary), ),) : Expanded(
+        child: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _buildAllGroupsContent(),
+            _buildMyGroupsContent(),
+          ],
         ),
-      ]))
+      ),
     ]);
   }
 
@@ -430,10 +425,16 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
       );
     }
     else {
-      return Column(children: [
-        _buildMyGroupsSection(myGroups),
-        _buildMyPendingGroupsSection(myPendingGroups),
-      ],);
+      return RefreshIndicator(
+        onRefresh: _onPullToRefresh,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(children: [
+            _buildMyGroupsSection(myGroups),
+            _buildMyPendingGroupsSection(myPendingGroups),
+          ],),
+        ),
+      );
     }
   }
 
@@ -510,7 +511,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
           ));
         }
       }
-      return Column(children: widgets,);
+      return RefreshIndicator(onRefresh: _onPullToRefresh, child: SingleChildScrollView(controller: _scrollController, child: Column(children: widgets,)));
     }
     else{
       String text;
@@ -558,8 +559,8 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   void _onTabChanged({bool manual = true}) {
     if (!_tabController.indexIsChanging && _selectedTab != _tabController.index) {
       setState(() {
-        _selectedContentType = _selectedTab == 0 ? rokwire.GroupsContentType.all : rokwire.GroupsContentType.my;
         _selectedTab = _tabController.index;
+        _selectedContentType = _selectedTab == 0 ? rokwire.GroupsContentType.all : rokwire.GroupsContentType.my;
       });
     }
     _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.linear);

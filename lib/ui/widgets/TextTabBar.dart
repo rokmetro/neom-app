@@ -24,7 +24,7 @@ class TextTabBar extends StatelessWidget {
   final bool isScrollable;
   final void Function(int)? onTap;
 
-  TextTabBar({required this.tabs, this.controller, this.padding = const EdgeInsets.only(bottom: 4.0), this.isScrollable = true, this.onTap});
+  TextTabBar({required this.tabs, this.controller, this.padding = const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0), this.isScrollable = true, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -35,16 +35,16 @@ class TextTabBar extends StatelessWidget {
       controller: controller,
       padding: padding,
       dividerHeight: 1,
-      dividerColor: Styles().colors.fillColorSecondary,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+      dividerColor: Styles().colors.textDisabled,
+      labelPadding: const EdgeInsets.symmetric(horizontal: 16.0),
       indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 1, color: Styles().colors.textPrimary)),
+          borderSide: BorderSide(width: 2, color: Styles().colors.fillColorSecondary)),
       indicatorSize: isScrollable ? TabBarIndicatorSize.label : TabBarIndicatorSize.tab,
       // indicatorColor: AppColors.textPrimary,
-      // indicatorPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-      unselectedLabelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
-      unselectedLabelColor: Styles().colors.textDisabled,
-      labelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
+      // indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+      unselectedLabelStyle: Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
+      unselectedLabelColor: Styles().colors.textPrimary,
+      labelStyle: Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
       labelColor: Styles().colors.textPrimary,
       onTap: onTap,
     );
@@ -58,7 +58,7 @@ class TextTabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tab(height: 40.0, child: Padding(
+    return Tab(height: 48.0, child: Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 12.0),
       child: Text(title),
     ));
