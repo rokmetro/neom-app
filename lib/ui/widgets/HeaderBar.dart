@@ -39,11 +39,12 @@ class HeaderBar extends rokwire.HeaderBar {
     String? leadingLabel,
     String? leadingHint,
     String? leadingIconKey = defaultLeadingIconKey,
-    double? leadingWidth = 9 * kToolbarHeight / 7,
+    double? leadingWidth,
     void Function()? onLeading,
     
     Widget? titleWidget,
     String? title,
+    double? titleSpacing = 0,
     TextStyle? textStyle,
     Color? textColor,
     String? fontFamily,
@@ -65,6 +66,7 @@ class HeaderBar extends rokwire.HeaderBar {
 
     titleWidget: titleWidget,
     title: title,
+    titleSpacing: titleSpacing,
     textStyle: textStyle,
     textColor: textColor ?? Styles().colors.surface,
     fontFamily: fontFamily ?? Styles().fontFamilies.extraBold,
@@ -107,7 +109,7 @@ class SliverToutHeaderBar extends rokwire.SliverToutHeaderBar {
     double? flexLeftToRightTriangleHeight = 53,
 
     Widget? leadingWidget,
-    double? leadingWidth = 9 * kToolbarHeight / 7,
+    double? leadingWidth,
     String? leadingLabel,
     String? leadingHint,
     EdgeInsetsGeometry leadingPadding = const EdgeInsets.all(8 + kToolbarHeight / 7),
@@ -118,6 +120,7 @@ class SliverToutHeaderBar extends rokwire.SliverToutHeaderBar {
 
     Widget? titleWidget,
     String? title,
+    double? titleSpacing = 0,
     TextStyle? textStyle,
     Color? textColor,
     String? fontFamily,
@@ -153,6 +156,7 @@ class SliverToutHeaderBar extends rokwire.SliverToutHeaderBar {
 
     titleWidget: titleWidget,
     title: title,
+    titleSpacing: titleSpacing,
     textStyle: textStyle,
     textColor: textColor ?? Styles().colors.surface,
     fontFamily: fontFamily ?? Styles().fontFamilies.extraBold,
@@ -192,6 +196,7 @@ class SliverHeaderBar extends rokwire.SliverHeaderBar  {
     
     Widget? titleWidget,
     String? title,
+    double? titleSpacing = 0,
     TextStyle? textStyle,
     Color? textColor,
     String? fontFamily,
@@ -218,6 +223,7 @@ class SliverHeaderBar extends rokwire.SliverHeaderBar  {
 
     titleWidget: titleWidget,
     title: title,
+    titleSpacing: titleSpacing,
     textStyle: textStyle,
     textColor: textColor ?? Styles().colors.surface,
     fontFamily: fontFamily ?? Styles().fontFamilies.extraBold,
@@ -241,10 +247,11 @@ enum RootHeaderBarLeading { Home, Back }
 class RootHeaderBar extends StatefulWidget implements PreferredSizeWidget {
 
   final String? title;
+  final double? titleSpacing;
   final RootHeaderBarLeading leading;
   final void Function()? onSettings;
 
-  RootHeaderBar({Key? key, this.title, this.leading = RootHeaderBarLeading.Home, this.onSettings}) : super(key: key);
+  RootHeaderBar({Key? key, this.title, this.titleSpacing = 0, this.leading = RootHeaderBarLeading.Home, this.onSettings}) : super(key: key);
 
   @override
   State<RootHeaderBar> createState() => _RootHeaderBarState();
@@ -297,7 +304,7 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Styles().colors.fillColorPrimaryVariant,
     leading: _buildHeaderLeading(),
-    titleSpacing: 0,
+    titleSpacing: widget.titleSpacing,
     title: _buildHeaderTitle(),
     actions: _buildHeaderActions(),
   );
@@ -319,7 +326,7 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
 
   Widget _buildHeaderBackButton() {
     return Semantics(label: Localization().getStringEx('headerbar.back.title', 'Back'), hint: Localization().getStringEx('headerbar.back.hint', ''), button: true, excludeSemantics: true, child:
-      IconButton(icon: Styles().images.getImage('chevron-left-white', excludeFromSemantics: true) ?? Container(), onPressed: () => _onTapBack()));
+      IconButton(icon: Styles().images.getImage('caret-left', excludeFromSemantics: true) ?? Container(), onPressed: () => _onTapBack()));
   }
 
   Widget _buildHeaderTitle() {

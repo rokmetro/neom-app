@@ -235,8 +235,20 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildAllGroupsContent(),
-            _buildMyGroupsContent(),
+            RefreshIndicator(
+              onRefresh: _onPullToRefresh,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: _buildAllGroupsContent(),
+              ),
+            ),
+            RefreshIndicator(
+              onRefresh: _onPullToRefresh,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: _buildMyGroupsContent(),
+              ),
+            ),
           ],
         ),
       ),
@@ -425,16 +437,10 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
       );
     }
     else {
-      return RefreshIndicator(
-        onRefresh: _onPullToRefresh,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(children: [
-            _buildMyGroupsSection(myGroups),
-            _buildMyPendingGroupsSection(myPendingGroups),
-          ],),
-        ),
-      );
+      return Column(children: [
+        _buildMyGroupsSection(myGroups),
+        _buildMyPendingGroupsSection(myPendingGroups),
+      ],);
     }
   }
 
@@ -511,7 +517,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
           ));
         }
       }
-      return RefreshIndicator(onRefresh: _onPullToRefresh, child: SingleChildScrollView(controller: _scrollController, child: Column(children: widgets,)));
+      return Column(children: widgets,);
     }
     else{
       String text;
