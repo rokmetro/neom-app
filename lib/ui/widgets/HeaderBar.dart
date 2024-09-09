@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/RadioPlayer.dart';
+import 'package:neom/ui/messages/MessagesHomeContentPanel.dart';
 import 'package:neom/ui/settings/SettingsHomeContentPanel.dart';
 import 'package:neom/ui/notifications/NotificationsHomePanel.dart';
 import 'package:neom/ui/profile/ProfileHomePanel.dart';
@@ -349,17 +350,32 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
   List<Widget> _buildHeaderActions() {
     return <Widget>[
       _buildHeaderPersonalInfoButton(),
+      _buildHeaderMessagesButton(),
       _buildHeaderNotificationsButton(),
       _buildHeaderSettingsButton()
     ];
   }
 
   Widget _buildHeaderSettingsButton() {
-    return Semantics(label: Localization().getStringEx('headerbar.settings.title', 'Settings'), hint: Localization().getStringEx('headerbar.settings.hint', ''), button: true, excludeSemantics: true, child:
-//    IconButton(icon: Styles().images.getImage('images/settings-white.png', excludeFromSemantics: true) ?? Container(), onPressed: () => onTapSettings())
-      InkWell(onTap: () => _onTapSettings(), child:
-        Padding(padding: EdgeInsets.only(top: 16, bottom: 16, right: 16, left: 6), child:
-          Styles().images.getImage('settings-white', excludeFromSemantics: true, color: Styles().colors.iconPrimary),
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Semantics(label: Localization().getStringEx('headerbar.settings.title', 'Settings'), hint: Localization().getStringEx('headerbar.settings.hint', ''), button: true, excludeSemantics: true, child:
+      //    IconButton(icon: Styles().images.getImage('images/settings-white.png', excludeFromSemantics: true) ?? Container(), onPressed: () => onTapSettings())
+        InkWell(onTap: _onTapSettings, child:
+          Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8), child:
+            Styles().images.getImage('settings-header', excludeFromSemantics: true),
+          )
+        )
+      ),
+    );
+  }
+
+  Widget _buildHeaderMessagesButton() {
+    //TODO: add unread messages count using Social BB (see notifications button below)
+    return Semantics(label: Localization().getStringEx('headerbar.messages.title', 'Messages'), hint: Localization().getStringEx('headerbar.messages.hint', ''), button: true, excludeSemantics: true, child:
+      InkWell(onTap: _onTapMessages, child:
+        Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8), child:
+          Styles().images.getImage('messages-header', excludeFromSemantics: true),
         )
       )
     );
@@ -369,10 +385,10 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
     int unreadMsgsCount = Inbox().unreadMessagesCount;
     return Semantics(label: Localization().getStringEx('headerbar.notifications.title', 'Notifications'), hint: Localization().getStringEx('headerbar.notifications.hint', ''), button: true, excludeSemantics: true, child:
 //    IconButton(icon: Styles().images.getImage('images/notifications-white.png', excludeFromSemantics: true) ?? Container(), onPressed: () => _onTapNotifications())
-      InkWell(onTap: () => _onTapNotifications(), child:
-        Padding(padding: EdgeInsets.symmetric(vertical: 8, horizontal: 2), child:
+      InkWell(onTap: _onTapNotifications, child:
+        Padding(padding: EdgeInsets.symmetric(vertical: 8), child:
           Stack(alignment: Alignment.topRight, children: [
-            Center(child: Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Styles().images.getImage('notification-white', excludeFromSemantics: true, color: Styles().colors.iconPrimary))),
+            Center(child: Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Styles().images.getImage('notification-header', excludeFromSemantics: true))),
             Opacity(opacity: (unreadMsgsCount > 0) ? 1 : 0, child:
               Align(alignment: Alignment.topRight, child: Container(padding: EdgeInsets.all(4), decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red), child:
                 Text(unreadMsgsCount.toString(), style: Styles().textStyles.getTextStyle("widget.title.light.tiny")))))
@@ -387,15 +403,15 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
 //    IconButton(icon: Styles().images.getImage('images/person-white.png', excludeFromSemantics: true), onPressed: () => onTapPersonalInformations())
       InkWell(onTap: () => _onTapPersonalInformation(), child:
         CollectionUtils.isNotEmpty(Auth2().authPicture) ?
-          Padding(padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5), child:
+          Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8), child:
             Container(width: 20, height: 20, decoration:
               BoxDecoration(shape: BoxShape.circle, color: Colors.white, image:
                 DecorationImage( fit: BoxFit.cover, image: Image.memory(Auth2().authPicture!).image)
               )
             )
           ) :
-          Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 6), child:
-            Styles().images.getImage('person-circle-white', excludeFromSemantics: true, color: Styles().colors.iconPrimary),
+          Padding(padding: EdgeInsets.symmetric(vertical: 16, horizontal: 8), child:
+            Styles().images.getImage('person-circle-header', excludeFromSemantics: true, color: Styles().colors.iconPrimary),
           ),
       )
     );
@@ -423,6 +439,14 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
     }
     else {
       SettingsHomeContentPanel.present(context);
+    }
+  }
+
+  void _onTapMessages() {
+    String? currentRouteName = ModalRoute.of(context)?.settings.name;
+    if (currentRouteName != MessagesHomeContentPanel.routeName) {
+      Analytics().logSelect(target: "Messages");
+      MessagesHomeContentPanel.present(context);
     }
   }
 
