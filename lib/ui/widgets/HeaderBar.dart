@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/RadioPlayer.dart';
-import 'package:neom/ui/messages/MessagesHomeContentPanel.dart';
+import 'package:neom/ui/messages/MessagesHomePanel.dart';
 import 'package:neom/ui/settings/SettingsHomeContentPanel.dart';
 import 'package:neom/ui/notifications/NotificationsHomePanel.dart';
 import 'package:neom/ui/profile/ProfileHomePanel.dart';
@@ -444,9 +444,9 @@ class _RootHeaderBarState extends State<RootHeaderBar> implements NotificationsL
 
   void _onTapMessages() {
     String? currentRouteName = ModalRoute.of(context)?.settings.name;
-    if (currentRouteName != MessagesHomeContentPanel.routeName) {
+    if (currentRouteName != MessagesHomePanel.routeName) {
       Analytics().logSelect(target: "Messages");
-      MessagesHomeContentPanel.present(context);
+      MessagesHomePanel.present(context);
     }
   }
 

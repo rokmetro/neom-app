@@ -17,18 +17,19 @@
 import 'package:flutter/material.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/Analytics.dart';
+import 'package:neom/ui/messages/MessagesInboxPage.dart';
 import 'package:neom/ui/widgets/TextTabBar.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 
-class MessagesHomeContentPanel extends StatefulWidget with AnalyticsInfo {
+class MessagesHomePanel extends StatefulWidget with AnalyticsInfo {
 
   static final String routeName = 'messages_home_content_panel';
 
-  MessagesHomeContentPanel._();
+  MessagesHomePanel._();
 
   @override
-  _MessagesHomeContentPanelState createState() => _MessagesHomeContentPanelState();
+  _MessagesHomePanelState createState() => _MessagesHomePanelState();
 
   @override
   AnalyticsFeature? get analyticsFeature => AnalyticsFeature.Messages;
@@ -48,7 +49,7 @@ class MessagesHomeContentPanel extends StatefulWidget with AnalyticsInfo {
         constraints: BoxConstraints(maxHeight: height, minHeight: height),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
         builder: (context) {
-          return MessagesHomeContentPanel._();
+          return MessagesHomePanel._();
         }
       );
       /*Navigator.push(context, PageRouteBuilder(
@@ -61,7 +62,7 @@ class MessagesHomeContentPanel extends StatefulWidget with AnalyticsInfo {
   }
 }
 
-class _MessagesHomeContentPanelState extends State<MessagesHomeContentPanel> with TickerProviderStateMixin /*implements NotificationsListener*/ {
+class _MessagesHomePanelState extends State<MessagesHomePanel> with TickerProviderStateMixin /*implements NotificationsListener*/ {
 
   late TabController _tabController;
   int _selectedTab = 0;
@@ -174,9 +175,8 @@ class _MessagesHomeContentPanelState extends State<MessagesHomeContentPanel> wit
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            //TODO: create all and unread messages panels/widgets and use them here
-            Container(),
-            Container(),
+            MessagesInboxPage(),
+            MessagesInboxPage(unread: true),
           ],
         ),
       ),

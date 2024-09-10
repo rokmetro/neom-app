@@ -60,7 +60,7 @@ class TextTabButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tab(height: 48.0, child: Padding(
       padding: const EdgeInsets.only(top: 16.0, bottom: 12.0),
-      child: Text(title),
+      child: Text(title, overflow: TextOverflow.ellipsis,),
     ));
   }
 }

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:neom/service/FlexUI.dart';
-import 'package:neom/ui/notifications/NotificationsHomePanel.dart';
+import 'package:neom/ui/widgets/RibbonButton.dart';
 import 'package:neom/ui/widgets/UnderlinedButton.dart';
 import 'package:rokwire_plugin/model/inbox.dart';
 import 'package:neom/service/Analytics.dart';
@@ -19,15 +19,15 @@ import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
-class NotificationsInboxPage extends StatefulWidget {
+class MessagesInboxPage extends StatefulWidget {
   final bool? unread;
   final void Function()? onTapBanner;
-  NotificationsInboxPage({Key? key, this.unread, this.onTapBanner}) : super(key: key);
+  MessagesInboxPage({Key? key, this.unread, this.onTapBanner}) : super(key: key);
 
-  _NotificationsInboxPageState createState() => _NotificationsInboxPageState();
+  _MessagesInboxPageState createState() => _MessagesInboxPageState();
 }
 
-class _NotificationsInboxPageState extends State<NotificationsInboxPage> implements NotificationsListener {
+class _MessagesInboxPageState extends State<MessagesInboxPage> implements NotificationsListener {
 
   final List<_FilterEntry> _mutedValues = [
     _FilterEntry(name: Localization().getStringEx("panel.inbox.label.muted.show", "Show Muted"), value: null),  // Show both muted and not muted messages
@@ -203,7 +203,7 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
 
   void _handleRedirectTap(InboxMessage message) {
     Analytics().logSelect(target: message.subject);
-    NotificationsHomePanel.launchMessageDetail(message);
+    // MessagesHomePanel.launchMessageDetail(message);
   }
   
   // Banner
@@ -221,7 +221,7 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
             children: [
               Expanded(child:
                 Text(
-                  "Notifications Paused",
+                  "Messages Paused",
                   textAlign: TextAlign.center,
                   style: Styles().textStyles.getTextStyle("widget.detail.regular")
                 ),
@@ -237,18 +237,18 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
 
   //Buttons
   Widget _buildAdditionalButtons() {
-    List<Widget> buttons = [];
-    if (widget.unread == true) {
-        buttons.add(_buildReadAllButton());
-    }
-
-    return Container(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: buttons,
-        ));
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildReadAllButton(),
+          Spacer(),
+          _buildNewMessageButton(),
+        ],
+      ),
+    );
   }
 
   Widget _buildReadAllButton() {
@@ -281,7 +281,7 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
             active: _selectedFilter == _FilterType.Time,
             onTap: () { _onFilter(_FilterType.Time); }
           ),
-          _buildEditBar()
+          _buildEditBar(),
         ],
     ));
   }
@@ -433,6 +433,24 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
       TextButton(onPressed: _onEdit, child:
         Text(Localization().getStringEx('headerbar.edit.title', 'Edit'), style:  Styles().textStyles.getTextStyle("widget.button.light.title.medium"),)
       ));
+  }
+
+  Widget _buildNewMessageButton() {
+    return SizedBox(
+      width: 168,
+      child: RibbonButton(
+        textWidget: Text(Localization().getStringEx('panel.messages.new.title', 'New Message'),
+          style:  Styles().textStyles.getTextStyle("widget.button.title.medium"),
+        ),
+        label: Localization().getStringEx('panel.messages.new.title', 'New Message'),
+        hint: Localization().getStringEx('panel.messages.new.hint', ''),
+        backgroundColor: Styles().colors.fillColorSecondary,
+        leftIcon: Styles().images.getImage('plus-circle-white', color: Styles().colors.textDark),
+        rightIconKey: null,
+        borderRadius: BorderRadius.all(Radius.circular(8))
+        // onTap: _onNewMessage,
+      ),
+    );
   }
 
   Widget _buildDoneButton() {
