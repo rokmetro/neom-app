@@ -65,7 +65,7 @@ class WalletMealPlanPanel extends StatelessWidget {
       SliverHeaderBar(
         leadingIconKey: 'caret-left',
         title: Localization().getStringEx('panel.settings.meal_plan.label.title','University Housing Meal Plan'),
-        textStyle:  Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat"),
+        textStyle:  Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat.light"),
       ),
       SliverList(
         delegate: SliverChildListDelegate([

@@ -36,7 +36,7 @@ class TextTabBar extends StatelessWidget {
       padding: padding,
       dividerHeight: 1,
       dividerColor: Styles().colors.textDisabled,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 12.0),
       indicator: UnderlineTabIndicator(
           borderSide: BorderSide(width: 2, color: Styles().colors.fillColorSecondary)),
       indicatorSize: isScrollable ? TabBarIndicatorSize.label : TabBarIndicatorSize.tab,

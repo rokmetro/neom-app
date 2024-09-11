@@ -133,7 +133,7 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
     if ((_contentList != null) && (0 < _contentList!.length)) {
       int count = _contentList!.length + ((_loadingMore == true) ? 1 : 0);
       return ListView.separated(
-        separatorBuilder: (context, index) => Container(height: 24),
+        separatorBuilder: (context, index) => Container(height: 16),
         itemCount: count,
         itemBuilder: _buildListEntry,
         controller: _scrollController);
@@ -156,7 +156,8 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
         onTap: () => _onTapMessage(entry));
     }
     else if (entry is String) {
-      return _buildListHeading(text: entry);
+      Widget heading = _buildListHeading(text: entry);
+      return index > 0 ? Padding(padding: const EdgeInsets.only(top: 8), child: heading) : heading;
     }
     else {
       return _buildListLoadingIndicator();
@@ -164,7 +165,7 @@ class _NotificationsInboxPageState extends State<NotificationsInboxPage> impleme
   }
 
   Widget _buildListHeading({String? text}) {
-    return Container(color: Styles().colors.fillColorPrimary, padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), child:
+    return Container(color: Styles().colors.fillColorSecondary, padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), child:
         Semantics(header: true, child:
           Text(text ?? '', style: Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat"),)
         )
