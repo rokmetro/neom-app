@@ -1,6 +1,5 @@
 import 'package:neom/model/Social.dart';
 import 'package:neom/service/Auth2.dart';
-import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/service.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
@@ -60,15 +59,15 @@ class Social with Service implements NotificationsListener {
 
   List<Message> get messages => _displayMessages;
 
-  void _initMessages() {
-    if (CollectionUtils.isNotEmpty(_displayMessages)) {
-      _displayMessages.clear();
-    }
-    addMessage(Message(
-        content: Localization().getStringEx('panel.assistant.label.welcome_message.title',
-            'The Illinois Assistant is a search feature that brings official university resources to your fingertips. Ask a question below to get started.'),
-        user: false));
-  }
+  // void _initMessages() {
+  //   if (CollectionUtils.isNotEmpty(_displayMessages)) {
+  //     _displayMessages.clear();
+  //   }
+  //   addMessage(Message(
+  //       content: Localization().getStringEx('panel.assistant.label.welcome_message.title',
+  //           'The Illinois Assistant is a search feature that brings official university resources to your fingertips. Ask a question below to get started.'),
+  //       user: false));
+  // }
 
   void addMessage(Message message) {
     _displayMessages.add(message);

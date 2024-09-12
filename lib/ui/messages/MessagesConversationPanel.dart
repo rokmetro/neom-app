@@ -1,9 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/model/Social.dart';
+import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/FlexUI.dart';
 import 'package:neom/service/Social.dart';
 import 'package:neom/service/SpeechToText.dart';
+import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
 import 'package:neom/ui/widgets/TypingIndicator.dart';
 import 'package:neom/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
@@ -97,21 +100,31 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
     _scrollToBottomIfNeeded();
 
-    return Positioned.fill(
-      child: Stack(children: [
-        Padding(padding: EdgeInsets.only(bottom: _scrollContentPaddingBottom), child: Stack(alignment: Alignment.center, children: [
+    return Scaffold(
+      appBar: RootHeaderBar(title: Localization().getStringEx("panel.messages.home.header.title", "Messages"), leading: RootHeaderBarLeading.Back,),
+      body: _buildContent(),
+      backgroundColor: Styles().colors.background,
+      bottomNavigationBar: uiuc.TabBar(),
+    );
+  }
+
+  Widget _buildContent() {
+    return Stack(children: [
+      Padding(padding: EdgeInsets.only(bottom: _scrollContentPaddingBottom), child: Social().messages.isNotEmpty ?
+        Stack(alignment: Alignment.center, children: [
           SingleChildScrollView(
               controller: _scrollController,
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(padding: EdgeInsets.all(16), child:
-              Container(
-                  child: Semantics(/*liveRegion: true, */child:
-                  Column(children:
-                  _buildContentList()))))),
+                Semantics(/*liveRegion: true, */child:
+                  Column(children: _buildContentList())
+                )
+              )
+          ),
           Visibility(visible: _loading, child: CircularProgressIndicator(color: Styles().colors.fillColorSecondary))
-        ])),
-        Positioned(bottom: _chatBarPaddingBottom, left: 0, right: 0, child: Container(key: _chatBarKey, color: Styles().colors.surface, child: SafeArea(child: _buildChatBar())))
-      ]));
+        ]) : Container()),
+      Positioned(bottom: _chatBarPaddingBottom, left: 0, right: 0, child: Container(key: _chatBarKey, color: Styles().colors.background, child: SafeArea(child: _buildChatBar())))
+    ]);
   }
 
   List<Widget> _buildContentList() {
@@ -178,83 +191,99 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   Widget _buildChatBar() {
     return Semantics(container: true,
         child: Material(
-            color: Styles().colors.surface,
+            color: Styles().colors.background,
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                 child: Padding(padding: EdgeInsets.symmetric(horizontal: 14), child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Container(color: Colors.green, child: _buildSendImage()),
                   Expanded(
                       child:
-                      Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Styles().colors.surfaceAccent), borderRadius: BorderRadius.circular(12.0)),
-                          child: Padding(
-                              padding: const EdgeInsets.only(left: 16.0),
-                              child: Stack(children: [
-                                Semantics(container: true, child:  Padding(padding: EdgeInsets.only(right: 28), child: TextField(
-                                    key: _inputFieldKey,
-                                    enabled: true,
-                                    controller: _inputController,
-                                    minLines: 1,
-                                    maxLines: 3,
-                                    textCapitalization: TextCapitalization.sentences,
-                                    textInputAction: TextInputAction.send,
-                                    focusNode: _inputFieldFocus,
-                                    onSubmitted: _submitMessage,
-                                    onChanged: (_) => setStateIfMounted((){}),
-                                    decoration: InputDecoration(border: InputBorder.none),
-                                    style: Styles().textStyles.getTextStyle('widget.title.regular')))),
-                                Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Padding(padding: EdgeInsets.only(right: 0), child: _buildSendImage()))
-                              ]))))
-                ])))));
+                      Stack(children: [
+                        Semantics(container: true, child: TextField(
+                            key: _inputFieldKey,
+                            enabled: true,
+                            controller: _inputController,
+                            minLines: 1,
+                            textCapitalization: TextCapitalization.sentences,
+                            textInputAction: TextInputAction.send,
+                            focusNode: _inputFieldFocus,
+                            onSubmitted: _submitMessage,
+                            onChanged: (_) => setStateIfMounted((){}),
+                            cursorColor: Styles().colors.textDark,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                              fillColor: Styles().colors.surface,
+                              focusColor: Styles().colors.surface,
+                              hoverColor: Styles().colors.surface,
+                            ),
+                            style: Styles().textStyles.getTextStyle('widget.title.regular')
+                        )),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(color: Colors.red, child: _buildSpeechToTextImage()),
+                        )
+                      ],)
+                  ),
+                  Container(color: Colors.green, child: _buildSendImage()),
+                ]))
+            )
+        )
+    );
   }
 
   Widget _buildSendImage() {
-    if (StringUtils.isNotEmpty(_inputController.text)) {
-      return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Send"), enabled: true,
-          child: IconButton(
-              splashRadius: 24,
-              icon: Icon(Icons.send, color: Styles().colors.fillColorSecondary, semanticLabel: "",),
-              onPressed: () {
-                _submitMessage(_inputController.text);
-              }
-          )));
-    } else {
-      return Visibility(
-          visible: SpeechToText().isEnabled,
-          child: MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Speech to text"),
-              child:IconButton(
-                  splashRadius: 24,
-                  icon: _listening ? Icon(Icons.stop_circle_outlined, color: Styles().colors.fillColorSecondary, semanticLabel: "Stop",) : Icon(Icons.mic, color: Styles().colors.fillColorSecondary, semanticLabel: "microphone",),
-                  onPressed: () {
-                    if (_listening) {
-                      _stopListening();
-                    } else {
-                      _startListening();
-                    }
+    return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Send"), enabled: true,
+        child: IconButton(
+            padding: EdgeInsets.zero,
+            visualDensity: VisualDensity.compact,
+            splashRadius: 24,
+            icon: Icon(Icons.send, color: Styles().colors.fillColorSecondary, semanticLabel: "",),
+            onPressed: () {
+              _submitMessage(_inputController.text);
+            }
+        )));
+  }
+
+  Widget _buildSpeechToTextImage() {
+    return Visibility(
+        visible: SpeechToText().isEnabled,
+        child: MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Speech to text"),
+            child:IconButton(
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+                splashRadius: 24,
+                icon: _listening ? Icon(Icons.stop_circle_outlined, color: Styles().colors.fillColorSecondary, semanticLabel: "Stop",) : Icon(Icons.mic, color: Styles().colors.fillColorSecondary, semanticLabel: "microphone",),
+                onPressed: () {
+                  if (_listening) {
+                    _stopListening();
+                  } else {
+                    _startListening();
                   }
-              ))));
-    }
+                }
+            )
+        ))
+    );
   }
 
   Future<void> _submitMessage(String message) async {
-    FocusScope.of(context).requestFocus(FocusNode());
-    if (_loadingResponse) {
-      return;
-    }
-
-    setState(() {
-      if (message.isNotEmpty) {
-        Social().addMessage(Message(content: message, user: true));
+    if (StringUtils.isNotEmpty(_inputController.text)) {
+      FocusScope.of(context).requestFocus(FocusNode());
+      if (_loadingResponse) {
+        return;
       }
-      _inputController.text = '';
-      _loadingResponse = true;
-      _shouldScrollToBottom = true;
-      _shouldSemanticFocusToLastBubble = true;
-    });
 
-    //TODO: send message to Social BB
+      setState(() {
+        if (message.isNotEmpty) {
+          Social().addMessage(Message(content: message, user: true, displayName: Auth2().fullName ?? '', dateCreated: DateTime.now()));
+        }
+        _inputController.text = '';
+        _loadingResponse = true;
+        _shouldScrollToBottom = true;
+        _shouldSemanticFocusToLastBubble = true;
+      });
+
+      //TODO: send message to Social BB
+    }
   }
 
   void _startListening() {
@@ -325,7 +354,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     _scrollPosition = _scrollController.position.pixels;
   }
 
-  double get _chatBarPaddingBottom => 0;
+  double get _chatBarPaddingBottom => _keyboardHeight;
 
   double get _keyboardHeight => MediaQuery.of(context).viewInsets.bottom;
 
