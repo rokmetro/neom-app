@@ -122,7 +122,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
               )
           ),
           Visibility(visible: _loading, child: CircularProgressIndicator(color: Styles().colors.fillColorSecondary))
-        ]) : Container()),
+        ]) : Center(child: Text('No message history', style: Styles().textStyles.getTextStyle('widget.message.light.medium')))),
       Positioned(bottom: _chatBarPaddingBottom, left: 0, right: 0, child: Container(key: _chatBarKey, color: Styles().colors.background, child: SafeArea(child: _buildChatBar())))
     ]);
   }
@@ -193,9 +193,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         child: Material(
             color: Styles().colors.background,
             child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                child: Padding(padding: EdgeInsets.symmetric(horizontal: 14), child: Row(mainAxisSize: MainAxisSize.max, children: [
-                  Container(color: Colors.green, child: _buildSendImage()),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  _buildAttachImage(),
                   Expanded(
                       child:
                       Stack(children: [
@@ -220,12 +220,12 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                         )),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Container(color: Colors.red, child: _buildSpeechToTextImage()),
+                          child: _buildSpeechToTextImage(),
                         )
                       ],)
                   ),
-                  Container(color: Colors.green, child: _buildSendImage()),
-                ]))
+                  _buildSendImage(),
+                ])
             )
         )
     );
@@ -234,10 +234,19 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   Widget _buildSendImage() {
     return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Send"), enabled: true,
         child: IconButton(
-            padding: EdgeInsets.zero,
-            visualDensity: VisualDensity.compact,
             splashRadius: 24,
             icon: Icon(Icons.send, color: Styles().colors.fillColorSecondary, semanticLabel: "",),
+            onPressed: () {
+              _submitMessage(_inputController.text);
+            }
+        )));
+  }
+
+  Widget _buildAttachImage() {
+    return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Attach"), enabled: true,
+        child: IconButton(
+            splashRadius: 24,
+            icon: Styles().images.getImage('image') ?? Container(),
             onPressed: () {
               _submitMessage(_inputController.text);
             }
@@ -249,8 +258,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         visible: SpeechToText().isEnabled,
         child: MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Speech to text"),
             child:IconButton(
-                padding: EdgeInsets.zero,
-                visualDensity: VisualDensity.compact,
                 splashRadius: 24,
                 icon: _listening ? Icon(Icons.stop_circle_outlined, color: Styles().colors.fillColorSecondary, semanticLabel: "Stop",) : Icon(Icons.mic, color: Styles().colors.fillColorSecondary, semanticLabel: "microphone",),
                 onPressed: () {

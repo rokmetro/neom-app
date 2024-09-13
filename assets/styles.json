@@ -1006,6 +1006,7 @@
     "messages-header": {"src": "images/envelope.png", "type": "flutter.asset", "size": 16, "todo": "size"},
     "play-circle-white": {"src": "images/icon-watch.png", "type": "flutter.asset", "color": "iconLight", "size": 32},
     "clock-white": {"src": "f017", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 18},
+    "image": {"src": "images/image.png", "type": "flutter.asset", "size": 24},
 
     "comment-vacuum-start": "Below is a sample for fa pro icons. Remove them when there is no need.",
     "lightVacuum": {"src": "0xe04d", "type": "fa.icon", "weight": "light", "color": "fillColorSecondary", "size": 38},
