@@ -283,9 +283,9 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
           InkWell(onTap: _onFilterAttributes, child:
             Padding(padding: EdgeInsets.only(top: 14, bottom: 8), child:
               Row(children: [
-                Text(filtersTitle, style:  Styles().textStyles.getTextStyle("widget.title.regular.fat")),
+                Text(filtersTitle, style:  Styles().textStyles.getTextStyle("widget.title.variant.regular.fat")),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 4), child:
-                  Styles().images.getImage('chevron-right', width: 6, height: 10) ?? Container(),
+                  Styles().images.getImage('caret-right', width: 6, height: 10) ?? Container(),
                 )
               ],),
               /*Container(
