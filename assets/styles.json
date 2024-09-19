@@ -934,7 +934,8 @@
     "mobile": {"src": "0xf3ce", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 32},
     "shield-halved": {"src": "0xf3ed", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 32},
 
-    "clock": {"src": "f017", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 18},
+    "clock": {"src": "0xf017", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 18},
+    "download": {"src": "0xf019", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 18},
 
     "star-filled": {"src": "images/icon-star-orange.png", "type": "flutter.asset", "color": "fillColorSecondary", "size": 18},
     "star-partially-filled": {"src": "0xf5c0", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 19},

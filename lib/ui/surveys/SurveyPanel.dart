@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/ext/Survey.dart';
+import 'package:neom/service/Auth2.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/survey.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -35,8 +37,27 @@ class SurveyPanel extends rokwire.SurveyPanel{
 
   @override
   PreferredSizeWidget? buildHeaderBar(String? title) => ((survey is Survey) && _SurveyHeaderBarTitleWidget.surveyHasDetails(survey)) ?
-    HeaderBar(titleWidget: _SurveyHeaderBarTitleWidget(survey as Survey, title: title),) :
-    HeaderBar(title: title);
+    HeaderBar(titleWidget: _SurveyHeaderBarTitleWidget(survey as Survey, title: title), actions: _buildActions()) :
+    HeaderBar(title: title, actions: _buildActions());
+
+  List<Widget>? _buildActions() {
+    if (Auth2().isAppAdmin || Auth2().isDebugManager || kDebugMode) {
+      return [
+        Semantics(label: Localization().getStringEx('headerbar.panel.survey.settings.title', 'Settings'), hint: Localization().getStringEx('headerbar.panel.survey.settings.hint', ''), button: true, excludeSemantics: true, child:
+          InkWell(onTap: () => _onTapSurveySettings(), child:
+            Padding(padding: EdgeInsets.only(top: 16, bottom: 16, right: 16), child:
+              Styles().images.getImage('settings-white', excludeFromSemantics: true, color: Styles().colors.iconPrimary),
+            )
+          )
+        )
+      ];
+    }
+    return null;
+  }
+
+  void _onTapSurveySettings() {
+
+  }
 }
 
 class _SurveyHeaderBarTitleWidget extends StatelessWidget {
