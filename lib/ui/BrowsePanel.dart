@@ -276,27 +276,16 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 class _BrowseSection extends StatelessWidget {
 
   final String sectionId;
-  final bool expanded;
-  final void Function()? onExpand;
+  final void Function()? onTap;
   final List<String>? _browseEntriesCodes;
   final Set<String>? _homeSectionEntriesCodes;
   final Set<String>? _homeRootEntriesCodes;
 
-  _BrowseSection({Key? key, required this.sectionId, List<String>? entryCodes, this.expanded = false, this.onExpand}) :
+  _BrowseSection({Key? key, required this.sectionId, List<String>? entryCodes, this.onTap}) :
     _browseEntriesCodes = entryCodes ?? buildBrowseEntryCodes(sectionId: sectionId),
     _homeSectionEntriesCodes = JsonUtils.setStringsValue(FlexUI()['home.$sectionId']),
     _homeRootEntriesCodes = JsonUtils.setStringsValue(FlexUI()['home']),
     super(key: key);
-
-  static List<String>? buildBrowseEntryCodes({required String sectionId}) {
-    List<String>? codes = JsonUtils.listStringsValue(FlexUI()['browse.$sectionId']);
-    codes?.sort((String code1, String code2) {
-      String title1 = _BrowseEntry.title(sectionId: sectionId, entryId: code1);
-      String title2 = _BrowseEntry.title(sectionId: sectionId, entryId: code2);
-      return title1.compareGit4143To(title2);
-    });
-    return codes;
-  }
 
   HomeFavorite? _favorite(String code) {
     if (_homeSectionEntriesCodes?.contains(code) ?? false) {
@@ -314,13 +303,12 @@ class _BrowseSection extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> contentList = <Widget>[];
     contentList.add(_buildHeading(context));
-    contentList.add(_buildEntries(context));
     return Column(children: contentList,);
   }
 
   Widget _buildHeading(BuildContext context) {
     return Padding(padding: EdgeInsets.only(bottom: 4), child:
-      InkWell(onTap: _onTapExpand, child:
+      InkWell(onTap: onTap, child:
         Container(
           decoration: BoxDecoration(color: Styles().colors.surface, border: Border.all(color: Styles().colors.surfaceAccent, width: 1),),
           padding: EdgeInsets.only(left: 16),
@@ -345,43 +333,11 @@ class _BrowseSection extends StatelessWidget {
                   Text(_description, style: Styles().textStyles.getTextStyle("widget.info.regular.thin"))
                 )
               ),
-              Semantics(
-                label: expanded ? Localization().getStringEx('panel.browse.section.status.colapse.title', 'Colapse') : Localization().getStringEx('panel.browse.section.status.expand.title', 'Expand'),
-                hint: expanded ? Localization().getStringEx('panel.browse.section.status.colapse.hint', 'Tap to colapse section content') : Localization().getStringEx('panel.browse.section.status.expand.hint', 'Tap to expand section content'),
-                button: true, child:
-                  Container(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16), child:
-                    SizedBox(width: 18, height: 18, child:
-                      Center(child:
-                        _hasBrowseContent ? (
-                          expanded ?
-                            Styles().images.getImage('chevron-up', excludeFromSemantics: true) :
-                            Styles().images.getImage('chevron-down', excludeFromSemantics: true)
-                        ) : Container()
-                      ),
-                    )
-                  ),
-              ),
             ],)
           ],)
         ),
       ),
     );
-  }
-
-  Widget _buildEntries(BuildContext context) {
-      List<Widget> entriesList = <Widget>[];
-      if (expanded && (_browseEntriesCodes != null)) {
-        for (String code in _browseEntriesCodes!) {
-          entriesList.add(_BrowseEntry(
-            sectionId: sectionId,
-            entryId: code,
-            favorite: _favorite(code),
-          ));
-        }
-      }
-      return entriesList.isNotEmpty ? Padding(padding: EdgeInsets.only(left: 24), child:
-        Column(children: entriesList,)
-      ) : Container();
   }
 
   String get _title => title(sectionId: sectionId);
@@ -395,12 +351,6 @@ class _BrowseSection extends StatelessWidget {
 
   static String description({required String sectionId}) {
     return Localization().getString('panel.browse.section.$sectionId.description')?.replaceAll('{{app_title}}', appTitle) ?? '';
-  }
-
-  void _onTapExpand() {
-    if (_hasBrowseContent && (onExpand != null)) {
-      onExpand!();
-    }
   }
 
   bool get _hasBrowseContent => _browseEntriesCodes?.isNotEmpty ?? false;
@@ -512,6 +462,7 @@ class _BrowseSection extends StatelessWidget {
 ///////////////////////////
 // BrowseEntry
 
+/*
 class _BrowseEntry extends StatelessWidget {
 
   final String sectionId;
@@ -1129,6 +1080,7 @@ class _BrowseEntry extends StatelessWidget {
   }
 
 }
+*/
 
 ///////////////////////////
 // BrowseToutWidget
