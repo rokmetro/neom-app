@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/ext/Survey.dart';
 import 'package:neom/service/Auth2.dart';
+import 'package:neom/ui/surveys/SurveyDetailPanel.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/survey.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -36,15 +38,15 @@ class SurveyPanel extends rokwire.SurveyPanel{
   }
 
   @override
-  PreferredSizeWidget? buildHeaderBar(String? title) => ((survey is Survey) && _SurveyHeaderBarTitleWidget.surveyHasDetails(survey)) ?
-    HeaderBar(titleWidget: _SurveyHeaderBarTitleWidget(survey as Survey, title: title), actions: _buildActions()) :
-    HeaderBar(title: title, actions: _buildActions());
+  PreferredSizeWidget? buildHeaderBar(BuildContext context, Survey? survey) => ((survey is Survey) && _SurveyHeaderBarTitleWidget.surveyHasDetails(survey)) ?
+    HeaderBar(titleWidget: _SurveyHeaderBarTitleWidget(survey), actions: _buildActions(context, survey)) :
+    HeaderBar(title: survey?.title, actions: _buildActions(context, survey));
 
-  List<Widget>? _buildActions() {
-    if (Auth2().isAppAdmin || Auth2().isDebugManager || kDebugMode) {
+  List<Widget>? _buildActions(BuildContext context, Survey? survey) {
+    if (survey != null && (Auth2().isAppAdmin || Auth2().isDebugManager || kDebugMode)) {
       return [
         Semantics(label: Localization().getStringEx('headerbar.panel.survey.settings.title', 'Settings'), hint: Localization().getStringEx('headerbar.panel.survey.settings.hint', ''), button: true, excludeSemantics: true, child:
-          InkWell(onTap: () => _onTapSurveySettings(), child:
+          InkWell(onTap: () => _onTapSurveySettings(context, survey), child:
             Padding(padding: EdgeInsets.only(top: 16, bottom: 16, right: 16), child:
               Styles().images.getImage('settings-white', excludeFromSemantics: true, color: Styles().colors.iconPrimary),
             )
@@ -55,17 +57,16 @@ class SurveyPanel extends rokwire.SurveyPanel{
     return null;
   }
 
-  void _onTapSurveySettings() {
-
+  void _onTapSurveySettings(BuildContext context, Survey survey) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => SurveyDetailPanel(survey: survey,)));
   }
 }
 
 class _SurveyHeaderBarTitleWidget extends StatelessWidget {
-  final String? title;
   final Survey survey;
 
   // ignore: unused_element
-  _SurveyHeaderBarTitleWidget(this.survey, {super.key, this.title, });
+  _SurveyHeaderBarTitleWidget(this.survey, {super.key, });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,7 @@ class _SurveyHeaderBarTitleWidget extends StatelessWidget {
   }
 
   Widget get _titleWidget =>
-      Text(title ?? survey.title, style: Styles().textStyles.getTextStyle('header_bar'),);
+      Text(survey.title, style: Styles().textStyles.getTextStyle('header_bar'),);
 
   static bool surveyHasDetails(Survey survey) =>
     (survey.endDate != null) || survey.isCompleted;

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/service/AppDateTime.dart';
@@ -10,15 +11,16 @@ import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/model/survey.dart';
 import 'package:rokwire_plugin/service/events2.dart';
+import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/service/surveys.dart';
+import 'package:rokwire_plugin/ui/panels/survey_creation_panel.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
 class SurveyDetailPanel extends StatefulWidget {
   final Survey survey;
-  final String? surveysLabel;
 
-  SurveyDetailPanel({required this.survey, this.surveysLabel});
+  SurveyDetailPanel({required this.survey});
 
   @override
   State<StatefulWidget> createState() => _SurveyDetailPanelState();
@@ -38,28 +40,17 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: HeaderBar(title: widget.survey.title), body: _buildPanelContent(), backgroundColor: Styles().colors.surface);
+    return Scaffold(appBar: HeaderBar(title: '${widget.survey.title} Settings'), body: _buildPanelContent(), backgroundColor: Styles().colors.surface);
   }
 
   Widget _buildPanelContent() {
     return SingleChildScrollView(
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildDownloadResults(), _buildEditSurvey()]),
-    );
-  }
-
-  Widget _buildEditSurvey() {
-    return Visibility(
-        visible: Auth2().isDebugManager || kDebugMode,
-        child: Padding(
-          padding: EdgeInsets.only(top: 10),
-          child: RibbonButton(
-            backgroundColor: Styles().colors.surface,
-            border: Border(),
-            leftIconKey: 'edit',
-          )
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [_buildDownloadResults(), _buildEditSurvey()]),
+      ),
     );
   }
 
@@ -71,19 +62,15 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
 
     return Visibility(
         visible: !widget.survey.isSensitive,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _horizontalDivider,
-          Stack(alignment: Alignment.center, children: [
-            ScreenUtils.isLarge(context) ? Row(
-              children: downloadWidgets,
-            ) : Wrap(
-              runSpacing: 5,
-              spacing: 20,
-              children: downloadWidgets,
-            ),
-            Visibility(visible: _isLoading, child: CircularProgressIndicator(color: Styles().colors.iconDark)),
-          ]),
-          _horizontalDivider
+        child: Stack(alignment: Alignment.center, children: [
+          ScreenUtils.isLarge(context) ? Row(
+            children: downloadWidgets,
+          ) : Wrap(
+            runSpacing: 5,
+            spacing: 20,
+            children: downloadWidgets,
+          ),
+          Visibility(visible: _isLoading, child: CircularProgressIndicator(color: Styles().colors.iconDark)),
         ])
     );
   }
@@ -91,37 +78,42 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
   Widget _buildDownloadWidget({bool combineResponses = false}) {
     return Column(children: [
       InkWell(
-          onTap: () => _onTapDownloadSurveyResults(combineResponses: combineResponses),
+          onTap: CollectionUtils.isNotEmpty(_surveyResponses) ? () => _onTapDownloadSurveyResults(combineResponses: combineResponses) : null,
           child: Padding(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 16.0),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Padding(padding: EdgeInsets.only(right: 10), child: Styles().images.getImage('download')),
-                Text('Download Survey Results',
-                    style: Styles().textStyles.getTextStyle('widget.button.title.medium.underline'))
+                Padding(padding: EdgeInsets.only(right: 16.0), child: Styles().images.getImage('download')),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Download Survey Results (CSV)',
+                          style: Styles().textStyles.getTextStyle('widget.button.title.medium.underline')),
+                      _buildDownloadSubtitleWidget(combineResponses: combineResponses),
+                    ],
+                  ),
+                )
               ]))),
-      _buildDownloadSubtitleWidget(combineResponses: combineResponses),
-      _buildCsvOptionLabelWidget()
     ]);
   }
 
   Widget _buildDownloadSubtitleWidget({bool combineResponses = false}) {
     return Padding(
         padding: EdgeInsets.only(top: 2),
-        child: Row(children: [
-          Expanded(
-              child: Text(combineResponses ? 'One User Per Row' : 'One User Question Per Row',
-                  style: Styles().textStyles.getTextStyle('widget.info.dark.tiny')))
-        ]));
+        child: Text(combineResponses ? 'One User Per Row' : 'One User Question Per Row',
+            style: Styles().textStyles.getTextStyle('widget.info.dark.tiny')));
   }
 
-  Widget _buildCsvOptionLabelWidget() {
-    return Padding(
-        padding: EdgeInsets.only(top: 2),
-        child: Row(children: [
-          Expanded(
-              child: Text('Option for .csv',
-                  style: Styles().textStyles.getTextStyle('widget.item.small.thin.italic')))
-        ]));
+  Widget _buildEditSurvey() {
+    return InkWell(
+        onTap: _onTapEditSurvey,
+        child: Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Padding(padding: EdgeInsets.only(right: 16.0), child: Styles().images.getImage('edit')),
+              Text('Edit Survey',
+                  style: Styles().textStyles.getTextStyle('widget.button.title.medium.underline'))
+            ])));
   }
 
   void _onTapDownloadSurveyResults({bool combineResponses = false}) {
@@ -130,7 +122,7 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
     }
 
     if (CollectionUtils.isEmpty(_surveyResponses)) {
-      AppAlert.showDialogResult(context, 'There are no results for that survey, yet.');
+      AppAlert.showDialogResult(context, 'There are no results for this survey.');
       return;
     }
     setStateIfMounted(() {
@@ -154,9 +146,9 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
       final String dateFormat = 'yyyy-MM-dd';
       final String timeFormat = 'HH:mm';
       String eventName = StringUtils.ensureNotEmpty(_surveyEvent?.name, defaultValue: defaultEmptyValue);
-      String eventStartDate = StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(_surveyEvent?.startDateTimeUtc, format: dateFormat),
+      String eventStartDate = StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(_surveyEvent?.startTimeUtc, format: dateFormat),
           defaultValue: defaultEmptyValue);
-      String eventStartTime = StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(_surveyEvent?.startDateTimeUtc, format: timeFormat),
+      String eventStartTime = StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(_surveyEvent?.startTimeUtc, format: timeFormat),
           defaultValue: defaultEmptyValue);
       bool hasAccounts = CollectionUtils.isNotEmpty(accounts);
       List<List<dynamic>> rows = <List<dynamic>>[[
@@ -172,8 +164,6 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
         ]);
       }
       rows.first.addAll([
-        // 'UIN',
-        // 'NetID',
         'First Name',
         'Last Name',
         if (!combineResponses)
@@ -183,49 +173,20 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
 
       for (SurveyResponse response in _surveyResponses!) {
         String? accountId = response.userId;
-        Auth2Account? account =
-            ((accountId != null) && hasAccounts) ? accounts!.firstWhereOrNull((account) => (account.id == accountId)) : null;
-        Survey? survey = response.survey;
-        if (survey != null) {
-          List<String> answers = [];
-          for (SurveyData? data = Surveys().getFirstQuestion(survey); data != null; data = Surveys().getFollowUp(survey, data)) {
-            String question = data.text;
-            String answer = data.response.toString();
-            if (data is SurveyQuestionTrueFalse && data.style == 'yes_no') {
-              bool? response = data.response as bool?;
-              if (response != null) {
-                answer = response ? 'Yes' : 'No';
-              }
-            }
-            if (combineResponses)  {
-              answers.add(answer);
-            } else {
-              rows.add([
-                surveyName,
-                StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
-                    defaultValue: defaultEmptyValue),
-                StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: timeFormat),
-                    defaultValue: defaultEmptyValue),
-              ]);
-              if (StringUtils.isNotEmpty(widget.survey.calendarEventId)) {
-                rows.last.addAll([
-                  eventName,
-                  eventStartDate,
-                  eventStartTime,
-                ]);
-              }
-              rows.last.addAll([
-                // StringUtils.ensureNotEmpty(account?.externalIds?.uin, defaultValue: defaultEmptyValue),
-                // StringUtils.ensureNotEmpty(account?.externalIds?.netId, defaultValue: defaultEmptyValue),
-                StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
-                StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
-                question,
-                answer
-              ]);
+        Auth2Account? account = ((accountId != null) && hasAccounts) ? accounts!.firstWhereOrNull((account) => (account.id == accountId)) : null;
+        List<String> answers = [];
+        for (SurveyData? data = Surveys().getFirstQuestion(response.survey); data != null; data = Surveys().getFollowUp(response.survey, data)) {
+          String question = data.text;
+          String answer = data.response.toString();
+          if (data is SurveyQuestionTrueFalse && data.style == 'yes_no') {
+            bool? response = data.response as bool?;
+            if (response != null) {
+              answer = response ? 'Yes' : 'No';
             }
           }
-          
-          if (combineResponses) {
+          if (combineResponses)  {
+            answers.add(answer);
+          } else {
             rows.add([
               surveyName,
               StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
@@ -241,19 +202,40 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
               ]);
             }
             rows.last.addAll([
-              // StringUtils.ensureNotEmpty(account?.externalIds?.uin, defaultValue: defaultEmptyValue),
-              // StringUtils.ensureNotEmpty(account?.externalIds?.netId, defaultValue: defaultEmptyValue),
               StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
               StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
-              answers
+              question,
+              answer
             ]);
           }
+        }
+
+        if (combineResponses) {
+          rows.add([
+            surveyName,
+            StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
+                defaultValue: defaultEmptyValue),
+            StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: timeFormat),
+                defaultValue: defaultEmptyValue),
+          ]);
+          if (StringUtils.isNotEmpty(widget.survey.calendarEventId)) {
+            rows.last.addAll([
+              eventName,
+              eventStartDate,
+              eventStartTime,
+            ]);
+          }
+          rows.last.addAll([
+            StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
+            StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
+            answers
+          ]);
         }
       }
       String? dateExported = AppDateTime().formatDateTime(DateTime.now(), format: 'yyyy-MM-dd-HH-mm');
       String fileName = '${surveyName.toLowerCase().replaceAll(" ", "_")}_results_$dateExported.csv';
       AppCsv.exportCsv(context: context, rows: rows, fileName: fileName).then((_) {
-        AppToast.show('$surveyName results downloaded');
+        AppToast.show(context, child: Container(color: Styles().colors.surface, child: Text('$surveyName results downloaded', style: Styles().textStyles.getTextStyle('widget.info.dark.small'))));
         setStateIfMounted(() {
           _decreaseLoadingProgress();
         });
@@ -261,20 +243,21 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
     });
   }
 
+  void _onTapEditSurvey() {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => SurveyCreationPanel(survey: widget.survey,)));
+  }
+
   void _loadSurveyResponses() {
     if (StringUtils.isNotEmpty(widget.survey.id) && !widget.survey.isSensitive) {
       setStateIfMounted(() {
         _increaseLoadingProgress();
       });
-      Surveys().loadAllSurveyResponses(widget.survey.id).then((result) {
-        List<SurveyResponse>? responses;
-        if (result is String) {
-          AppAlert.showDialogResult(context, result);
-        } else if (result is List<SurveyResponse>) {
-          responses = result;
+      Surveys().loadAllSurveyResponses(widget.survey.id, admin: true).then((result) {
+        if (result == null) {
+          AppAlert.showDialogResult(context, Localization().getStringEx('panel.survey_details.responses.load.failed.message', 'Failed to load survey responses.'));
         }
         setStateIfMounted(() {
-          _surveyResponses = responses;
+          _surveyResponses = result;
           _decreaseLoadingProgress();
         });
       });
@@ -305,7 +288,4 @@ class _SurveyDetailPanelState extends State<SurveyDetailPanel> {
   }
 
   bool get _isLoading => (_loadingProgress > 0);
-
-  Widget get _horizontalDivider =>
-      Padding(padding: EdgeInsets.symmetric(vertical: 26), child: Container(height: 1, color: Styles().colors.dividerLine));
 }
