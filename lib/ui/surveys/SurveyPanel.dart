@@ -82,7 +82,6 @@ class SurveyPanel extends rokwire.SurveyPanel{
   }
 
   void _onTapDownloadSurveyResults(BuildContext context, Survey survey) async {
-    bool combineResponses = true;
     if (survey.isSensitive) {
       return;
     }
@@ -136,17 +135,25 @@ class SurveyPanel extends rokwire.SurveyPanel{
     rows.first.addAll([
       'First Name',
       'Last Name',
-      if (!combineResponses)
-        'Prompt',
-      'Response'
     ]);
+    bool addPromptHeaders = true;
+    int firstPromptIndex = rows.first.length;
 
     for (SurveyResponse response in surveyResponses!) {
       String? accountId = response.userId;
       Auth2Account? account = ((accountId != null) && hasAccounts) ? accounts!.firstWhereOrNull((account) => (account.id == accountId)) : null;
       List<String> answers = [];
+      int responsePromptIndex = 0;
       for (SurveyData? data = Surveys().getFirstQuestion(response.survey); data != null; data = Surveys().getFollowUp(response.survey, data)) {
         String question = data.text;
+        if (addPromptHeaders) {
+          rows.first.add(question);
+        } else if (!rows.first.contains(question)) {
+          rows.first.insert(firstPromptIndex + responsePromptIndex, question);
+          for (int i = 1; i < rows.length; i++) {
+            rows[i].insert(firstPromptIndex + responsePromptIndex, defaultEmptyValue);
+          }
+        }
         String answer = data.response.toString();
         if (data is SurveyQuestionTrueFalse && data.style == 'yes_no') {
           bool? response = data.response as bool?;
@@ -154,53 +161,31 @@ class SurveyPanel extends rokwire.SurveyPanel{
             answer = response ? 'Yes' : 'No';
           }
         }
-        if (combineResponses)  {
-          answers.add(answer);
-        } else {
-          rows.add([
-            surveyName,
-            StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
-                defaultValue: defaultEmptyValue),
-            StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: timeFormat),
-                defaultValue: defaultEmptyValue),
-          ]);
-          if (StringUtils.isNotEmpty(survey.calendarEventId)) {
-            rows.last.addAll([
-              eventName,
-              eventStartDate,
-              eventStartTime,
-            ]);
-          }
-          rows.last.addAll([
-            StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
-            StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
-            question,
-            answer
-          ]);
-        }
-      }
+        answers.add(answer);
 
-      if (combineResponses) {
-        rows.add([
-          surveyName,
-          StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
-              defaultValue: defaultEmptyValue),
-          StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: timeFormat),
-              defaultValue: defaultEmptyValue),
-        ]);
-        if (StringUtils.isNotEmpty(survey.calendarEventId)) {
-          rows.last.addAll([
-            eventName,
-            eventStartDate,
-            eventStartTime,
-          ]);
-        }
+        responsePromptIndex++;
+      }
+      addPromptHeaders = false;
+
+      rows.add([
+        surveyName,
+        StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: dateFormat),
+            defaultValue: defaultEmptyValue),
+        StringUtils.ensureNotEmpty(AppDateTime().formatDateTime(response.dateTakenLocal, format: timeFormat),
+            defaultValue: defaultEmptyValue),
+      ]);
+      if (StringUtils.isNotEmpty(survey.calendarEventId)) {
         rows.last.addAll([
-          StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
-          StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
-          answers
+          eventName,
+          eventStartDate,
+          eventStartTime,
         ]);
       }
+      rows.last.addAll([
+        StringUtils.ensureNotEmpty(account?.profile?.firstName, defaultValue: defaultEmptyValue),
+        StringUtils.ensureNotEmpty(account?.profile?.lastName, defaultValue: defaultEmptyValue),
+        ...answers,
+      ]);
     }
     String? dateExported = AppDateTime().formatDateTime(DateTime.now(), format: 'yyyy-MM-dd-HH-mm');
     String fileName = '${surveyName.toLowerCase().replaceAll(" ", "_")}_results_$dateExported.csv';
