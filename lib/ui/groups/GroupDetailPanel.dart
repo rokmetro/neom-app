@@ -30,6 +30,7 @@ import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:neom/ui/widgets/InfoPopup.dart';
 import 'package:neom/ui/widgets/QrCodePanel.dart';
+import 'package:neom/ui/widgets/TextTabBar.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/model/group.dart';
@@ -92,7 +93,7 @@ class GroupDetailPanel extends StatefulWidget with AnalyticsInfo {
   String? get groupId => group?.id ?? groupIdentifier;
 }
 
-class _GroupDetailPanelState extends State<GroupDetailPanel> implements NotificationsListener {
+class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProviderStateMixin implements NotificationsListener {
 
   final int          _postsPageSize = 8;
 
@@ -100,6 +101,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
   GroupStats?        _groupStats;
   List<Member>?      _groupAdmins;
 
+  late TabController _tabController;
   _DetailTab         _currentTab = _DetailTab.Events;
 
   int                _progress = 0;
@@ -248,6 +250,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
       Connectivity.notifyStatusChanged,
     ]);
 
+    _tabController = TabController(length: _DetailTab.values.length, initialIndex: _currentTab.index, vsync: this);
+    // _tabController.addListener(_onTabChanged);
+
     _postId = widget.groupPostId;
     _loadGroup(loadEvents: true);
 
@@ -257,6 +262,8 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
   @override
   void dispose() {
     NotificationService().unsubscribe(this);
+    // _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -834,19 +841,21 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
       _buildGroupInfo()
     ];
     if (_isMemberOrAdmin) {
-      content.add(_buildTabs());
-      if (_currentTab != _DetailTab.About) {
-        content.add(_buildEvents());
-        content.add(_buildPosts());
-        content.add(_buildScheduledPosts());
-        content.add(_buildMessages());
-        content.add(_buildPolls());
-      }
-      else if (_currentTab == _DetailTab.About) {
-        content.add(_buildAbout());
-        content.add(_buildPrivacyDescription());
-        content.add(_buildAdmins());
-      }
+      content.add(TextTabBar(tabs: _buildTabs(), labelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
+          labelPadding: const EdgeInsets.symmetric(horizontal: 6.0,), controller: _tabController, isScrollable: false, onTap: _onTabChanged));
+      content.add(Expanded(
+        child: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _buildEvents(),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],),
+            _buildMessages(),
+            _buildPolls(),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],),
+          ],
+        ),
+      ));
     }
     else {
       content.add(_buildAbout());
@@ -859,13 +868,14 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
     }
 
     return Column(children: <Widget>[
-      Expanded(child:
-        SingleChildScrollView(scrollDirection: Axis.vertical, child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: content,),
-        ),
-      ),
-      _buildMembershipRequest(),
-      _buildCancelMembershipRequest(),
+      ...content
+      // Expanded(child:
+      //   SingleChildScrollView(scrollDirection: Axis.vertical, child:
+      //     Column(crossAxisAlignment: CrossAxisAlignment.start, children: content,),
+      //   ),
+      // ),
+      // _buildMembershipRequest(),
+      // _buildCancelMembershipRequest(),
     ],);
   }
 
@@ -1073,7 +1083,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
       );
   }
 
-  Widget _buildTabs() {
+  List<Widget> _buildTabs() {
     List<Widget> tabs = [];
     for (_DetailTab tab in _DetailTab.values) {
       String title;
@@ -1094,40 +1104,24 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
           title = Localization().getStringEx("panel.group_detail.button.about.title", 'About');
           break;
       }
-      bool isSelected = (_currentTab == tab);
 
-      if (0 < tabs.length) {
-        tabs.add(Padding(
-          padding: EdgeInsets.only(left: 6),
-          child: Container(),
-        ));
-      }
-
-      Widget tabWidget = RoundedButton(
-          label: title,
-          textStyle: isSelected ? Styles().textStyles.getTextStyle("widget.colourful_button.title.accent") : Styles().textStyles.getTextStyle("widget.button.title.medium.thin"),
-          backgroundColor: isSelected ? Styles().colors.fillColorPrimary : Styles().colors.background,
-          contentWeight: 0.0,
-          borderColor: isSelected ? Styles().colors.fillColorPrimary : Styles().colors.surfaceAccent,
-          borderWidth: 1,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 11),
-          onTap: () => _onTab(tab));
-
-      tabs.add(tabWidget);
+      tabs.add(TextTabButton(title: title));
     }
 
-    Widget leaveButton = GestureDetector(
-        onTap: _onTapLeave,
-        child: Padding(
-            padding: EdgeInsets.only(left: 24, top: 10, bottom: 10),
-            child: Text(Localization().getStringEx("panel.group_detail.button.leave.title", 'Leave'),
-                style: Styles().textStyles.getTextStyle('panel.group.button.leave.title')
-            )));
+    return tabs;
 
-    return Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: tabs)),
-      Visibility(visible: _canLeaveGroup, child: Padding(padding: EdgeInsets.only(top: 5), child: Row(children: [Expanded(child: Container()), leaveButton])))
-    ]));
+    // Widget leaveButton = GestureDetector(
+    //     onTap: _onTapLeave,
+    //     child: Padding(
+    //         padding: EdgeInsets.only(left: 24, top: 10, bottom: 10),
+    //         child: Text(Localization().getStringEx("panel.group_detail.button.leave.title", 'Leave'),
+    //             style: Styles().textStyles.getTextStyle('panel.group.button.leave.title')
+    //         )));
+    //
+    // return Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    //   SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(children: tabs)),
+    //   Visibility(visible: _canLeaveGroup, child: Padding(padding: EdgeInsets.only(top: 5), child: Row(children: [Expanded(child: Container()), leaveButton])))
+    // ]));
   }
 
   Widget _buildEvents() {
@@ -1859,9 +1853,10 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
         });
   }
 
-  void _onTab(_DetailTab tab) {
+  void _onTabChanged(int index) {
+    _DetailTab tab = _DetailTab.values[_tabController.index];
     Analytics().logSelect(target: "Tab: $tab", attributes: _group?.analyticsAttributes);
-    if (_currentTab != tab) {
+    if (!_tabController.indexIsChanging && _currentTab.index != _tabController.index) {
       setState(() {
         _currentTab = tab;
       });
@@ -1921,7 +1916,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> implements Notifica
     showDialog(context: context, builder: (_) =>  InfoPopup(
       backColor: Color(0xfffffcdf), //Styles().colors.surface ?? Colors.white,
       padding: EdgeInsets.only(left: 24, right: 24, top: 28, bottom: 24),
-      border: Border.all(color: Styles().colors.textSurface, width: 1),
+      border: Border.all(color: Styles().colors.textDark, width: 1),
       alignment: Alignment.center,
       infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.univerity_name', 'University of Illinois')),
       infoTextStyle: Styles().textStyles.getTextStyle('widget.description.regular.thin'),

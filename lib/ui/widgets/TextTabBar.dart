@@ -19,12 +19,15 @@ import 'package:rokwire_plugin/service/styles.dart';
 
 class TextTabBar extends StatelessWidget {
   final List<Widget> tabs;
+  final TextStyle? labelStyle;
+  final EdgeInsets? labelPadding;
   final TabController? controller;
   final EdgeInsets padding;
   final bool isScrollable;
   final void Function(int)? onTap;
 
-  TextTabBar({required this.tabs, this.controller, this.padding = const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0), this.isScrollable = true, this.onTap});
+  TextTabBar({required this.tabs, this.labelStyle, this.labelPadding, this.controller,
+    this.padding = const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0), this.isScrollable = true, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +39,15 @@ class TextTabBar extends StatelessWidget {
       padding: padding,
       dividerHeight: 1,
       dividerColor: Styles().colors.textDisabled,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+      labelPadding: labelPadding ?? const EdgeInsets.symmetric(horizontal: 12.0),
       indicator: UnderlineTabIndicator(
           borderSide: BorderSide(width: 2, color: Styles().colors.fillColorSecondary)),
       indicatorSize: isScrollable ? TabBarIndicatorSize.label : TabBarIndicatorSize.tab,
       // indicatorColor: AppColors.textPrimary,
       // indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-      unselectedLabelStyle: Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
+      unselectedLabelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
       unselectedLabelColor: Styles().colors.textPrimary,
-      labelStyle: Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
+      labelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
       labelColor: Styles().colors.textPrimary,
       onTap: onTap,
     );

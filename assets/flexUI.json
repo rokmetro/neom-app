@@ -13,11 +13,6 @@
 			"home.app_help": ["faqs", "feedback", "review"],
 
 			"browse": ["groups", "events", "inbox", "surveys", "messages"],
-			"browse.events": ["event_feed", "my_events"],
-			"browse.groups": ["all_groups", "my_groups"],
-			"browse.inbox": ["all_notifications", "unread_notifications"],
-			"browse.surveys": ["public_surveys"],
-			"browse.messages": ["directory"],
 
 			"settings": ["contact", "favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
