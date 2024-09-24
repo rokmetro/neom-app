@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - NEOM U
 
+## [0.4.6] = 2024-09-23
+### Added
+- Add intro video on web [#10](https://github.com/rokmetro/neom-app/issues/10)
+- Add survey response download for admins [#11](https://github.com/rokmetro/neom-app/issues/11)
+
 ## [0.4.5] = 2024-08-20
 ### Added
 - Added public, start date, end date, estimated completion time fields to survey creation tool
