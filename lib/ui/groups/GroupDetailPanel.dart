@@ -708,10 +708,6 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _evalHeaderHeight();
-    });
-
     String? barTitle = (_isResearchProject && !_isMemberOrAdmin) ? 'Your Invitation To Participate' : null;
     List<Widget>? barActions = (_hasOptions) ? <Widget>[
       Semantics(label: Localization().getStringEx("panel.group_detail.label.options", 'Options'), button: true, excludeSemantics: true, child:
@@ -725,21 +721,24 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     }
     else if (_group != null) {
       content = _buildGroupContent(barActions);
+      _scheduleEvalHeaderHeight();
     }
     else {
       content = _buildErrorContent();
     }
 
-    return Scaffold(
-      appBar: _group == null ? HeaderBar(
-        title: barTitle,
-        actions: barActions
-      ) : null,
-      backgroundColor: Styles().colors.background,
-      bottomNavigationBar: uiuc.TabBar(),
-      body: SafeArea(
-        child: RefreshIndicator(onRefresh: _onPullToRefresh, child:
-          content,
+    return SafeArea(
+      child: Scaffold(
+        appBar: _group == null ? HeaderBar(
+          title: barTitle,
+          actions: barActions
+        ) : null,
+        backgroundColor: Styles().colors.background,
+        bottomNavigationBar: uiuc.TabBar(),
+        body: SafeArea(
+          child: RefreshIndicator(onRefresh: _onPullToRefresh, child:
+            content,
+          ),
         ),
       ),
     );
@@ -821,9 +820,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           ),
         ),
       ]),
-      SafeArea(
-        child: HeaderBackButton()
-      ),
+      HeaderBackButton(),
     ],);
   }
 
@@ -845,18 +842,16 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildGroupContent(List<Widget>? actions) {
     Widget content;
     if (_isMemberOrAdmin) {
-      content = Expanded(
-        child: TabBarView(
-          controller: _tabController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildEvents()),
-            SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],)),
-            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildMessages()),
-            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildPolls()),
-            SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],)),
-          ],
-        ),
+      content = TabBarView(
+        controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildEvents()),
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],)),
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildMessages()),
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildPolls()),
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],)),
+        ],
       );
     }
     else {
@@ -882,13 +877,16 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
             actions: actions,
             title: _group?.title ?? '',
             leadingIconKey: 'caret-left',
-            expandedHeight: (_headerHeight ?? 0) + (_isMemberOrAdmin ? TextTabBar.tabHeight : 0),
+            expandedHeight: (_headerHeight ?? 0) + (_isMemberOrAdmin ? kToolbarHeight : 0) + kToolbarHeight,
             flexibleSpace: SingleChildScrollView(
               physics: const NeverScrollableScrollPhysics(),
-              child: Column(key: _headerKey, crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                _buildImageHeader(),
-                _buildGroupInfo()
-              ]),
+              child: Padding(
+                padding: const EdgeInsets.only(top: kToolbarHeight),
+                child: Column(key: _headerKey, crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                  _buildImageHeader(),
+                  _buildGroupInfo()
+                ]),
+              ),
             ),
             bottom: _isMemberOrAdmin ? TextTabBar(tabs: _buildTabs(), labelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 6.0,), controller: _tabController,
@@ -2316,6 +2314,12 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         Scrollable.ensureVisible(currentContext, duration: Duration(milliseconds: 10));
       }
     }
+  }
+
+  void _scheduleEvalHeaderHeight() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _evalHeaderHeight();
+    });
   }
 
   void _evalHeaderHeight() {

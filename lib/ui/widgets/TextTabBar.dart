@@ -31,8 +31,6 @@ class TextTabBar extends StatelessWidget implements PreferredSizeWidget {
   TextTabBar({required this.tabs, this.labelStyle, this.labelPadding, this.controller, this.backgroundColor,
     this.padding = const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0), this.isScrollable = true, this.onTap});
 
-  static const double tabHeight = 48.0;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -62,7 +60,7 @@ class TextTabBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize {
-    double maxHeight = tabHeight;
+    double maxHeight = kToolbarHeight;
     for (final Widget item in tabs) {
       if (item is PreferredSizeWidget) {
         final double itemHeight = item.preferredSize.height;
