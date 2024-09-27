@@ -14,43 +14,62 @@
  * limitations under the License.
  */
 
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 
-class TextTabBar extends StatelessWidget {
+class TextTabBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget> tabs;
   final TextStyle? labelStyle;
   final EdgeInsets? labelPadding;
   final TabController? controller;
+  final Color? backgroundColor;
   final EdgeInsets padding;
   final bool isScrollable;
   final void Function(int)? onTap;
 
-  TextTabBar({required this.tabs, this.labelStyle, this.labelPadding, this.controller,
+  TextTabBar({required this.tabs, this.labelStyle, this.labelPadding, this.controller, this.backgroundColor,
     this.padding = const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0), this.isScrollable = true, this.onTap});
+
+  static const double tabHeight = 48.0;
 
   @override
   Widget build(BuildContext context) {
-    return TabBar(
-      tabAlignment: isScrollable ? TabAlignment.center : TabAlignment.fill,
-      isScrollable: isScrollable,
-      tabs: tabs,
-      controller: controller,
-      padding: padding,
-      dividerHeight: 1,
-      dividerColor: Styles().colors.textDisabled,
-      labelPadding: labelPadding ?? const EdgeInsets.symmetric(horizontal: 12.0),
-      indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 2, color: Styles().colors.fillColorSecondary)),
-      indicatorSize: isScrollable ? TabBarIndicatorSize.label : TabBarIndicatorSize.tab,
-      // indicatorColor: AppColors.textPrimary,
-      // indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-      unselectedLabelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
-      unselectedLabelColor: Styles().colors.textPrimary,
-      labelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
-      labelColor: Styles().colors.textPrimary,
-      onTap: onTap,
+    return Container(
+      color: backgroundColor,
+      child: TabBar(
+        tabAlignment: isScrollable ? TabAlignment.center : TabAlignment.fill,
+        isScrollable: isScrollable,
+        tabs: tabs,
+        controller: controller,
+        padding: padding,
+        dividerHeight: 1,
+        dividerColor: Styles().colors.textDisabled,
+        labelPadding: labelPadding ?? const EdgeInsets.symmetric(horizontal: 12.0),
+        indicator: UnderlineTabIndicator(
+            borderSide: BorderSide(width: 2, color: Styles().colors.fillColorSecondary)),
+        indicatorSize: isScrollable ? TabBarIndicatorSize.label : TabBarIndicatorSize.tab,
+        // indicatorColor: AppColors.textPrimary,
+        // indicatorPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        unselectedLabelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
+        unselectedLabelColor: Styles().colors.textPrimary,
+        labelStyle: labelStyle ?? Styles().textStyles.getTextStyle('widget.heading.regular.fat'),
+        labelColor: Styles().colors.textPrimary,
+        onTap: onTap,
+      ),
     );
+  }
+
+  @override
+  Size get preferredSize {
+    double maxHeight = tabHeight;
+    for (final Widget item in tabs) {
+      if (item is PreferredSizeWidget) {
+        final double itemHeight = item.preferredSize.height;
+        maxHeight = max(itemHeight, maxHeight);
+      }
+    }
+    return Size.fromHeight(maxHeight);
   }
 }
 

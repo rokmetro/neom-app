@@ -101,6 +101,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   GroupStats?        _groupStats;
   List<Member>?      _groupAdmins;
 
+  final GlobalKey _headerKey = GlobalKey();
+  double? _headerHeight;
+  final ScrollController _scrollController = ScrollController();
   late TabController _tabController;
   _DetailTab         _currentTab = _DetailTab.Events;
 
@@ -705,16 +708,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-    if (_isLoading) {
-      content = _buildLoadingContent();
-    }
-    else if (_group != null) {
-      content = _buildGroupContent();
-    }
-    else {
-      content = _buildErrorContent();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _evalHeaderHeight();
+    });
 
     String? barTitle = (_isResearchProject && !_isMemberOrAdmin) ? 'Your Invitation To Participate' : null;
     List<Widget>? barActions = (_hasOptions) ? <Widget>[
@@ -722,16 +718,29 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         IconButton(icon: Styles().images.getImage('more-white',) ?? Container(), onPressed: _onGroupOptionsTap,)
       )
     ] : null;
-    
+
+    Widget content;
+    if (_isLoading) {
+      content = _buildLoadingContent();
+    }
+    else if (_group != null) {
+      content = _buildGroupContent(barActions);
+    }
+    else {
+      content = _buildErrorContent();
+    }
+
     return Scaffold(
-      appBar: HeaderBar(
+      appBar: _group == null ? HeaderBar(
         title: barTitle,
         actions: barActions
-      ),
+      ) : null,
       backgroundColor: Styles().colors.background,
       bottomNavigationBar: uiuc.TabBar(),
-      body: RefreshIndicator(onRefresh: _onPullToRefresh, child:
-        content,
+      body: SafeArea(
+        child: RefreshIndicator(onRefresh: _onPullToRefresh, child:
+          content,
+        ),
       ),
     );
   }
@@ -829,54 +838,66 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           ),
         ),
       ]),
-      SafeArea(
-        child: HeaderBackButton()
-      ),
+      HeaderBackButton(),
     ],);
   }
 
-  Widget _buildGroupContent() {
-    List<Widget> content = [
-      _buildImageHeader(),
-      _buildGroupInfo()
-    ];
+  Widget _buildGroupContent(List<Widget>? actions) {
+    Widget content;
     if (_isMemberOrAdmin) {
-      content.add(TextTabBar(tabs: _buildTabs(), labelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 6.0,), controller: _tabController, isScrollable: false, onTap: _onTabChanged));
-      content.add(Expanded(
+      content = Expanded(
         child: TabBarView(
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            _buildEvents(),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],),
-            _buildMessages(),
-            _buildPolls(),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],),
+            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildEvents()),
+            SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],)),
+            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildMessages()),
+            SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildPolls()),
+            SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],)),
           ],
         ),
-      ));
+      );
     }
     else {
-      content.add(_buildAbout());
-      content.add(_buildPrivacyDescription());
-      content.add(_buildAdmins());
-      if (_isPublic && CollectionUtils.isNotEmpty(_groupEvents)) {
-        content.add(_buildEvents());
-      }
-      content.add(_buildResearchProjectMembershipRequest());
+      content = SingleChildScrollView(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _buildAbout(),
+          _buildPrivacyDescription(),
+          _buildAdmins(),
+          if (_isPublic && CollectionUtils.isNotEmpty(_groupEvents))
+            _buildEvents(),
+          _buildResearchProjectMembershipRequest(),
+        ]),
+      );
     }
 
-    return Column(children: <Widget>[
-      ...content
-      // Expanded(child:
-      //   SingleChildScrollView(scrollDirection: Axis.vertical, child:
-      //     Column(crossAxisAlignment: CrossAxisAlignment.start, children: content,),
-      //   ),
-      // ),
-      // _buildMembershipRequest(),
-      // _buildCancelMembershipRequest(),
-    ],);
+    return NestedScrollView(
+      controller: _scrollController,
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        return [
+          SliverHeaderBar(
+            pinned: true,
+            floating: true,
+            actions: actions,
+            title: _group?.title ?? '',
+            leadingIconKey: 'caret-left',
+            expandedHeight: (_headerHeight ?? 0) + (_isMemberOrAdmin ? TextTabBar.tabHeight : 0),
+            flexibleSpace: SingleChildScrollView(
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(key: _headerKey, crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                _buildImageHeader(),
+                _buildGroupInfo()
+              ]),
+            ),
+            bottom: _isMemberOrAdmin ? TextTabBar(tabs: _buildTabs(), labelStyle: Styles().textStyles.getTextStyle('widget.heading.medium_small'),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 6.0,), controller: _tabController,
+                backgroundColor: Styles().colors.fillColorPrimary, isScrollable: false, onTap: _onTabChanged) : null,
+          ),
+        ];
+      },
+      body: content,
+    );
   }
 
   Widget _buildImageHeader(){
@@ -1077,7 +1098,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     ));
 
     return Container(color: Styles().colors.surface, child:
-        Padding(padding: EdgeInsets.only(top: 12), child:
+        Padding(padding: EdgeInsets.symmetric(vertical: 12), child:
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList),
         ),
       );
@@ -2294,6 +2315,16 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       if (currentContext != null) {
         Scrollable.ensureVisible(currentContext, duration: Duration(milliseconds: 10));
       }
+    }
+  }
+
+  void _evalHeaderHeight() {
+    RenderObject? renderBox = _headerKey.currentContext?.findRenderObject();
+    Size? size = (renderBox is RenderBox) ? renderBox.size : null;
+    if ((size?.height != _headerHeight) && mounted) {
+      setStateIfMounted(() {
+        _headerHeight = size?.height;
+      });
     }
   }
 

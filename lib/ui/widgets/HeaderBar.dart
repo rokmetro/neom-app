@@ -186,6 +186,7 @@ class SliverHeaderBar extends rokwire.SliverHeaderBar  {
     bool floating = false,
     double? elevation = 0,
     double toolbarHeight = kToolbarHeight,
+    double? expandedHeight,
     Color? backgroundColor,
 
     Widget? leadingWidget,
@@ -207,12 +208,15 @@ class SliverHeaderBar extends rokwire.SliverHeaderBar  {
     TextAlign? textAlign,
 
     List<Widget>? actions,
+    Widget? flexibleSpace,
+    PreferredSizeWidget? bottom,
   }) : super(
     
     pinned: pinned,
     floating: floating,
     elevation: elevation,
     toolbarHeight: toolbarHeight,
+    expandedHeight: expandedHeight,
     backgroundColor: backgroundColor ?? Styles().colors.fillColorPrimaryVariant,
 
     leadingWidget: leadingWidget,
@@ -234,6 +238,8 @@ class SliverHeaderBar extends rokwire.SliverHeaderBar  {
     textAlign: textAlign,
 
     actions: actions,
+    flexibleSpace: flexibleSpace,
+    bottom: bottom,
   );
 
   @override
