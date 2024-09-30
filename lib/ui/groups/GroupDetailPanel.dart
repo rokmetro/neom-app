@@ -882,9 +882,15 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
               physics: const NeverScrollableScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.only(top: kToolbarHeight),
-                child: Column(key: _headerKey, crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                  _buildImageHeader(),
-                  _buildGroupInfo()
+                child: Stack(key: _headerKey, children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 200.0),
+                    child: _buildImageHeader(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0, top: 152.0),
+                    child: _buildGroupInfo(),
+                  )
                 ]),
               ),
             ),
@@ -900,17 +906,8 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   Widget _buildImageHeader(){
     return StringUtils.isNotEmpty(_group?.imageURL) ? Semantics(label: "group image", hint: "Double tap to zoom", child:
-      Container(height: 200, color: Styles().colors.background, child:
-        Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-            Positioned.fill(child: ModalImageHolder(child: Image.network(_group!.imageURL!, excludeFromSemantics: true, fit: BoxFit.cover, headers: Config().networkAuthHeaders))),
-            CustomPaint(painter: TrianglePainter(painterColor: Styles().colors.fillColorSecondaryTransparent05, horzDir: TriangleHorzDirection.leftToRight), child:
-              Container(height: 53,),
-            ),
-            CustomPaint(painter: TrianglePainter(painterColor: Styles().colors.surface), child:
-              Container(height: 30,),
-            ),
-          ],
-        ),
+      Container(height: 200.0, width: MediaQuery.of(context).size.width, color: Styles().colors.background, child:
+        ModalImageHolder(child: Image.network(_group!.imageURL!, excludeFromSemantics: true, fit: BoxFit.cover, headers: Config().networkAuthHeaders)),
       )
     ): Container();
   }
@@ -1052,12 +1049,12 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     List<Widget> contentList = <Widget>[];
     if (_showMembershipBadge) {
       contentList.addAll(<Widget>[
-        Padding(padding: EdgeInsets.only(left: 16, right: _showPolicyButton ? 0 : 16), child:
+        Padding(padding: EdgeInsets.only(left: 16, right: _showPolicyButton ? 0 : 16, top: 8), child:
           _buildBadgeWidget(),
         ),
 
         Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4), child:
-          Text(_group?.title ?? '',  style:  Styles().textStyles.getTextStyle('panel.group.title.large'),),
+          Text(_group?.title?.toUpperCase() ?? '',  style:  Styles().textStyles.getTextStyle('widget.group.card.title.medium.fat'),),
         ),
       ]);
     }
@@ -1096,9 +1093,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     ));
 
     return Container(color: Styles().colors.surface, child:
-        Padding(padding: EdgeInsets.symmetric(vertical: 12), child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList),
-        ),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList),
       );
   }
 
@@ -1513,7 +1508,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildBadgeWidget() {
     Widget badgeWidget = Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: _group!.currentUserStatusColor, borderRadius: BorderRadius.all(Radius.circular(2)),), child:
       Semantics(label: _group?.currentUserStatusText?.toLowerCase(), excludeSemantics: true, child:
-        Text(_group!.currentUserStatusText!.toUpperCase(), style:  Styles().textStyles.getTextStyle('widget.heading.extra_small'),)
+        Text(_group!.currentUserStatusText!.toUpperCase(), style:  Styles().textStyles.getTextStyle('widget.heading.dark.extra_small'),)
       ),
     );
     return _showPolicyButton ? Row(children: <Widget>[

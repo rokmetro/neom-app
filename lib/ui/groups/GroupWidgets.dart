@@ -797,7 +797,7 @@ class _GroupCardState extends State<GroupCard> implements NotificationsListener 
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(color: color, borderRadius: BorderRadius.all(Radius.circular(2))),
         child: Text(text,
-          style: Styles().textStyles.getTextStyle("widget.heading.extra_small"))));
+          style: Styles().textStyles.getTextStyle("widget.heading.dark.extra_small"))));
   }
 
   Widget _buildHeadingWrapLabel(String text) {

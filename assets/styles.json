@@ -167,9 +167,11 @@
     "widget.heading.small.semi_fat.underline": { "extends": "widget.heading.small.semi_fat", "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "textPrimary"},
     "widget.heading.extra_small": { "font_family": "bold", "size": 12.0, "color": "textPrimary"},
 
-    "widget.message.dark.extra_large": {"font_family": "regular", "size": 24.0, "color": "black"},
-    "widget.message.dark.semi_large.fat": {"font_family": "bold", "size": 18.0, "color": "black"},
-    "widget.message.dark.medium": {"font_family": "medium", "size": 16.0, "color": "black"},
+    "widget.heading.dark.extra_small": { "font_family": "bold", "size": 12.0, "color": "textDark"},
+
+    "widget.message.dark.extra_large": {"font_family": "regular", "size": 24.0, "color": "textDark"},
+    "widget.message.dark.semi_large.fat": {"font_family": "bold", "size": 18.0, "color": "textDark"},
+    "widget.message.dark.medium": {"font_family": "medium", "size": 16.0, "color": "textDark"},
     "widget.message.light.medium": {"font_family": "medium", "size": 16.0, "color": "textLight"},
 
     "widget.message.huge": { "font_family": "regular", "size": 32.0, "color": "textDark"},
