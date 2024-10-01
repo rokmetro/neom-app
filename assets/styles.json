@@ -1133,6 +1133,12 @@
     "browse-saved": {"src": "images/icon-browse-saved.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
     "browse-guide": {"src": "images/icon-browse-campus-guide.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
 
+    "more-groups": {"src": "images/more-groups.png", "type": "flutter.asset", "size": 176},
+    "more-messages": {"src": "images/more-messages.png", "type": "flutter.asset", "size": 176},
+    "more-surveys": {"src": "images/more-surveys.png", "type": "flutter.asset", "size": 176},
+    "more-events": {"src": "images/more-events.png", "type": "flutter.asset", "size": 176},
+    "more-inbox": {"src": "images/more-inbox.png", "type": "flutter.asset", "size": 176},
+
     "guide-athletics": {"src": "images/icon-student-guide-athletics.png", "type": "flutter.asset", "size": 50, "todo": "color"},
     "guide-bus-pass": {"src": "images/icon-student-guide-bus-pass.png", "type": "flutter.asset", "size": 50, "todo": "color"},
     "guide-dining": {"src": "images/icon-student-guide-dining.png", "type": "flutter.asset", "size": 50, "todo": "color"},

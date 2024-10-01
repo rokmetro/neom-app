@@ -74,7 +74,7 @@ class _BrowsePanelState extends State<BrowsePanel> with AutomaticKeepAliveClient
     super.build(context);
 
     return Scaffold(
-      appBar: RootHeaderBar(title: Localization().getStringEx('panel.browse.label.title', 'Browse')),
+      appBar: RootHeaderBar(title: Localization().getStringEx('panel.browse.label.title', 'More')),
       body: RefreshIndicator(onRefresh: _onPullToRefresh, child:
         Column(children: <Widget>[
           Expanded(child:
@@ -158,20 +158,18 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
   Widget build(BuildContext context) {
     List<Widget> contentList = <Widget>[];
 
-    List<Widget> sectionsList = <Widget>[];
+    Widget? sectionsGrid;
     if (_contentCodes != null) {
-      for (String code in _contentCodes!) {
-        sectionsList.add(_BrowseSection(sectionId: code,));
-      }
+      sectionsGrid = _BrowseSection.buildSectionGrid(codes: _contentCodes!);
     }
 
-    if (sectionsList.isNotEmpty) {
+    if (sectionsGrid != null) {
       contentList.add(
         HomeSlantWidget(
           title: Localization().getStringEx('panel.browse.label.sections.title', 'App Sections'),
           titleIconKey: 'browse',
           childPadding: HomeSlantWidget.defaultChildPadding,
-          child: Column(children: sectionsList,),
+          child: sectionsGrid,
         )
       );
     }
@@ -232,35 +230,29 @@ class _BrowseSection extends StatelessWidget {
   }
 
   Widget _buildHeading(BuildContext context) {
-    return Padding(padding: EdgeInsets.only(bottom: 4), child:
+    return Padding(padding: EdgeInsets.all(8.0), child:
       InkWell(onTap: () => _onTap(context), child:
-        Container(
-          decoration: BoxDecoration(color: Styles().colors.surface, border: Border.all(color: Styles().colors.surfaceAccent, width: 1),),
-          padding: EdgeInsets.only(left: 16),
-          child: Column(children: [
-            Row(children: [
-              Expanded(child:
-                Padding(padding: EdgeInsets.only(top: 16), child:
-                  Text(_title, style: Styles().textStyles.getTextStyle("widget.title.dark.large.extra_fat"))
-                )
-              ),
-              Opacity(opacity: _isSectionFavorite ? 1 : 0, child:
-                Semantics(label: 'Favorite' /* TBD: Localization */, button: true, child:
-                  InkWell(onTap: () => _onTapSectionFavorite(context), child:
-                    FavoriteStarIcon(selected: _isSectionFavorite, style: FavoriteIconStyle.Button,)
-                  ),
+        Stack(alignment: AlignmentDirectional.center, children: [
+          Center(child: Styles().images.getImage('more-$sectionId') ?? Container()),
+          Text(_title, style: Styles().textStyles.getTextStyle("widget.title.large.extra_fat")),
+          Align(
+            alignment: AlignmentDirectional.bottomEnd,
+            child: Opacity(opacity: _isSectionFavorite ? 1 : 0, child:
+              Semantics(label: 'Favorite' /* TBD: Localization */, button: true, child:
+                InkWell(onTap: () => _onTapSectionFavorite(context), child:
+                  FavoriteStarIcon(selected: _isSectionFavorite, style: FavoriteIconStyle.Button,)
                 ),
               ),
-            ],),
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Expanded(child:
-                Padding(padding: EdgeInsets.only(bottom: 16), child:
-                  Text(_description, style: Styles().textStyles.getTextStyle("widget.info.regular.thin"))
-                )
-              ),
-            ],)
-          ],)
-        ),
+            ),
+          ),
+          // Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          //   Expanded(child:
+          //     Padding(padding: EdgeInsets.only(bottom: 16), child:
+          //       Text(_description, style: Styles().textStyles.getTextStyle("widget.info.regular.thin"))
+          //     )
+          //   ),
+          // ],)
+        ],),
       ),
     );
   }
@@ -437,181 +429,33 @@ class _BrowseSection extends StatelessWidget {
       }
     }
   }
-}
 
-//TODO: integrate the below into _BrowseSection (grid of circles UI)
-/*
-class RoleGridButton extends TileToggleButton {
-  static final double  minimumTitleRowsCount = 2;
-  static final double  fontSizeHeightFactor = 1.2;
-
-  final TextScaler textScaler;
-
-  RoleGridButton({
-    required String title,
-    required String hint,
-    required String iconKey,
-    required String selectedIconKey,
-    Color? selectedTitleColor,
-    Color? selectedBackgroundColor,
-    required bool selected,
-    dynamic data,
-    double? sortOrder,
-    void Function(RoleGridButton)? onTap,
-    this.textScaler = TextScaler.noScaling,
-    EdgeInsetsGeometry? margin,
-  }) : super(
-    title: title,
-    hint: hint,
-    iconKey: iconKey,
-    selectedIconKey: selectedIconKey,
-    selectedTitleColor: selectedTitleColor,
-    selectedBackgroundColor: selectedBackgroundColor,
-    selectedBorderColor: Styles().colors.fillColorSecondary,
-    selected: selected,
-    selectionMarkerKey: 'check-circle-filled',
-    iconFit: BoxFit.fitWidth,
-    iconWidth: 38,
-    contentSpacing: 10,
-    semanticsValue: "${Localization().getStringEx("toggle_button.status.unchecked", "unchecked",)}, ${Localization().getStringEx("toggle_button.status.checkbox", "checkbox")}",
-    selectedSemanticsValue: "${Localization().getStringEx("toggle_button.status.checked", "checked",)}, ${Localization().getStringEx("toggle_button.status.checkbox", "checkbox")}",
-    data: data,
-    sortOrder: sortOrder,
-    onTap: (BuildContext context, TileToggleButton button) => _handleTap(context, button, onTap),
-    margin: margin ?? const EdgeInsets.only(top: 8, right: 8),
-  );
-
-  @protected Widget get defaultIconWidget =>  Container(constraints: BoxConstraints(minHeight: 40), child: super.defaultIconWidget);
-  @protected Widget get displayTitleWidget =>  Container(constraints: BoxConstraints(minHeight: _titleMinHeight), child: super.displayTitleWidget);
-  double get _titleMinHeight => textScaler.scale(minimumTitleRowsCount * titleFontSize * fontSizeHeightFactor) ;
-
-
-  static RoleGridButton? fromRole(UserRole? role, { bool? selected, double? sortOrder, TextScaler? textScaler, void Function(RoleGridButton)? onTap, EdgeInsetsGeometry? margin }) {
-    if (role == UserRole.neomU) {
-      return RoleGridButton(
-        title: Localization().getStringEx('panel.onboarding2.roles.button.neom_u.title', 'NEOM U'),
-        hint: Localization().getStringEx('panel.onboarding2.roles.button.neom_u.hint', ''),
-        iconKey: 'role-staff',
-        selectedIconKey: 'role-staff',
-        selectedBackgroundColor: Styles().colors.surface,
-        selected: (selected == true),
-        data: role,
-        sortOrder: sortOrder,
-        onTap: onTap,
-        textScaler: textScaler ?? TextScaler.noScaling,
-        margin: margin,
-      );
-    }
-    else if (role == UserRole.talentAcademy) {
-      return RoleGridButton(
-        title: Localization().getStringEx('panel.onboarding2.roles.button.talent_academy.title', 'Talent Academy'),
-        hint: Localization().getStringEx('panel.onboarding2.roles.button.talent_academy.hint', ''),
-        iconKey: 'role-staff',
-        selectedIconKey:  'role-staff',
-        selectedBackgroundColor: Styles().colors.surface,
-        selected: (selected == true),
-        data: role,
-        sortOrder: sortOrder,
-        onTap: onTap,
-        textScaler: textScaler ?? TextScaler.noScaling,
-        margin: margin,
-      );
-    }
-    else if (role == UserRole.eriF) {
-      return RoleGridButton(
-        title: Localization().getStringEx('panel.onboarding2.roles.button.eri_f.title', 'ERI F'),
-        hint: Localization().getStringEx('panel.onboarding2.roles.button.eri_f.hint', ''),
-        iconKey: 'role-staff',
-        selectedIconKey:  'role-staff',
-        selectedBackgroundColor: Styles().colors.surface,
-        selected: (selected == true),
-        data: role,
-        sortOrder: sortOrder,
-        onTap: onTap,
-        textScaler: textScaler ?? TextScaler.noScaling,
-        margin: margin,
-      );
-    }
-    else if (role == UserRole.ec12) {
-      return RoleGridButton(
-        title: Localization().getStringEx('panel.onboarding2.roles.button.ec_12.title', 'EC-12'),
-        hint: Localization().getStringEx('panel.onboarding2.roles.button.ec_12.hint', ''),
-        iconKey: 'role-staff',
-        selectedIconKey:  'role-staff',
-        selectedBackgroundColor: Styles().colors.surface,
-        selected: (selected == true),
-        data: role,
-        sortOrder: sortOrder,
-        onTap: onTap,
-        textScaler: textScaler ?? TextScaler.noScaling,
-        margin: margin,
-      );
-    }
-    else if (role == UserRole.debug && (kDebugMode || Auth2().isDebugManager)) {
-      return RoleGridButton(
-        title: Localization().getStringEx('panel.onboarding2.roles.button.debug.title', 'Debug'),
-        hint: Localization().getStringEx('panel.onboarding2.roles.button.debug.hint', ''),
-        iconKey: 'role-debug',
-        selectedIconKey:  'role-debug',
-        selectedBackgroundColor: Styles().colors.surface,
-        selected: (selected == true),
-        data: role,
-        sortOrder: sortOrder,
-        onTap: onTap,
-        textScaler: textScaler ?? TextScaler.noScaling,
-        margin: margin,
-      );
-    }
-    else {
-      return null;
-    }
-  }
-
-  static Widget gridFromFlexUI({ Set<UserRole>? selectedRoles, double gridSpacing = 5, void Function(RoleGridButton)? onTap, TextScaler? textScaler }) {
-    List<Widget> roleButtons1 = <Widget>[], roleButtons2 = <Widget>[];
-    List<String> codes = JsonUtils.listStringsValue(FlexUI()['roles']) ?? [];
+  static Widget buildSectionGrid({ required List<String> codes, double gridSpacing = 5 }) {
+    List<Widget> buttons1 = <Widget>[], buttons2 = <Widget>[];
     int index = 1;
     for (String code in codes) {
 
-      UserRole? role = UserRole.fromString(code);
-      bool selected = selectedRoles?.contains(role) ?? false;
       bool isLeftColumn = 0 < (index % 2);
-      RoleGridButton? button = RoleGridButton.fromRole(role,
-        selected: selected,
-        sortOrder: index.toDouble(),
-        textScaler: textScaler,
-        onTap: onTap,
-        margin: EdgeInsets.only(top: 8, left: isLeftColumn ? 0 : 4, right: isLeftColumn ? 4 : 0),
-      );
+      _BrowseSection button = _BrowseSection(sectionId: code,);
 
-      if (button != null) {
-        List<Widget> roleButtons = isLeftColumn ? roleButtons1 : roleButtons2;
-        if (roleButtons.isNotEmpty) {
-          roleButtons.add(Container(height: gridSpacing,));
-        }
-        roleButtons.add(button);
-        index++;
+      List<Widget> buttons = isLeftColumn ? buttons1 : buttons2;
+      if (buttons.isNotEmpty) {
+        buttons.add(Container(height: gridSpacing,));
       }
+      buttons.add(button);
+      index++;
     }
 
     return Container(
       constraints: BoxConstraints(maxWidth: Config().webContentMaxWidth),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        Expanded(child: Column(children: roleButtons1)),
+        Expanded(child: Column(children: buttons1)),
         Container(width: gridSpacing,),
-        Expanded(child: Column(children: roleButtons2,),),
+        Expanded(child: Column(children: buttons2,),),
       ],),
     );
   }
-
-  static void _handleTap(BuildContext context, TileToggleButton button, Function(RoleGridButton)? tapCallback) {
-    AppSemantics.announceCheckBoxStateChange(context, !button.selected, button.title);
-    if ((tapCallback != null) && (button is RoleGridButton)) {
-      tapCallback(button);
-    }
-  }
 }
-*/
 
 ///////////////////////////
 // BrowseToutWidget
