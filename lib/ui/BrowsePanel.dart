@@ -160,7 +160,7 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 
     Widget? sectionsGrid;
     if (_contentCodes != null) {
-      sectionsGrid = _BrowseSection.buildSectionGrid(codes: _contentCodes!);
+      sectionsGrid = _BrowseSection.buildSectionGrid(context, codes: _contentCodes!);
     }
 
     if (sectionsGrid != null) {
@@ -284,8 +284,8 @@ class _BrowseSection extends StatelessWidget {
     return false;
   }
 
-  bool get _isSectionFavorite {
-    int favCount = 0, totalCount = 0;
+  bool? get _isSectionFavorite {
+    int favCount = 0, unfavCount = 0, totalCount = 0;
     for (String code in _favoriteCodes ?? []) {
       HomeFavorite? entryFavorite = _favorite(code);
       if (entryFavorite != null) {
@@ -293,15 +293,26 @@ class _BrowseSection extends StatelessWidget {
         if (Auth2().prefs?.isFavorite(entryFavorite) ?? false) {
           favCount++;
         }
+        else {
+          unfavCount++;
+        }
       }
     }
-    return 0 < totalCount && favCount == totalCount;
+    if (0 < totalCount) {
+      if (favCount == totalCount) {
+        return true;
+      }
+      else if (unfavCount == totalCount) {
+        return false;
+      }
+    }
+    return null;
   }
 
   void _onTapSectionFavorite(BuildContext context) {
     Analytics().logSelect(target: "Favorite: {${HomeFavorite.favoriteKeyName(category: sectionId)}}");
 
-    bool isSectionFavorite = _isSectionFavorite;
+    bool? isSectionFavorite = _isSectionFavorite;
     if (kReleaseMode) {
       promptSectionFavorite(context, isSectionFavorite: isSectionFavorite).then((bool? result) {
         if (result == true) {
@@ -314,10 +325,10 @@ class _BrowseSection extends StatelessWidget {
     }
   }
 
-  void _toggleSectionFavorite({required bool isSectionFavorite}) {
+  void _toggleSectionFavorite({bool? isSectionFavorite}) {
     List<Favorite> favorites = _sectionFavorites;
-    Auth2().prefs?.setListFavorite(favorites, !isSectionFavorite);
-    HomeFavorite.log(favorites, !isSectionFavorite);
+    Auth2().prefs?.setListFavorite(favorites, isSectionFavorite != true);
+    HomeFavorite.log(favorites, isSectionFavorite != true);
   }
 
   List<Favorite> get _sectionFavorites {
@@ -460,15 +471,22 @@ class _BrowseSection extends StatelessWidget {
     }
   }
 
-  static Widget buildSectionGrid({ required List<String> codes, double gridSpacing = 5 }) {
-    List<Widget> buttons1 = <Widget>[], buttons2 = <Widget>[];
-    int index = 1;
+  static Widget buildSectionGrid(BuildContext context, { required List<String> codes, double gridSpacing = 5 }) {
+    ScreenType screenType = ScreenUtils.getType(context);
+    int numColumns = 2;
+    if (screenType == ScreenType.tablet) {
+      numColumns = 4;
+    } else if (screenType == ScreenType.desktop) {
+      numColumns = 6;
+    }
+    List<List<Widget>> buttonColumns = List.generate(numColumns, (index) => <Widget>[]);
+    int index = 0;
     for (String code in codes) {
 
-      bool isLeftColumn = 0 < (index % 2);
+      int columnIndex = index % numColumns;
       _BrowseSection button = _BrowseSection(sectionId: code,);
 
-      List<Widget> buttons = isLeftColumn ? buttons1 : buttons2;
+      List<Widget> buttons = buttonColumns[columnIndex];
       if (buttons.isNotEmpty) {
         buttons.add(Container(height: gridSpacing,));
       }
@@ -476,14 +494,15 @@ class _BrowseSection extends StatelessWidget {
       index++;
     }
 
-    return Container(
-      constraints: BoxConstraints(maxWidth: Config().webContentMaxWidth),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-        Expanded(child: Column(children: buttons1)),
-        Container(width: gridSpacing,),
-        Expanded(child: Column(children: buttons2,),),
-      ],),
-    );
+    List<Widget> gridColumns = [
+      Expanded(child: Column(children: buttonColumns[0]))
+    ];
+    for (int i = 1; i < buttonColumns.length; i++) {
+      List<Widget> column = buttonColumns[i];
+      gridColumns.add(Container(width: gridSpacing,));
+      gridColumns.add(Expanded(child: Column(children: column,),));
+    }
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: gridColumns,);
   }
 }
 
