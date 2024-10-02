@@ -72,7 +72,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
 
     _scrollController.addListener(_scrollListener);
     _selectedMutedValue = false;
-    _loadInitialContent();
+    // _loadInitialContent();
   }
 
   @override
@@ -91,21 +91,13 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
         });
       }
     } else if (name == Inbox.notifyInboxMessageRead) {
-      _refreshContent();
+      // _refreshContent();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: _onPullToRefresh,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[_buildBanner(), _buildAdditionalButtons(),  _buildFilters(), Expanded(child: _buildContent())]),
-        ));
+    return Center(child: Text('No message history', style: Styles().textStyles.getTextStyle('widget.message.light.medium')));
   }
 
   // Messages
@@ -206,7 +198,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
     Analytics().logSelect(target: message.subject);
     // MessagesHomePanel.launchMessageDetail(message);
   }
-  
+
   // Banner
   Widget _buildBanner(){ //TBD localize
     return
@@ -317,7 +309,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
     }
 
     return Padding(padding: EdgeInsets.only(top: 6, left: 16, right: 16, bottom: 32), child:
-      Container(decoration: BoxDecoration(color: Styles().colors.fillColorSecondary, borderRadius: BorderRadius.circular(5.0)), child: 
+      Container(decoration: BoxDecoration(color: Styles().colors.fillColorSecondary, borderRadius: BorderRadius.circular(5.0)), child:
         Padding(padding: EdgeInsets.only(top: 2), child:
           Container(color: Styles().colors.surface, child:
             ListView.separated(
@@ -354,7 +346,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
 
         DateTime endDate = interval.endDate ?? today;
         if (1 < endDate.difference(startDate).inDays) {
-          String? endStr = AppDateTime().formatDateTime(endDate, format: 'MM/dd', ignoreTimeZone: true);  
+          String? endStr = AppDateTime().formatDateTime(endDate, format: 'MM/dd', ignoreTimeZone: true);
           timeDate = "$startStr - $endStr";
         }
         else {
@@ -390,7 +382,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
       _selectedFilter = null;
     });
 
-    _loadInitialContent();
+    // _loadInitialContent();
   }
 
   // Header bar
@@ -406,7 +398,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
     else {
       contentList.add(_buildEditButton());
     }
-    
+
     if ((_isEditMode == true) && _isAnyMessageSelected) {
       contentList.insert(0, _buildOptionsButton());
     }
@@ -648,7 +640,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
           }
         });
         if (result == true) {
-          _refreshContent();
+          // _refreshContent();
         }
         else {
           AppAlert.showDialogResult(this.context, "Failed to delete message(s).");
@@ -662,6 +654,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
     Navigator.pop(context);
   }
 
+  /*
   Future<void> _refreshMessages() async{
     int limit = max(_messages.length, _messagesPageSize);
     _DateInterval? selectedTimeInterval = (_selectedTime != null) ? _getTimeFilterIntervals()[_selectedTime] : null;
@@ -684,19 +677,21 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
   Future<void> _onPullToRefresh() async {
     _refreshMessages();
   }
+  */
 
   void _onTapMarkAllAsRead() {
-    Analytics().logSelect(target: "Mark All As Read");
-    _setMarkAllAsReadLoading(true);
-    Inbox().markAllMessagesAsRead().then((succeeded) {
-      if (succeeded) {
-        _loadInitialContent();
-      } else {
-        AppAlert.showMessage(
-            context, Localization().getStringEx('panel.inbox.mark_as_read.failed.msg', 'Failed to mark all messages as read'));
-      }
-      _setMarkAllAsReadLoading(false);
-    });
+    return;
+    // Analytics().logSelect(target: "Mark All As Read");
+    // _setMarkAllAsReadLoading(true);
+    // Inbox().markAllMessagesAsRead().then((succeeded) {
+    //   if (succeeded) {
+    //     _loadInitialContent();
+    //   } else {
+    //     AppAlert.showMessage(
+    //         context, Localization().getStringEx('panel.inbox.mark_as_read.failed.msg', 'Failed to mark all messages as read'));
+    //   }
+    //   _setMarkAllAsReadLoading(false);
+    // });
   }
 
   void _setMarkAllAsReadLoading(bool loading) {
@@ -715,6 +710,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
 
   // Content
 
+  /*
   void _loadInitialContent() {
     setState(() {
       _loading = true;
@@ -781,6 +777,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
       });
     });
   }
+  */
 
   List<dynamic> _buildContentList() {
     Map<_TimeFilter, _DateInterval> intervals = _getTimeFilterIntervals();
@@ -812,12 +809,12 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
         contentList.addAll(timeList);
       }
     }
-    
+
     if (otherList != null) {
       contentList.add(_FilterEntry.entryInList(_times, null)?.name?.toUpperCase() ?? '');
       contentList.addAll(otherList);
     }
-    
+
     return contentList;
   }
 
@@ -834,7 +831,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
 
   void _scrollListener() {
     if ((_scrollController.offset >= _scrollController.position.maxScrollExtent) && (_hasMoreMessages != false) && (_loadingMore != true) && (_loading != true)) {
-      _loadMoreContent();
+      // _loadMoreContent();
     }
   }
 
@@ -855,10 +852,10 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
 class _FilterEntry {
   final String? _name;
   final dynamic _value;
-  
+
   String? get name => _name;
   dynamic get value => _value;
-  
+
   _FilterEntry({String? name, dynamic value}) :
     _name = name ?? value?.toString(),
     _value = value;
@@ -878,7 +875,7 @@ class _FilterEntry {
 class _DateInterval {
   final DateTime? startDate;
   final DateTime? endDate;
-  
+
   _DateInterval({this.startDate, this.endDate});
 
   bool contains(DateTime? dateTime) {
@@ -909,7 +906,7 @@ class InboxMessageCard extends StatefulWidget {
   final InboxMessage? message;
   final bool? selected;
   final void Function()? onTap;
-  
+
   InboxMessageCard({this.message, this.selected, this.onTap });
 
   @override
@@ -966,7 +963,7 @@ class _InboxMessageCardState extends State<InboxMessageCard> implements Notifica
                     )
                   ),
                 ),
-                
+
                 Expanded(child:
                   Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
 

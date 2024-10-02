@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:neom/ui/messages/MessagesDirectoryPanel.dart';
+import 'package:neom/ui/messages/MessagesHomePanel.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:collection/collection.dart';
@@ -192,15 +192,8 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
   }
 
   static List<String>? buildContentCodes() {
-    List<String>? codes = JsonUtils.listStringsValue(FlexUI()['browse']);
-    codes?.sort((String code1, String code2) {
-      String title1 = _BrowseSection.title(sectionId: code1);
-      String title2 = _BrowseSection.title(sectionId: code2);
-      return title1.compareGit4143To(title2);
-    });
-    return codes;
+    return JsonUtils.listStringsValue(FlexUI()['browse']);
   }
-
 }
 
 ///////////////////////////
@@ -215,9 +208,9 @@ class _BrowseSection extends StatelessWidget {
     _homeRootEntriesCodes = JsonUtils.setStringsValue(FlexUI()['home']),
     super(key: key);
 
-  HomeFavorite? _favorite() {
-    if (_homeRootEntriesCodes?.contains(sectionId) ?? false) {
-      return HomeFavorite(sectionId);
+  HomeFavorite? _favorite(String code) {
+    if (_homeRootEntriesCodes?.contains(code) ?? false) {
+      return HomeFavorite(code);
     }
     return null;
   }
@@ -232,50 +225,83 @@ class _BrowseSection extends StatelessWidget {
   Widget _buildHeading(BuildContext context) {
     return Padding(padding: EdgeInsets.all(8.0), child:
       InkWell(onTap: () => _onTap(context), child:
-        Stack(alignment: AlignmentDirectional.center, children: [
-          Center(child: Styles().images.getImage('more-$sectionId') ?? Container()),
-          Text(_title, style: Styles().textStyles.getTextStyle("widget.title.large.extra_fat")),
-          Align(
-            alignment: AlignmentDirectional.bottomEnd,
-            child: Opacity(opacity: _isSectionFavorite ? 1 : 0, child:
+        Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Stack(alignment: Alignment.center, children: [
+              Styles().images.getImage('more-$sectionId') ?? Container(),
+              Text(_title, style: Styles().textStyles.getTextStyle("widget.title.large.extra_fat")),
+              // Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+              //   Expanded(child:
+              //     Padding(padding: EdgeInsets.only(bottom: 16), child:
+              //       Text(_description, style: Styles().textStyles.getTextStyle("widget.info.regular.thin"))
+              //     )
+              //   ),
+              // ],)
+            ],),
+            Opacity(opacity: _hasFavoriteContent ? 1 : 0, child:
               Semantics(label: 'Favorite' /* TBD: Localization */, button: true, child:
                 InkWell(onTap: () => _onTapSectionFavorite(context), child:
-                  FavoriteStarIcon(selected: _isSectionFavorite, style: FavoriteIconStyle.Button,)
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Styles().colors.black,
+                        border: Border.all(color: Styles().colors.fillColorSecondaryVariant),
+                        borderRadius: BorderRadius.circular(24.0)
+                    ),
+                    child: FavoriteStarIcon(selected: _isSectionFavorite, style: FavoriteIconStyle.Button, color: Styles().colors.fillColorSecondaryVariant,)
+                  ),
                 ),
               ),
             ),
-          ),
-          // Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          //   Expanded(child:
-          //     Padding(padding: EdgeInsets.only(bottom: 16), child:
-          //       Text(_description, style: Styles().textStyles.getTextStyle("widget.info.regular.thin"))
-          //     )
-          //   ),
-          // ],)
-        ],),
+          ]
+        ),
       ),
     );
   }
 
   String get _title => title(sectionId: sectionId);
-  String get _description => description(sectionId: sectionId);
+  // String get _description => description(sectionId: sectionId);
 
-  static String get appTitle => Localization().getStringEx('app.title', 'Illinois');
+  // static String get appTitle => Localization().getStringEx('app.title', 'Illinois');
 
   static String title({required String sectionId}) {
     return Localization().getString('panel.browse.section.$sectionId.title') ?? StringUtils.capitalize(sectionId, allWords: true, splitDelimiter: '_', joinDelimiter: ' ');
   }
 
-  static String description({required String sectionId}) {
-    return Localization().getString('panel.browse.section.$sectionId.description')?.replaceAll('{{app_title}}', appTitle) ?? '';
+  // static String description({required String sectionId}) {
+  //   return Localization().getString('panel.browse.section.$sectionId.description')?.replaceAll('{{app_title}}', appTitle) ?? '';
+  // }
+
+  List<String>? get _favoriteCodes => JsonUtils.listStringsValue(FlexUI()['browse.$sectionId']);
+
+  bool get _hasFavoriteContent {
+    for (String code in _favoriteCodes ?? []) {
+      HomeFavorite? entryFavorite = _favorite(code);
+      if (entryFavorite != null) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  bool get _isSectionFavorite => (_favorite() != null);
+  bool get _isSectionFavorite {
+    int favCount = 0, totalCount = 0;
+    for (String code in _favoriteCodes ?? []) {
+      HomeFavorite? entryFavorite = _favorite(code);
+      if (entryFavorite != null) {
+        totalCount++;
+        if (Auth2().prefs?.isFavorite(entryFavorite) ?? false) {
+          favCount++;
+        }
+      }
+    }
+    return 0 < totalCount && favCount == totalCount;
+  }
 
   void _onTapSectionFavorite(BuildContext context) {
     Analytics().logSelect(target: "Favorite: {${HomeFavorite.favoriteKeyName(category: sectionId)}}");
 
-    bool? isSectionFavorite = _isSectionFavorite;
+    bool isSectionFavorite = _isSectionFavorite;
     if (kReleaseMode) {
       promptSectionFavorite(context, isSectionFavorite: isSectionFavorite).then((bool? result) {
         if (result == true) {
@@ -288,17 +314,19 @@ class _BrowseSection extends StatelessWidget {
     }
   }
 
-  void _toggleSectionFavorite({bool? isSectionFavorite}) {
+  void _toggleSectionFavorite({required bool isSectionFavorite}) {
     List<Favorite> favorites = _sectionFavorites;
-    Auth2().prefs?.setListFavorite(favorites, isSectionFavorite != true);
-    HomeFavorite.log(favorites, isSectionFavorite != true);
+    Auth2().prefs?.setListFavorite(favorites, !isSectionFavorite);
+    HomeFavorite.log(favorites, !isSectionFavorite);
   }
 
   List<Favorite> get _sectionFavorites {
     List<Favorite> favorites = <Favorite>[];
 
-    if ((_homeRootEntriesCodes?.contains(sectionId) ?? false)) {
-      favorites.add(HomeFavorite(sectionId));
+    for (String favoriteCode in _favoriteCodes ?? []) {
+      if (_homeRootEntriesCodes?.contains(favoriteCode) ?? false) {
+        favorites.add(HomeFavorite(favoriteCode));
+      }
     }
 
     return favorites;
@@ -400,7 +428,9 @@ class _BrowseSection extends StatelessWidget {
 
   void _onTapMessagesDirectory(BuildContext context) {
     Analytics().logSelect(target: "Messages");
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => MessagesDirectoryPanel()));
+    //TODO: finish implementing MessagesDirectoryPanel
+    // Navigator.push(context, CupertinoPageRoute(builder: (context) => MessagesDirectoryPanel()));
+    MessagesHomePanel.present(context);
   }
 
   void _onTapWallet(BuildContext context) {

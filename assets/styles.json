@@ -1004,7 +1004,7 @@
     "caret-left": {"src": "images/caret-left.png", "type": "flutter.asset", "size": 10},
     "caret-right": {"src": "images/caret-right.png", "type": "flutter.asset", "size": 10},
     "edit-white": {"src": "0xf044", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20, "todo": "remove if not neefed"},
-    "star-white": {"src": "images/icon-star-white.png", "type": "flutter.asset", "color-todo": "iconLight", "size": 18, "todo": "color issue?"},
+    "star-white": {"src": "images/icon-star-white-frame-bold.png", "type": "flutter.asset", "color-todo": "iconLight", "size": 18, "todo": "color issue?"},
     "drag-white":  {"src": "0xf7a4", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
     "radio-white": {"src": "0xf58f", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
     "person-circle-header": {"src": "images/person-circle.png", "type": "flutter.asset", "color": "iconLight", "size": 18},

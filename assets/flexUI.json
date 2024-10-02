@@ -12,7 +12,11 @@
 			"home.connect": ["phone_or_email"],
 			"home.app_help": ["faqs", "feedback", "review"],
 
-			"browse": ["groups", "events", "surveys", "messages"],
+			"browse": ["groups", "messages", "surveys", "events"],
+			"browse.events": ["event_feed", "my_events"],
+			"browse.groups": ["all_groups", "my_groups"],
+			"browse.inbox": ["all_notifications", "unread_notifications"],
+			"browse.surveys": ["public_surveys"],
 
 			"settings": ["contact", "favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
