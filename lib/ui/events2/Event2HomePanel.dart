@@ -530,7 +530,7 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
                 _buildEventsContent(),
               )
             ),
-                RefreshIndicator(onRefresh: _onRefresh, child:
+            RefreshIndicator(onRefresh: _onRefresh, child:
               SingleChildScrollView(controller: _scrollController, physics: AlwaysScrollableScrollPhysics(), child:
                 _buildEventsContent(),
               )
@@ -542,20 +542,13 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
   }
 
   Widget _buildCommandBar() {
-    return Container(decoration: _commandBarDecoration, child:
-      Padding(padding: EdgeInsets.only(top: 8), child:
-        Column(children: [
-          _buildCommandButtons(),
-          _buildContentDescription(),
-        ],)
-      ),
+    return Padding(padding: EdgeInsets.only(top: 8), child:
+      Column(children: [
+        _buildCommandButtons(),
+        _buildContentDescription(),
+      ],)
     );
   }
-
-  Decoration get _commandBarDecoration => BoxDecoration(
-    color: Styles().colors.surface,
-    border: Border.all(color: Styles().colors.disabledTextColor, width: 1)
-  );
 
   Widget _buildCommandButtons() {
     return Row(children: [
@@ -566,6 +559,11 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
           leftIconKey: 'filters',
           rightIconKey: 'chevron-right',
           onTap: _onFilters,
+          contentDecoration: BoxDecoration(
+            color: Styles().colors.buttonColorVariarnt,
+            border: Border.all(color: Styles().colors.textDisabled, width: 1),
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
         _sortButton,
 
@@ -608,7 +606,12 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
           dropdownStyleData: DropdownStyleData(width: _sortDropdownWidth),
           customButton: Event2FilterCommandButton(
             title: Localization().getStringEx('panel.events2.home.bar.button.sort.title', 'Sort'),
-            leftIconKey: 'sort'
+            leftIconKey: 'sort',
+            contentDecoration: BoxDecoration(
+              color: Styles().colors.buttonColorVariarnt,
+              border: Border.all(color: Styles().colors.textDisabled, width: 1),
+              borderRadius: BorderRadius.circular(16),
+            ),
           ),
           isExpanded: false,
           items: _buildSortDropdownItems(),
@@ -667,8 +670,8 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
   }
 
   Widget _buildContentDescription() {
-    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.tiny.fat");
-    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.small.regular");
+    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat");
+    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
     List<InlineSpan> descriptionList = _currentFilterParam.buildDescription(boldStyle: boldStyle, regularStyle: regularStyle);
 
     if (descriptionList.isNotEmpty) {
@@ -699,41 +702,34 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
     if (descriptionList.isNotEmpty) {
       descriptionList.add(TextSpan(text: '.', style: regularStyle,),);
       return Padding(padding: EdgeInsets.only(top: 12), child:
-        Container(decoration: _contentDescriptionDecoration, child:
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Expanded(child:
-              Padding(padding: EdgeInsets.only(left: 12, top: 16, bottom: 16), child:
-                RichText(text: TextSpan(style: regularStyle, children: descriptionList)),
-              ),
+        Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Expanded(child:
+            Padding(padding: EdgeInsets.only(left: 12, top: 16, bottom: 16), child:
+              RichText(text: TextSpan(style: regularStyle, children: descriptionList)),
             ),
-            Visibility(visible: _canShareFilters, child:
-              Event2ImageCommandButton(Styles().images.getImage('share'),
-                label: Localization().getStringEx('panel.events2.home.bar.button.share.title', 'Share Event Set'),
-                hint: Localization().getStringEx('panel.events2.home.bar.button.share.hinr', 'Tap to share current event set'),
-                contentPadding: EdgeInsets.only(left: 16, right: _canClearFilters ? (8 + 2) : 16, top: 12, bottom: 12),
-                onTap: _onShareFilters
-              ),
+          ),
+          Visibility(visible: _canShareFilters, child:
+            Event2ImageCommandButton(Styles().images.getImage('share'),
+              label: Localization().getStringEx('panel.events2.home.bar.button.share.title', 'Share Event Set'),
+              hint: Localization().getStringEx('panel.events2.home.bar.button.share.hinr', 'Tap to share current event set'),
+              contentPadding: EdgeInsets.only(left: 16, right: _canClearFilters ? (8 + 2) : 16, top: 12, bottom: 12),
+              onTap: _onShareFilters
             ),
-            Visibility(visible: _canClearFilters, child:
-              Event2ImageCommandButton(Styles().images.getImage('close'), // size: 14
-                label: Localization().getStringEx('panel.events2.home.bar.button.clear.title', 'Clear Filters'),
-                hint: Localization().getStringEx('panel.events2.home.bar.button.clear.hinr', 'Tap to clear current filters'),
-                contentPadding: EdgeInsets.only(left: 8 + 2, right: 16 + 2, top: 12, bottom: 12),
-                onTap: _onClearFilters
-              ),
+          ),
+          Visibility(visible: _canClearFilters, child:
+            Event2ImageCommandButton(Styles().images.getImage('close'), // size: 14
+              label: Localization().getStringEx('panel.events2.home.bar.button.clear.title', 'Clear Filters'),
+              hint: Localization().getStringEx('panel.events2.home.bar.button.clear.hinr', 'Tap to clear current filters'),
+              contentPadding: EdgeInsets.only(left: 8 + 2, right: 16 + 2, top: 12, bottom: 12),
+              onTap: _onClearFilters
             ),
-          ],)
-      ));
+          ),
+        ],));
     }
     else {
       return Container(height: 12);
     }
   }
-
-  Decoration get _contentDescriptionDecoration => BoxDecoration(
-    color: Styles().colors.surface,
-    border: Border(top: BorderSide(color: Styles().colors.disabledTextColor, width: 1))
-  );
 
   Widget _buildEventsContent() {
     if (_loadingEvents || _loadingLocationServicesStatus) {

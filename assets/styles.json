@@ -13,6 +13,7 @@
     "fillColorSecondaryVariant"             :"#ebc03f",
     "textColorSecondaryVariant"             :"#FFFFFF",
     "gradientColorPrimary"                  :"#343537",
+    "buttonColorVariant"                    :"#F1EFE0",
 
     "surface"                               :"#F9F7F2",
     "surfaceAccent"                         :"#DADDE1",
@@ -527,6 +528,7 @@
     "widget.card.title.tiny.fat": { "font_family": "bold", "size": 14.0, "color": "textDark"},
     "widget.card.title.light.small": { "font_family": "regular", "size": 16.0, "color": "textLight"},
     "widget.card.title.light.regular.fat": { "font_family": "bold", "size": 18.0, "color": "textLight"},
+    "widget.card.title.light.tiny.fat": { "font_family": "bold", "size": 14.0, "color": "textLight"},
     "widget.card.detail.regular_variant": { "font_family": "regular", "size": 16.0, "color": "textBackgroundVariant"},
     "widget.card.detail.regular": { "font_family": "regular", "size": 16.0, "color": "textDark"},
     "widget.card.detail.regular.fat": { "font_family": "bold", "size": 16.0, "color": "textDark"},
