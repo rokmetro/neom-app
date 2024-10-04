@@ -89,44 +89,45 @@ class Event2HomePanel extends StatefulWidget {
         eventSelector: eventSelector,
       )));
     }
-    else if (Storage().events2Attributes != null) {
-      Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(eventSelector: eventSelector,)));
-    }
+    // else if (Storage().events2Attributes != null) {
+    //   Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(eventSelector: eventSelector,)));
+    // }
     else {
-      getLocationServicesStatus().then((LocationServicesStatus? status) {
-        Navigator.push(context, CupertinoPageRoute(builder: (context) => ContentAttributesPanel(
-          title: Localization().getStringEx('panel.events2.home.attributes.launch.header.title', 'Events'),
-          bgImageKey: 'event-filters-background',
-          descriptionBuilder: _buildOnboardingDescription,
-          sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'),
-          sectionDescriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
-          sectionRequiredMarkTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.extra_fat.highlight'),
-          applyBuilder: _buildOnboardingApply,
-          continueTitle: Localization().getStringEx('panel.events2.home.attributes.launch.continue.title', 'Set Up Later'),
-          continueTextStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.underline.highlight'),
-          contentAttributes: buildContentAttributesV1(status: status),
-          sortType: ContentAttributesSortType.native,
-          scope: Events2.contentAttributesScope,
-          filtersMode: true,
-        ))).then((result) {
-          Map<String, dynamic>? selection = JsonUtils.mapValue(result);
-          if (selection != null) {
-            
-            List<Event2TypeFilter>? typesList = event2TypeFilterListFromSelection(selection[eventTypeContentAttributeId]);
-            Storage().events2Types = event2TypeFilterListToStringList(typesList) ;
-
-            Map<String, dynamic> attributes = Map<String, dynamic>.from(selection);
-            attributes.remove(eventTypeContentAttributeId);
-            Storage().events2Attributes = attributes;
-
-            Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(
-              types: (typesList != null) ? LinkedHashSet<Event2TypeFilter>.from(typesList) : null,
-              attributes: attributes,
-              eventSelector: eventSelector,
-            )));
-          }
-        });
-      });
+      // getLocationServicesStatus().then((LocationServicesStatus? status) {
+      //   Navigator.push(context, CupertinoPageRoute(builder: (context) => ContentAttributesPanel(
+      //     title: Localization().getStringEx('panel.events2.home.attributes.launch.header.title', 'Events'),
+      //     bgImageKey: 'event-filters-background',
+      //     descriptionBuilder: _buildOnboardingDescription,
+      //     sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'),
+      //     sectionDescriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
+      //     sectionRequiredMarkTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.extra_fat.highlight'),
+      //     applyBuilder: _buildOnboardingApply,
+      //     continueTitle: Localization().getStringEx('panel.events2.home.attributes.launch.continue.title', 'Set Up Later'),
+      //     continueTextStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.underline.highlight'),
+      //     contentAttributes: buildContentAttributesV1(status: status),
+      //     sortType: ContentAttributesSortType.native,
+      //     scope: Events2.contentAttributesScope,
+      //     filtersMode: true,
+      //   ))).then((result) {
+      //     Map<String, dynamic>? selection = JsonUtils.mapValue(result);
+      //     if (selection != null) {
+      //
+      //       List<Event2TypeFilter>? typesList = event2TypeFilterListFromSelection(selection[eventTypeContentAttributeId]);
+      //       Storage().events2Types = event2TypeFilterListToStringList(typesList) ;
+      //
+      //       Map<String, dynamic> attributes = Map<String, dynamic>.from(selection);
+      //       attributes.remove(eventTypeContentAttributeId);
+      //       Storage().events2Attributes = attributes;
+      //
+      //       Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(
+      //         types: (typesList != null) ? LinkedHashSet<Event2TypeFilter>.from(typesList) : null,
+      //         attributes: attributes,
+      //         eventSelector: eventSelector,
+      //       )));
+      //     }
+      //   });
+      // });
+      Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(eventSelector: eventSelector,)));
     }
   }
 
