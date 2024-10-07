@@ -9,9 +9,9 @@
     "fillColorPrimaryVariant"               :"#1D1F22",
     "fillColorSecondary"                    :"#D29E01",
     "fillColorSecondaryTransparent05"       :"#80D29E01",
-    "textColorSecondary"                    :"#FFFFFF",
+    "textColorSecondary"                    :"#D29E01",
     "fillColorSecondaryVariant"             :"#ebc03f",
-    "textColorSecondaryVariant"             :"#FFFFFF",
+    "textColorSecondaryVariant"             :"#ebc03f",
     "gradientColorPrimary"                  :"#343537",
     "buttonColorVariant"                    :"#F1EFE0",
 
@@ -529,6 +529,7 @@
     "widget.card.title.light.small": { "font_family": "regular", "size": 16.0, "color": "textLight"},
     "widget.card.title.light.regular.fat": { "font_family": "bold", "size": 18.0, "color": "textLight"},
     "widget.card.title.light.tiny.fat": { "font_family": "bold", "size": 14.0, "color": "textLight"},
+    "widget.card.title.light.tiny.fat.variant": { "font_family": "bold", "size": 14.0, "color": "textColorSecondaryVariant"},
     "widget.card.detail.regular_variant": { "font_family": "regular", "size": 16.0, "color": "textBackgroundVariant"},
     "widget.card.detail.regular": { "font_family": "regular", "size": 16.0, "color": "textDark"},
     "widget.card.detail.regular.fat": { "font_family": "bold", "size": 16.0, "color": "textDark"},
@@ -556,6 +557,8 @@
     "widget.athletics.title.large.variant":  {"font_family": "medium", "size": 20.0, "color": "whiteTransparent06"},
     "widget.athletics.heading.regular.variant":  {"font_family": "medium", "size": 16.0, "color": "whiteTransparent06"},
     "widget.athletics.heading.regular.fat.variant":  {"font_family": "bold", "size": 16.0, "color": "whiteTransparent06"},
+
+    "widget.event.card.title.medium.fat": {"extends":  "widget.card.title.medium.fat", "height": 1.20, "letter_spacing": 1.0},
 
     "widget.group.card.poll.title": { "font_family": "extra_bold", "size": 20.0, "color": "textDark", "height":  1.2},
     "widget.group.card.poll.option": {"extends": "widget.card.detail.regular", "height":  1.25,  "weight" :  "w500"},

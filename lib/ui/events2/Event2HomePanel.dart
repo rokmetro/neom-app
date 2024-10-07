@@ -557,7 +557,9 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
         Event2FilterCommandButton(
           title: Localization().getStringEx('panel.events2.home.bar.button.filter.title', 'Filter'),
           leftIconKey: 'filters',
-          rightIconKey: 'chevron-right',
+          rightIconKey: 'caret-right',
+          rightIconColor: Styles().colors.textDark,
+          rightIconPadding: const EdgeInsets.only(left: 8, right: 2),
           onTap: _onFilters,
           contentDecoration: BoxDecoration(
             color: Styles().colors.buttonColorVariarnt,
@@ -671,11 +673,12 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
 
   Widget _buildContentDescription() {
     TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat");
+    TextStyle? boldStyleVariant = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat.variant");
     TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
     List<InlineSpan> descriptionList = _currentFilterParam.buildDescription(boldStyle: boldStyle, regularStyle: regularStyle);
 
     if (descriptionList.isNotEmpty) {
-      descriptionList.insert(0, TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.filter.label.title', 'Filter: ') , style: boldStyle,));
+      descriptionList.insert(0, TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.filter.label.title', 'Filter: ') , style: boldStyleVariant,));
     }
 
     if ((1 < (_events?.length ?? 0)) || _loadingEvents || _refreshingEvents) {
@@ -685,7 +688,7 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
           descriptionList.add(TextSpan(text: '; ', style: regularStyle,),);
         }
 
-        descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.sort.label.title', 'Sort: ') , style: boldStyle,));
+        descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.sort.label.title', 'Sort: ') , style: boldStyleVariant,));
         descriptionList.add(TextSpan(text: sortStatus, style: regularStyle,),);
       }
     }
@@ -695,7 +698,7 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
         descriptionList.add(TextSpan(text: '; ', style: regularStyle,),);
       }
 
-      descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.events.label.title', 'Events: ') , style: boldStyle,));
+      descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.events.label.title', 'Events: ') , style: boldStyleVariant,));
       descriptionList.add(TextSpan(text: _totalEventsCount?.toString(), style: regularStyle,),);
     }
 
