@@ -20,6 +20,7 @@
     "surfaceAccentTransparent15"            :"#26DADDE1",
     "background"                            :"#161719",
     "backgroundVariant"                     :"#1D1F22",
+    "backgroundAccent"                      :"#525252",
 
     "textSurface"                           :"#FFFFFF",
     "textSurfaceTransparent15"              :"#26FFFFFF",
@@ -279,6 +280,7 @@
     "widget.title.light.extra_large": { "font_family": "regular", "size": 24.0, "color": "textColorPrimary"},
     "widget.title.light.medium_large.extra_fat": {"font_family": "extra_bold", "size": 22.0, "color": "textColorPrimary"},
     "widget.title.light.large.extra_fat": { "font_family": "extra_bold", "size": 20.0, "color": "textColorPrimary"},
+    "widget.title.light.large.extra_fat.variant": { "font_family": "extra_bold", "size": 20.0, "color": "textColorSecondaryVariant"},
     "widget.title.light.large.fat": { "font_family": "bold", "size": 20.0, "color": "textColorPrimary"},
     "widget.title.light.large": { "font_family": "regular", "size": 20.0, "color": "textColorPrimary"},
     "widget.title.light.medium.fat": {"font_family": "bold", "size": 18.0, "color": "textColorPrimary"},
@@ -1003,7 +1005,7 @@
     "plus-circle-large": {"src": "images/button-plus-orange.png", "type": "flutter.asset", "color": "fillColorSecondary", "size": 34},
 
     "close-circle": {"src": "0xf057", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 24},
-    "close-circle-white": {"src": "0xf057", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 24},
+    "close-circle-white": {"src": "0xf057", "type": "fa.icon", "weight": "regular", "color": "iconLight", "size": 24},
     "close-circle-white-large": {"src": "0xf057", "type": "fa.icon", "weight": "light", "color": "iconLight", "size": 40},
     "more-white": {"src": "images/groups-more-inactive.png", "type": "flutter.asset", "color": "iconLight", "size": 24},
     "circle-outline-white": {"src": "images/oval-orange.png", "type": "flutter.asset", "color": "iconLight", "size": 24},
@@ -1018,6 +1020,7 @@
     "caret-right": {"src": "images/caret-right.png", "type": "flutter.asset", "size": 10},
     "edit-white": {"src": "0xf044", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20, "todo": "remove if not neefed"},
     "drag-white":  {"src": "0xf7a4", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
+    "drag-secondary":  {"src": "0xf7a4", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondaryVariant", "size": 20},
     "radio-white": {"src": "0xf58f", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
     "person-circle-header": {"src": "images/person-circle.png", "type": "flutter.asset", "color": "iconLight", "size": 18},
     "plus-circle-white": {"src": "images/icons-control-add-small-white.png", "type": "flutter.asset", "color": "iconLight", "size": 18},

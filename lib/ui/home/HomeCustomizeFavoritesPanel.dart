@@ -96,23 +96,22 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
   Widget build(BuildContext context) {
 
     return Column(children: [
-      Container(color: Styles().colors.gradientColorPrimary, child:
+      Container(color: Styles().colors.backgroundAccent, child:
         Row(children: [
           Expanded(child:
               Padding(padding: EdgeInsets.only(left: 16), child:
-                Text(Localization().getStringEx('panel.home.header.editing.title', 'Customize'), style: Styles().textStyles.getTextStyle("widget.label.medium.fat"))
+                Text(Localization().getStringEx('panel.home.header.editing.title', 'CUSTOMIZE'), style: Styles().textStyles.getTextStyle("widget.title.light.large.fat"))
               )
           ),
           Semantics(label: Localization().getStringEx('dialog.close.title', 'Close'), hint: Localization().getStringEx('dialog.close.hint', ''), inMutuallyExclusiveGroup: true, button: true, child:
             InkWell(onTap : _onTapClose, child:
               Container(padding: EdgeInsets.only(left: 8, right: 16, top: 16, bottom: 16), child:
-                Styles().images.getImage('close-circle', excludeFromSemantics: true),
+                Styles().images.getImage('close-circle-white', excludeFromSemantics: true),
               ),
             ),
           ),
         ],),
       ),
-      Container(color: Styles().colors.surfaceAccent, height: 1,),
       Expanded(child:
         RefreshIndicator(onRefresh: _onPullToRefresh, child:
           Listener(onPointerMove: _onPointerMove, onPointerUp: (_) => _onPointerCancel, onPointerCancel: (_) => _onPointerCancel, child:
@@ -136,14 +135,16 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
 
     if (homeFavorites != null) {
 
-      widgets.add(_buildEditingHeader(
-        favoriteId: _favoritesHeaderId, dropAnchorAlignment: CrossAxisAlignment.end,
-        title: Localization().getStringEx('panel.home.edit.favorites.header.title', 'Current Favorites'),
-        linkButtonTitle: Localization().getStringEx('panel.home.edit.favorites.unstar.link.button', 'Unstar All'),
-        onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites.toList()) : null,
-        description: Localization().getStringEx('panel.home.edit.favorites.header.description', 'Tap, <b>hold</b>, and drag an item to reorder your favorites. To remove an item from Favorites, tap the star.'),
-      ));
-       
+      if (homeFavorites.isNotEmpty) {
+        widgets.add(_buildEditingHeader(
+          favoriteId: _favoritesHeaderId, dropAnchorAlignment: CrossAxisAlignment.end,
+          title: Localization().getStringEx('panel.home.edit.favorites.header.title', 'CURRENT FAVORITES'),
+          linkButtonTitle: Localization().getStringEx('panel.home.edit.favorites.unstar.link.button', 'Unstar All'),
+          onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites.toList()) : null,
+          description: Localization().getStringEx('panel.home.edit.favorites.header.description', 'Tap, <b>hold</b>, and drag an item to reorder your favorites. To remove an item from Favorites, tap the star.'),
+        ));
+      }
+
       int position = 0;
       for (String code in List<String>.from(homeFavorites).reversed) {
         if (_availableCodes?.contains(code) ?? false) {
@@ -176,14 +177,18 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
         return title1.compareTo(title2);
       });
 
-
-      widgets.add(_buildEditingHeader(
-        favoriteId: _unfavoritesHeaderId, dropAnchorAlignment: null,
-        title: Localization().getStringEx('panel.home.edit.unused.header.title', 'Other Items to Favorite'),
-        linkButtonTitle: Localization().getStringEx('panel.home.edit.unused.star.link.button', 'Star All'),
-        onTapLinkButton: CollectionUtils.isNotEmpty(unusedList) ? () => _onTapStarAll(unusedList) : null,
-        description: Localization().getStringEx('panel.home.edit.unused.header.description', 'Tap the star to add any below items to Favorites.'),
-      ));
+      if (unusedList.isNotEmpty){
+        widgets.add(Padding(
+          padding: EdgeInsets.only(top: (homeFavorites?.isNotEmpty ?? false) ? 16.0 : 0.0),
+          child: _buildEditingHeader(
+            favoriteId: _unfavoritesHeaderId, dropAnchorAlignment: null,
+            title: Localization().getStringEx('panel.home.edit.unused.header.title', 'OTHER ITEMS TO FAVORITE'),
+            linkButtonTitle: Localization().getStringEx('panel.home.edit.unused.star.link.button', 'Star All'),
+            onTapLinkButton: CollectionUtils.isNotEmpty(unusedList) ? () => _onTapStarAll(unusedList) : null,
+            description: Localization().getStringEx('panel.home.edit.unused.header.description', 'Tap the star to add any below items to Favorites.'),
+          ),
+        ));
+      }
 
       int position = 0;
       for (Map<String, dynamic> entry in unusedList) {
@@ -207,7 +212,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
           Container(height: 2, color: ((dropTarget == true) && (dropAnchorAlignment == CrossAxisAlignment.start)) ? Styles().colors.fillColorSecondary : Colors.transparent,),
           Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child:
-              Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.medium_large.extra_fat")),
+              Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.large.extra_fat.variant")),
             ),
             Expanded(child: Container()),
             Visibility(visible: (onTapLinkButton != null), child: InkWell(onTap: onTapLinkButton, child: 
@@ -398,7 +403,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
             Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
               Padding(padding: EdgeInsets.symmetric(horizontal: 16), child:
                 Text(Localization().getStringEx('panel.home.edit.favorites.confirmation.dialog.msg', 'Are you sure you want to REMOVE all items from your favorites? Items can always be added back later.'), textAlign: TextAlign.center, style:
-                  Styles().textStyles.getTextStyle("widget.detail.small")
+                  Styles().textStyles.getTextStyle("widget.detail.dark.small")
                 )
               ),
               Padding(padding: EdgeInsets.only(top: 40), child:
