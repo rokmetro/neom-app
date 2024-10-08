@@ -5,8 +5,7 @@
 			"tabbar.default": "favorites",
 
 			"home": [
-				"all_groups", "my_groups", "event_feed", "my_events",
-				"all_notifications", "unread_notifications", "public_surveys"
+				"all_groups", "my_groups", "event_feed", "my_events", "public_surveys"
 			],
 			"home.system": ["tout", "connect"],
 			"home.connect": ["phone_or_email"],
@@ -15,7 +14,6 @@
 			"browse": ["groups", "messages", "surveys", "events"],
 			"browse.events": ["event_feed", "my_events"],
 			"browse.groups": ["all_groups", "my_groups"],
-			"browse.inbox": ["all_notifications", "unread_notifications"],
 			"browse.surveys": ["public_surveys"],
 
 			"settings": ["contact", "favorites", "notifications"],

@@ -291,6 +291,7 @@
     "widget.title.light.small": {"font_family": "medium", "size": 14.0, "color": "textColorPrimary"},
     "widget.title.light.small.fat": {"font_family": "bold", "size": 14.0, "color": "textColorPrimary"},
     "widget.title.light.small.fat.spaced": {"font_family": "bold", "size": 14.0, "color": "textColorPrimary", "letter_spacing": 1.0},
+    "widget.title.light.little": {"font_family": "medium", "size": 12.0, "color": "textColorPrimary"},
     "widget.title.light.little.fat": {"font_family": "bold", "size": 12.0, "color": "textColorPrimary"},
     "widget.title.light.tiny": {"font_family": "medium", "size": 10.0, "color": "textColorPrimary"},
     "widget.title.variant.regular.fat": {"font_family": "bold", "size": 16.0, "color": "fillColorSecondaryVariant"},
@@ -1019,6 +1020,7 @@
     "caret-left": {"src": "images/caret-left.png", "type": "flutter.asset", "size": 10},
     "caret-right": {"src": "images/caret-right.png", "type": "flutter.asset", "size": 10},
     "edit-white": {"src": "0xf044", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20, "todo": "remove if not neefed"},
+    "edit-secondary": {"src": "0xf044", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondaryVariant", "size": 20, "todo": "remove if not neefed"},
     "drag-white":  {"src": "0xf7a4", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
     "drag-secondary":  {"src": "0xf7a4", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondaryVariant", "size": 20},
     "radio-white": {"src": "0xf58f", "type": "fa.icon", "weight": "solid", "color": "iconLight", "size": 20},
@@ -1132,6 +1134,12 @@
     "header-questionnaire": {"src": "images/questionnaire-header.png", "type": "flutter.asset"},
     "header-privacy": {"src": "images/privacy-header.png", "type": "flutter.asset"},
     "header-notifications": {"src": "images/allow-notifications-header.png", "type": "flutter.asset"},
+
+    "banner-messages": {"src": "images/banner-messages.png", "type": "flutter.asset"},
+    "banner-groups": {"src": "images/banner-groups.png", "type": "flutter.asset"},
+    "banner-events": {"src": "images/banner-events.png", "type": "flutter.asset"},
+    "banner-surveys": {"src": "images/banner-surveys.png", "type": "flutter.asset"},
+    "banner-polls": {"src": "images/banner-polls.png", "type": "flutter.asset"},
 
     "browse-events": {"src": "images/icon-browse-events.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
     "browse-dining": {"src": "images/icon-browse-dinings.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},

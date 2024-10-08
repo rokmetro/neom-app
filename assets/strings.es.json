@@ -3557,7 +3557,7 @@
     "widget.home.recent_items.button.clear_all.hint":"Tap to clear all items",
     "widget.home.recent_items.prompt.clear_all.text":"Are you sure you want to CLEAR your browsing history>",
 
-    "widget.home.public_surveys.label.header.title":"Surveys",
+    "widget.home.public_surveys.label.header.title":"SURVEYS",
     "widget.home.public_surveys.label.description.failed": "Failed to load surveys.",
     "widget.home.public_surveys.label.description.offline": "Surveys are not available while offline",
     "widget.home.public_surveys.label.description.empty": "There are no available surveys at the moment.",
