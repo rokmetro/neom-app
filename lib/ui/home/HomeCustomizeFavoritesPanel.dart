@@ -131,28 +131,31 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
   List<Widget> _buildContentList() {
     List<Widget> widgets = [];
 
+    Set<String> homeSections = {};
     LinkedHashSet<String>? homeFavorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
-
     if (homeFavorites != null) {
-
-      if (homeFavorites.isNotEmpty) {
-        widgets.add(_buildEditingHeader(
-          favoriteId: _favoritesHeaderId, dropAnchorAlignment: CrossAxisAlignment.end,
-          title: Localization().getStringEx('panel.home.edit.favorites.header.title', 'CURRENT FAVORITES'),
-          linkButtonTitle: Localization().getStringEx('panel.home.edit.favorites.unstar.link.button', 'Unstar All'),
-          onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites.toList()) : null,
-          description: Localization().getStringEx('panel.home.edit.favorites.header.description', 'Tap, <b>hold</b>, and drag an item to reorder your favorites. To remove an item from Favorites, tap the star.'),
-        ));
+      for (String code in homeFavorites) {
+        homeSections.add(HomePanel.sectionFromCode(code));
       }
+    }
 
-      int position = 0;
-      for (String code in List<String>.from(homeFavorites).reversed) {
-        if (_availableCodes?.contains(code) ?? false) {
-          dynamic widget = HomePanel.dataFromCode(code, handle: true, position: position, globalKeys: _handleKeys, dragAndDropHost: this);
-          if (widget is Widget) {
-            widgets.add(widget);
-            position++;
-          }
+    if (homeSections.isNotEmpty) {
+      widgets.add(_buildEditingHeader(
+        favoriteId: _favoritesHeaderId, dropAnchorAlignment: CrossAxisAlignment.end,
+        title: Localization().getStringEx('panel.home.edit.favorites.header.title', 'CURRENT FAVORITES'),
+        linkButtonTitle: Localization().getStringEx('panel.home.edit.favorites.unstar.link.button', 'Unstar All'),
+        onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites!.toList()) : null,
+        description: Localization().getStringEx('panel.home.edit.favorites.header.description', 'Tap, <b>hold</b>, and drag an item to reorder your favorites. To remove an item from Favorites, tap the star.'),
+      ));
+    }
+
+    int position = 0;
+    for (String code in List<String>.from(homeSections).reversed) {
+      if (_availableCodes?.contains(code) ?? false) {
+        dynamic widget = HomePanel.dataFromCode(code, handle: true, position: position, globalKeys: _handleKeys, dragAndDropHost: this);
+        if (widget is Widget) {
+          widgets.add(widget);
+          position++;
         }
       }
     }
@@ -163,7 +166,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
       List<Map<String, dynamic>> unusedList = <Map<String, dynamic>>[];
 
       for (String code in fullContent) {
-        if ((_availableCodes?.contains(code) ?? false) && !(homeFavorites?.contains(code) ?? false)) {
+        if ((_availableCodes?.contains(code) ?? false) && !homeSections.contains(code)) {
           dynamic title = HomePanel.dataFromCode(code, title: true);
           if (title is String) {
             unusedList.add({'title' : title, 'code': code});
@@ -179,7 +182,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
 
       if (unusedList.isNotEmpty){
         widgets.add(Padding(
-          padding: EdgeInsets.only(top: (homeFavorites?.isNotEmpty ?? false) ? 16.0 : 0.0),
+          padding: EdgeInsets.only(top: homeSections.isNotEmpty ? 16.0 : 0.0),
           child: _buildEditingHeader(
             favoriteId: _unfavoritesHeaderId, dropAnchorAlignment: null,
             title: Localization().getStringEx('panel.home.edit.unused.header.title', 'OTHER ITEMS TO FAVORITE'),
@@ -314,13 +317,13 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
       }
       else if (event.position.dy > bottomY - detectedRange) {
         // scroll down
-        double scrollOffet = (min(event.position.dy, bottomY) - bottomY + detectedRange) / detectedRange * maxScrollDistance;
-        _scrollDown(scrollOffet);
+        double scrollOffset = (min(event.position.dy, bottomY) - bottomY + detectedRange) / detectedRange * maxScrollDistance;
+        _scrollDown(scrollOffset);
 
         if (_scrollTimer != null) {
           _scrollTimer?.cancel();
         }
-        _scrollTimer = Timer.periodic(Duration(milliseconds: 100), (time) => _scrollDown(scrollOffet));
+        _scrollTimer = Timer.periodic(Duration(milliseconds: 100), (time) => _scrollDown(scrollOffset));
       }
       else {
         _cancelScrollTimer();
@@ -334,7 +337,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
     if (fullContent != null) {
       for (String code in fullContent) {
         if (_isCodeAvailable(code)) {
-          availableCodes.add(code);
+          availableCodes.add(HomePanel.sectionFromCode(code));
         }
       }
     }
@@ -343,7 +346,7 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
 
   bool _isCodeAvailable(String code) {
     dynamic codeContent = FlexUI()['home.$code'];
-    return !(codeContent is Iterable) || (0 < codeContent.length);
+    return codeContent is! Iterable || (0 < codeContent.length);
   }
 
   void _updateAvailableCodes() {

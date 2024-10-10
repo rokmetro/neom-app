@@ -158,22 +158,13 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
         return HomeCampusRemindersWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
     }
-    else if (code == 'event_feed') {
+    else if (code == 'events') {
       if (title) {
-        return HomeEvent2FeedWidget.title;
+        return HomeEvent2SectionWidget.title;
       } else if (handle) {
-        return HomeEvent2FeedWidget.handle(key: _globalKey(globalKeys, code), favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
+        return HomeEvent2SectionWidget.handle(key: _globalKey(globalKeys, code), favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
       } else {
-        return HomeEvent2FeedWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
-      }
-    }
-    else if (code == 'my_events') {
-      if (title) {
-        return HomeMyEvents2Widget.title;
-      } else if (handle) {
-        return HomeMyEvents2Widget.handle(key: _globalKey(globalKeys, code), favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
-      } else {
-        return HomeMyEvents2Widget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController);
+        return HomeEvent2SectionWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
     }
     else if (code == 'recent_items') {
@@ -185,7 +176,7 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
         return HomeRecentItemsWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
     }
-    else if (code == 'public_surveys') {
+    else if (code == 'surveys') {
       if (title) {
         return HomePublicSurveysWidget.title;
       } else if (handle) {
@@ -302,7 +293,7 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
         return HomeLaundryWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
     }
-    else if (code == 'my_groups') {
+    else if (code == 'groups') {
       if (title) {
         return HomeGroupsWidget.title(contentType: GroupsContentType.my);
       } else if (handle) {
@@ -310,15 +301,15 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
       } else {
         return HomeGroupsWidget(key: _globalKey(globalKeys, code), contentType: GroupsContentType.my, favoriteId: code, updateController: updateController,);
       }
-    }
-    else if (code == 'all_groups') {
-      if (title) {
-        return HomeGroupsWidget.titleForContentType(GroupsContentType.all);
-      } else if (handle) {
-        return HomeGroupsWidget.handle(contentType: GroupsContentType.all, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
-      } else {
-        return HomeGroupsWidget(key: _globalKey(globalKeys, code), contentType: GroupsContentType.all, favoriteId: code, updateController: updateController,);
-      }
+
+      //TODO
+      // if (title) {
+      //   return HomeGroupsWidget.titleForContentType(GroupsContentType.all);
+      // } else if (handle) {
+      //   return HomeGroupsWidget.handle(contentType: GroupsContentType.all, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
+      // } else {
+      //   return HomeGroupsWidget(key: _globalKey(globalKeys, code), contentType: GroupsContentType.all, favoriteId: code, updateController: updateController,);
+      // }
     }
     else if (code == 'my_research_projects') {
       if (title) {
@@ -428,7 +419,7 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
         return HomeRadioWidget(RadioStation.wpgufm, key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
     }
-    else if (code == 'all_notifications') {
+    else if (code == 'inbox') {
       if (title) {
         return HomeInboxWidget.title(content: HomeInboxContent.all);
       } else if (handle) {
@@ -436,15 +427,15 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
       } else {
         return HomeInboxWidget(key: _globalKey(globalKeys, code), content: HomeInboxContent.all, favoriteId: code, updateController: updateController,);
       }
-    }
-    else if (code == 'unread_notifications') {
-      if (title) {
-        return HomeInboxWidget.title(content: HomeInboxContent.unread);
-      } else if (handle) {
-        return HomeInboxWidget.handle(key: _globalKey(globalKeys, code), content: HomeInboxContent.unread, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
-      } else {
-        return HomeInboxWidget(key: _globalKey(globalKeys, code), content: HomeInboxContent.unread, favoriteId: code, updateController: updateController,);
-      }
+
+      //TODO
+      // if (title) {
+      //   return HomeInboxWidget.title(content: HomeInboxContent.unread);
+      // } else if (handle) {
+      //   return HomeInboxWidget.handle(key: _globalKey(globalKeys, code), content: HomeInboxContent.unread, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
+      // } else {
+      //   return HomeInboxWidget(key: _globalKey(globalKeys, code), content: HomeInboxContent.unread, favoriteId: code, updateController: updateController,);
+      // }
     }
     else if (code == 'app_help') {
       if (title) {
@@ -596,6 +587,11 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
     else {
       return (handle || title) ? null : FlexContent(contentKey: code, key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController);
     }
+  }
+
+  static String sectionFromCode(String code) {
+    List<String>? homeSections = JsonUtils.listStringsValue(FlexUI()['home.$code']);
+    return homeSections?.isNotEmpty ?? false ? homeSections!.first : code;
   }
 
   static Key? _globalKey(Map<String, GlobalKey>? globalKeys, String code) => (globalKeys != null) ? (globalKeys[code] ??= GlobalKey()) : null;
