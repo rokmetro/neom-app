@@ -3564,13 +3564,15 @@
     "widget.home.suggested_events.button.all.title":"View All",
     "widget.home.suggested_events.button.all.hint":"Tap to view all events",
 
-    "widget.home.event2_feed.label.header.title":"All Events",
+    "widget.home.events.label.header.title": "EVENTS",
+
+    "widget.home.event2_feed.label.header.title":"ALL EVENTS",
     "widget.home.event2_feed.text.empty.description": "There are no events available.",
     "widget.home.event2_feed.text.offline.description": "Events are not available while offline.",
     "widget.home.event2_feed.button.all.title": "View All",
     "widget.home.event2_feed.button.all.hint": "Tap to view all events",
 
-    "widget.home.my_events2.label.header.title":"My Events",
+    "widget.home.my_events2.label.header.title":"MY EVENTS",
     "widget.home.my_events2.text.empty.description": "Tap the \u2606 on items in <a href='{{local_url}}'><b>Events</b></a> for quick access here.",
 
     "widget.home.recent_items.label.header.title":"Recently Viewed",
@@ -3591,8 +3593,10 @@
     "widget.home.public_surveys.button.all.title":"View All",
     "widget.home.public_surveys.button.all.hint":"Tap to view all surveys",
 
-    "widget.home.groups.my.label.header.title":"My Groups",
-    "widget.home.groups.all.label.header.title":"All Groups",
+    "widget.home.groups.label.header.title":"GROUPS",
+
+    "widget.home.groups.my.label.header.title":"MY GROUPS",
+    "widget.home.groups.all.label.header.title":"ALL GROUPS",
     "widget.home.groups.my.text.empty.description": "You have not created any groups yet.",
     "widget.home.groups.all.text.empty.description": "Failed to load groups.",
     "widget.home.groups.button.all.title":"View All",
@@ -3618,6 +3622,8 @@
     "widget.home.campus_guide_highlights.text.empty.description": "Tap the \u2606 on items in <a href='{{local_url}}'><b>Campus Guide Highlights</b></a> for quick access here.",
     "widget.home.campus_guide_highlights.button.all.title": "View All",
     "widget.home.campus_guide_highlights.button.all.hint": "Tap to view all highlights",
+
+    "widget.home.messages.label.header.title": "MESSAGES",
 
     "widget.home.safety.safewalk_request.title": "SafeWalks",
     "widget.home.safety.safewalk_request.info": "To request a student patrol officer to walk with you between {{safewalk_start_time}} and {{safewalk_end_time}}, call <a href='tel:{{safewalk_phone_number}}'>{{safewalk_phone_number}}</a> or enter your information bellow.",
@@ -3702,6 +3708,8 @@
     "widget.home.recent_polls.text.logged_out": "Recent Polls are not available while not signed in.",
     "widget.home.recent_polls.button.all.title": "View All",
     "widget.home.recent_polls.button.all.hint": "Tap to view all polls",
+
+    "widget.home.inbox.text.title": "NOTIFICATIONS",
 
     "widget.home.inbox.text.all.title": "All Notifications",
     "widget.home.inbox.text.unread.title": "Unread Notifications",

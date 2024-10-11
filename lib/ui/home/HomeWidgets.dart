@@ -374,12 +374,52 @@ class HomeBannerWidget extends StatelessWidget {
             Stack(alignment: bannerTitleAlignment, children: <Widget>[
               Container(width: MediaQuery.of(context).size.width, child: Styles().images.getImage(bannerImageKey, excludeFromSemantics: true)),
               Semantics(label: title, header: true, excludeSemantics: true, child:
-                Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.large.fat"))
+                Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.large.fat.spaced"))
               ),
             ]),
             if (favoriteId != null)
               HomeFavoriteButton(favorite: HomeFavorite(favoriteId), style: FavoriteIconStyle.SlantHeader, prompt: true),
           ],),
+        ),
+      ),
+
+      // Content
+      Padding(padding: childPadding, child:
+        child ?? Container()
+      )
+    ],);
+  }
+}
+
+////////////////////////////
+// HomeBannerSubsectionWidget
+
+class HomeBannerSubsectionWidget extends StatelessWidget {
+  static const EdgeInsetsGeometry defaultChildPadding = const EdgeInsets.only(left: 16, right: 16, bottom: 16);
+
+  final String? title;
+  final CrossAxisAlignment alignment;
+
+  final Widget? child;
+  final EdgeInsetsGeometry childPadding;
+
+  const HomeBannerSubsectionWidget({Key? key,
+    this.title,
+    this.alignment = CrossAxisAlignment.start,
+
+    this.child,
+    this.childPadding = EdgeInsets.zero,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Column(crossAxisAlignment: alignment, children: [
+
+      // Title Row
+      Padding(padding: const EdgeInsets.only(bottom: 8.0, left: 16.0), child:
+        Semantics(label: title, header: true, excludeSemantics: true, child:
+          Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.large.fat.variant.spaced"))
         ),
       ),
 
@@ -424,7 +464,7 @@ class HomeFavoriteButton extends FavoriteButton {
     if (availableSectionFavorites != null) {
       int favCount = 0, unfavCount = 0;
       for (String code in availableSectionFavorites) {
-        if (Auth2().prefs?.isFavorite(HomeFavorite(code, category: favorite?.id)) ?? false) {
+        if (Auth2().prefs?.isFavorite(HomeFavorite(code, category: favorite?.category)) ?? false) {
           favCount++;
         }
         else {
@@ -478,7 +518,7 @@ class HomeFavoriteButton extends FavoriteButton {
         if (availableSectionFavorites != null) {
           List<Favorite> favorites = <Favorite>[favorite!];
           for(String sectionEntry in availableSectionFavorites) {
-            favorites.add(HomeFavorite(sectionEntry, category: favorite?.id));
+            favorites.add(HomeFavorite(sectionEntry, category: favorite?.category));
           }
           Auth2().prefs?.setListFavorite(favorites, value);
           HomeFavorite.log(favorites, value);

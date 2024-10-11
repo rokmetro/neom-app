@@ -212,7 +212,7 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
     }
   }
 
-  GlobalKey _widgetKey(String code) => _widgetKeys[code] ??= GlobalKey();
+  GlobalKey _widgetKey(String code) => _widgetKeys[HomePanel.sectionFromCode(code)] ??= GlobalKey();
 
   void _updateContentCodes() {
     Set<String>? availableCodes = _getAvailableHomeSections(JsonUtils.setStringsValue(FlexUI()['home']));

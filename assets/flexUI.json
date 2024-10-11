@@ -10,6 +10,11 @@
 			"home.system": ["tout", "connect"],
 			"home.connect": ["phone_or_email"],
 			"home.app_help": ["faqs", "feedback", "review"],
+
+			"home.groups": ["all_groups", "my_groups"],
+			"home.events": ["event_feed", "my_events"],
+			"home.surveys": ["public_surveys"],
+
 			"home.all_groups": ["groups"],
 			"home.my_groups": ["groups"],
 			"home.event_feed": ["events"],
@@ -180,7 +185,7 @@
 	"defaults": {
 		"favorites": {
 			"content": {
-				"home": ["event_feed", "my_groups", "public_surveys"]
+				"home": ["all_groups", "my_groups", "event_feed", "my_events", "public_surveys"]
 			},
 			"rules": {
 			}

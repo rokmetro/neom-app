@@ -295,21 +295,12 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
     }
     else if (code == 'groups') {
       if (title) {
-        return HomeGroupsWidget.title(contentType: GroupsContentType.my);
+        return HomeGroupsSectionWidget.title;
       } else if (handle) {
-        return HomeGroupsWidget.handle(contentType: GroupsContentType.my, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
+        return HomeGroupsSectionWidget.handle(favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
       } else {
-        return HomeGroupsWidget(key: _globalKey(globalKeys, code), contentType: GroupsContentType.my, favoriteId: code, updateController: updateController,);
+        return HomeGroupsSectionWidget(key: _globalKey(globalKeys, code), favoriteId: code, updateController: updateController,);
       }
-
-      //TODO
-      // if (title) {
-      //   return HomeGroupsWidget.titleForContentType(GroupsContentType.all);
-      // } else if (handle) {
-      //   return HomeGroupsWidget.handle(contentType: GroupsContentType.all, favoriteId: code, dragAndDropHost: dragAndDropHost, position: position,);
-      // } else {
-      //   return HomeGroupsWidget(key: _globalKey(globalKeys, code), contentType: GroupsContentType.all, favoriteId: code, updateController: updateController,);
-      // }
     }
     else if (code == 'my_research_projects') {
       if (title) {
@@ -594,7 +585,7 @@ class HomePanel extends StatefulWidget with AnalyticsInfo {
     return homeSections?.isNotEmpty ?? false ? homeSections!.first : code;
   }
 
-  static Key? _globalKey(Map<String, GlobalKey>? globalKeys, String code) => (globalKeys != null) ? (globalKeys[code] ??= GlobalKey()) : null;
+  static Key? _globalKey(Map<String, GlobalKey>? globalKeys, String code) => (globalKeys != null) ? (globalKeys[sectionFromCode(code)] ??= GlobalKey()) : null;
 }
 
 class _HomePanelState extends State<HomePanel> with AutomaticKeepAliveClientMixin<HomePanel> implements NotificationsListener {

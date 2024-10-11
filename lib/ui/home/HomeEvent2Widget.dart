@@ -73,7 +73,7 @@ class _HomeEvent2SectionWidgetState extends State<HomeEvent2SectionWidget> {
       title: HomeEvent2SectionWidget.title,
       bannerImageKey: 'banner-events',
       child: _widgetContent,
-      childPadding: const EdgeInsets.only(top: 24.0),
+      childPadding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
     );
   }
 
@@ -109,15 +109,8 @@ class HomeEvent2FeedWidget extends HomeEvent2Widget {
 
   HomeEvent2FeedWidget({super.updateController});
 
-  // static Widget handle({Key? key, String? favoriteId, HomeDragAndDropHost? dragAndDropHost, int? position}) =>
-  //   HomeHandleWidget(key: key, favoriteId: favoriteId, dragAndDropHost: dragAndDropHost, position: position,
-  //     title: StringUtils.capitalize(title),
-  //   );
-
-  static String get title => Localization().getStringEx('widget.home.event2_feed.label.header.title', 'All Events');
-
   @override
-  String get _title => title;
+  String get _title => Localization().getStringEx('widget.home.event2_feed.label.header.title', 'ALL EVENTS');
 
   @override
   Widget _emptyContentWidget(BuildContext context) => HomeMessageCard(
@@ -141,7 +134,7 @@ class HomeMyEvents2Widget extends HomeEvent2Widget {
   //     title: title,
   //   );
 
-  static String get title => Localization().getStringEx('widget.home.my_events2.label.header.title', 'My Events');
+  static String get title => Localization().getStringEx('widget.home.my_events2.label.header.title', 'MY EVENTS');
 
   @override
   String get _title => title;
@@ -300,9 +293,8 @@ class _HomeEvent2WidgetState extends State<HomeEvent2Widget> implements Notifica
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(key: _visibilityDetectorKey, onVisibilityChanged: _onVisibilityChanged, child:
-      HomeSlantWidget(
+      HomeBannerSubsectionWidget(
         title: widget._title,
-        titleIconKey: 'events',
         child: _buildContent(),
       )
     );

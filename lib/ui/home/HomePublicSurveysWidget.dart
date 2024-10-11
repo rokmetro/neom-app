@@ -124,7 +124,7 @@ class _HomePublicSurveysWidgetState extends State<HomePublicSurveysWidget> imple
       title: HomePublicSurveysWidget.title,
       bannerImageKey: 'banner-surveys',
       child: _widgetContent,
-      childPadding: const EdgeInsets.only(top: 24.0),
+      childPadding: const EdgeInsets.only(top: 24.0, bottom: 12.0),
     );
   }
 
