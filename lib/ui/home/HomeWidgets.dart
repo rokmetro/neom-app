@@ -372,7 +372,7 @@ class HomeBannerWidget extends StatelessWidget {
         Semantics(container: true, header: true,
           child: Stack(alignment: bannerFavoriteAlignment, children: <Widget>[
             Stack(alignment: bannerTitleAlignment, children: <Widget>[
-              Container(width: MediaQuery.of(context).size.width, child: Styles().images.getImage(bannerImageKey, excludeFromSemantics: true)),
+              Container(width: MediaQuery.of(context).size.width, child: Styles().images.getImage(bannerImageKey, fit: BoxFit.contain, excludeFromSemantics: true)),
               Semantics(label: title, header: true, excludeSemantics: true, child:
                 Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.light.large.fat.spaced"))
               ),
