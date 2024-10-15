@@ -23,6 +23,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:neom/ext/ImagesResult.dart';
 import 'package:neom/mainImpl.dart';
 import 'package:neom/model/Analytics.dart';
+import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/FlexUI.dart';
 import 'package:neom/service/Config.dart';
 import 'package:neom/service/Storage.dart';
@@ -35,7 +36,6 @@ import 'package:neom/ext/Group.dart';
 import 'package:rokwire_plugin/model/poll.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
-import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -1065,8 +1065,8 @@ class _GroupPostCardState extends State<GroupPostCard> {
     int visibleRepliesCount = getVisibleRepliesCount();
     bool isRepliesLabelVisible = (visibleRepliesCount > 0);
     String? repliesLabel = (visibleRepliesCount == 1)
-        ? Localization().getStringEx('widget.group.card.reply.single.reply.label', 'Reply')
-        : Localization().getStringEx('widget.group.card.reply.multiple.replies.label', 'Replies');
+        ? Localization().getStringEx('widget.group.card.reply.single.reply.label', 'reply')
+        : Localization().getStringEx('widget.group.card.reply.multiple.replies.label', 'replies');
     return Stack(alignment: Alignment.topRight, children: [
       Semantics(button:true,
         child:GestureDetector(
@@ -1075,52 +1075,40 @@ class _GroupPostCardState extends State<GroupPostCard> {
               decoration: BoxDecoration(
                   color: Styles().colors.surface,
                   boxShadow: [BoxShadow(color: Styles().colors.blackTransparent018, spreadRadius: 2.0, blurRadius: 6.0, offset: Offset(2, 2))],
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              ),
               child: Padding(
                   padding: EdgeInsets.all(12),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Expanded(
-                          child: Text(StringUtils.ensureNotEmpty(widget.post!.subject),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: Styles().textStyles.getTextStyle('widget.card.title.regular.fat') )),
-                      Visibility(
-                          visible: isRepliesLabelVisible,
-                          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Text(StringUtils.ensureNotEmpty(visibleRepliesCount.toString()),
-                                    style: Styles().textStyles.getTextStyle('widget.description.small'))),
-                            Padding(
-                                padding: EdgeInsets.only(left: 8),
-                                child: Text(StringUtils.ensureNotEmpty(repliesLabel),
-                                    style: Styles().textStyles.getTextStyle('widget.description.small')))
-                          ])),
-                      _buildScheduledDateWidget
-                    ]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          CollectionUtils.isNotEmpty(Auth2().authPicture) ?
+                            Container(width: 20, height: 20, decoration:
+                              BoxDecoration(shape: BoxShape.circle, color: Colors.white, image:
+                                DecorationImage( fit: BoxFit.cover, image: Image.memory(Auth2().authPicture!).image)
+                              )
+                            ) : Styles().images.getImage('person-circle-header') ?? Container(),
+                          Padding(
+                            padding: EdgeInsets.only(left: 8),
+                            child:Text(StringUtils.ensureNotEmpty(memberName),
+                                textAlign: TextAlign.left,
+                                style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')),
+                          ),
+                        ]),
+                        _buildDisplayDateWidget,
+                      ],
+                    ),
+                    Container(height: 16.0),
                     Row(
                       children: [
                         Expanded(
                           flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
-                            child:
-                            HtmlWidget(
-                                "<div style= text-overflow:ellipsis;max-lines:3> ${StringUtils.ensureNotEmpty(htmlBody)}</div>",
-                                onTapUrl : (url) {_onLinkTap(url); return true;},
-                                textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small")
-                            )
-                            // Html(data: htmlBody, style: {
-                            //   "body": Style(
-                            //       color: Styles().colors.fillColorPrimary,
-                            //       fontFamily: Styles().fontFamilies.regular,
-                            //       fontSize: FontSize(16),
-                            //       maxLines: 3,
-                            //       textOverflow: TextOverflow.ellipsis,
-                            //       margin: EdgeInsets.zero,
-                            //   ),
-                            // }, onLinkTap: (url, context, attributes, element) => _onLinkTap(url))
+                          child: HtmlWidget(
+                              "<div style= text-overflow:ellipsis;max-lines:3> ${StringUtils.ensureNotEmpty(htmlBody)}</div>",
+                              onTapUrl : (url) {_onLinkTap(url); return true;},
+                              textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small")
                           )),
                         StringUtils.isEmpty(imageUrl)? Container() :
                         Expanded(
@@ -1130,31 +1118,37 @@ class _GroupPostCardState extends State<GroupPostCard> {
                             button: true,
                             hint: "Double tap to zoom the image",
                             child: Container(
-                                padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
+                                padding: EdgeInsets.only(left: 8),
                                 child: SizedBox(
                                   width: _smallImageSize,
                                   height: _smallImageSize,
                                   child: ModalImageHolder(child: Image.network(imageUrl!, excludeFromSemantics: true, fit: BoxFit.fill,)),),)
                             ))
                     ],),
-                    Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child:Container(
-                              padding: EdgeInsets.only(right: 6),
-                              child:Text(StringUtils.ensureNotEmpty(memberName),
-                                textAlign: TextAlign.left,
-                                style: Styles().textStyles.getTextStyle('widget.description.small')),
-                          )),
-                          Expanded(
-                            flex: 2,
-                            child: _buildDisplayDateWidget),
-                        ],
-                      )
-                    )
+                    Container(height: 16.0),
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      GroupPostReaction(
+                        groupID: widget.group?.id,
+                        post: widget.post,
+                        reaction: thumbsUpReaction,
+                        accountIDs: widget.post?.reactions[thumbsUpReaction],
+                        selectedIconKey: 'thumbs-up',
+                        deselectedIconKey: 'thumbs-up-gray',
+                      ),
+                      _buildScheduledDateWidget,
+                      Visibility(
+                          visible: isRepliesLabelVisible,
+                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            Styles().images.getImage('comment') ?? Container(),
+                            Padding(
+                              padding: EdgeInsets.only(left: 6.0),
+                              child: Text(StringUtils.ensureNotEmpty('${visibleRepliesCount.toString()} $repliesLabel'),
+                                style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                              ),
+                            ),
+                        ]),
+                      ),
+                    ])
                   ]))))),
     ]);
   }
@@ -1162,10 +1156,10 @@ class _GroupPostCardState extends State<GroupPostCard> {
   Widget get _buildDisplayDateWidget =>  Visibility(visible: widget.post?.isScheduled != true, child:
     Semantics(child: Container(
       padding: EdgeInsets.only(left: 6),
-      child: Text(StringUtils.ensureNotEmpty(widget.post?.displayDateTime),
+      child: Text("${StringUtils.ensureNotEmpty(widget.post?.displayDateTime)} ago",
           semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
           textAlign: TextAlign.right,
-          style: Styles().textStyles.getTextStyle('widget.description.small')))));
+          style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')))));
 
   Widget get _buildScheduledDateWidget => Visibility(visible: widget.post?.isScheduled == true, child:
     Row( mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.end,
@@ -1248,8 +1242,8 @@ class _GroupReplyCardState extends State<GroupReplyCard> with NotificationsListe
     int visibleRepliesCount = widget.reply?.replies?.length ?? 0;
     bool isRepliesLabelVisible = (visibleRepliesCount > 0) && widget.showRepliesCount;
     String? repliesLabel = (visibleRepliesCount == 1)
-        ? Localization().getStringEx('widget.group.card.reply.single.reply.label', 'Reply')
-        : Localization().getStringEx('widget.group.card.reply.multiple.replies.label', 'Replies');
+        ? Localization().getStringEx('widget.group.card.reply.single.reply.label', 'reply')
+        : Localization().getStringEx('widget.group.card.reply.multiple.replies.label', 'replies');
     String? bodyText = StringUtils.ensureNotEmpty(widget.reply?.body);
     if (widget.reply?.isUpdated ?? false) {
       bodyText +=
@@ -1285,8 +1279,8 @@ class _GroupReplyCardState extends State<GroupReplyCard> with NotificationsListe
                     post: widget.reply,
                     reaction: thumbsUpReaction,
                     accountIDs: widget.reply?.reactions[thumbsUpReaction],
-                    selectedIconKey: 'thumbs-up-filled',
-                    deselectedIconKey: 'thumbs-up-outline-gray',
+                    selectedIconKey: 'thumbs-up',
+                    deselectedIconKey: 'thumbs-up-gray',
                   ),
                 ),
                 Visibility(
@@ -1419,9 +1413,9 @@ class GroupPostReaction extends StatelessWidget {
                   Styles().images.getImage(selected ? selectedIconKey : deselectedIconKey, excludeFromSemantics: true) ?? Container(),
                   Visibility(visible: accountIDs != null && accountIDs!.length > 0,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 4.0),
-                        child: Text(accountIDs?.length.toString() ?? '',
-                            style: Styles().textStyles.getTextStyle("widget.button.title.small")),
+                        padding: const EdgeInsets.only(left: 6.0),
+                        child: Text('+${accountIDs?.length}',
+                            style: Styles().textStyles.getTextStyle("widget.card.detail.tiny.medium_fat")),
                       ))
                 ])));
   }
@@ -1453,7 +1447,7 @@ class GroupPostReaction extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Styles().images.getImage('thumbs-up-filled', size: 24, fit: BoxFit.fill, excludeFromSemantics: true) ?? Container(),
+            Styles().images.getImage('thumbs-up', size: 24, fit: BoxFit.fill, excludeFromSemantics: true) ?? Container(),
             Container(width: 16),
             Text(member.displayShortName, style: Styles().textStyles.getTextStyle("widget.title.regular.fat")),
           ],

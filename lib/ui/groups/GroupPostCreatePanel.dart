@@ -217,7 +217,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
   void _onMembersSelectionChanged(List<Member>? selectedMembers){
     _selectedMembers = selectedMembers;
     _clearScheduleDate(); //Members Selection disables scheduling
-    _updateState();
+    setStateIfMounted();
   }
 
   List<DropdownMenuItem<GroupPostNudge?>> get _nudgesDropDownItems {
@@ -243,7 +243,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
     }
     _postData.subject = subject;
     _postData.body = body;
-    _updateState();
+    setStateIfMounted();
   }
 
   void _showPollConfirmationDialogIfNeeded() {
@@ -263,7 +263,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
             Localization().getStringEx('panel.group.detail.post.create.nudges.poll.body.msg', 'Please participate in the course Poll, #%s'),
             [StringUtils.ensureNotEmpty(poll.pinCode?.toString())]);
         _postData.body = StringUtils.ensureNotEmpty(_postData.body) + '\n\n $pollNudgeBodyMsg';
-        _updateState();
+        setStateIfMounted();
       }
     });
   }
@@ -394,18 +394,12 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
 
   void _increaseProgress() {
     _progressLoading++;
-    _updateState();
+    setStateIfMounted();
   }
 
   void _decreaseProgress() {
     _progressLoading--;
-    _updateState();
-  }
-
-  void _updateState() {
-    if (mounted) {
-      setState(() {});
-    }
+    setStateIfMounted();
   }
 
   bool get _isLoading {

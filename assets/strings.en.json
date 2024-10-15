@@ -3956,8 +3956,8 @@
 
     "widget.group_card.pending.label": "Pending: %s",
 
-    "widget.group.card.reply.single.reply.label": "Reply",
-    "widget.group.card.reply.multiple.replies.label": "Replies",
+    "widget.group.card.reply.single.reply.label": "reply",
+    "widget.group.card.reply.multiple.replies.label": "replies",
     "widget.group.card.reply.edited.reply.label": "edited",
 
     "widget.group_card.status.private": "Private",
