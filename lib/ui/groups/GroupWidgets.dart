@@ -28,6 +28,7 @@ import 'package:neom/service/FlexUI.dart';
 import 'package:neom/service/Config.dart';
 import 'package:neom/service/Storage.dart';
 import 'package:neom/ui/groups/GroupMembersSelectionPanel.dart';
+import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:neom/ui/groups/ImageEditPanel.dart';
 import 'package:intl/intl.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
@@ -1041,8 +1042,9 @@ class _GroupCardState extends State<GroupCard> implements NotificationsListener 
 class GroupPostCard extends StatefulWidget {
   final GroupPost? post;
   final Group? group;
+  final bool showImage;
 
-  GroupPostCard({Key? key, required this.post, required this.group}) :
+  GroupPostCard({Key? key, required this.post, required this.group, this.showImage = true}) :
     super(key: key);
 
   @override
@@ -1110,7 +1112,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                               onTapUrl : (url) {_onLinkTap(url); return true;},
                               textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small")
                           )),
-                        StringUtils.isEmpty(imageUrl)? Container() :
+                        StringUtils.isEmpty(imageUrl) || !widget.showImage ? Container() :
                         Expanded(
                           flex: 1,
                           child: Semantics(
@@ -1148,7 +1150,19 @@ class _GroupPostCardState extends State<GroupPostCard> {
                             ),
                         ]),
                       ),
-                    ])
+                    ]),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
+                    ),
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Text(
+                        'members',
+                      ),
+                      GestureDetector( onTap: () => _onTapReportAbusePostOptions(), child:
+                        Styles().images.getImage('report', excludeFromSemantics: true, color: Styles().colors.alert)
+                      ),
+                    ]),
                   ]))))),
     ]);
   }
@@ -1186,6 +1200,53 @@ class _GroupPostCardState extends State<GroupPostCard> {
   void _onLinkTap(String? url) {
     Analytics().logSelect(target: url);
     UrlUtils.launchExternal(url);
+  }
+
+  void _onTapReportAbusePostOptions() {
+    bool isReportAbuseVisible = widget.group?.currentUserIsMemberOrAdmin ?? false;
+    Analytics().logSelect(target: 'Post Options');
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Styles().colors.surface,
+        isScrollControlled: true,
+        isDismissible: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24)),),
+        builder: (context) {
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 17),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Visibility(visible: isReportAbuseVisible, child: RibbonButton(
+                  leftIconKey: "comment",
+                  label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
+                  onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true), post: widget.post),
+                )),
+                Visibility(visible: isReportAbuseVisible, child: RibbonButton(
+                  leftIconKey: "comment",
+                  label: Localization().getStringEx("panel.group.detail.post.button.report.group_admins.labe", "Report to Group Administrator(s)"),
+                  onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToGroupAdmins: true), post: widget.post),
+                )),
+              ],
+            ),
+          );
+        });
+  }
+
+  void _onTapReportAbuse({required GroupPostReportAbuseOptions options, GroupPost? post}) {
+    String? analyticsTarget;
+    if (options.reportToDeanOfStudents && !options.reportToGroupAdmins) {
+      analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.students_dean.description.text', 'Report violation of Student Code to Dean of Students');
+    }
+    else if (!options.reportToDeanOfStudents && options.reportToGroupAdmins) {
+      analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.group_admins.description.text', 'Report obscene, threatening, or harassing content to Group Administrators');
+    }
+    else if (options.reportToDeanOfStudents && options.reportToGroupAdmins) {
+      analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.both.description.text', 'Report violation of Student Code to Dean of Students and obscene, threatening, or harassing content to Group Administrators');
+    }
+    Analytics().logSelect(target: analyticsTarget);
+
+    Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => GroupPostReportAbuse(options: options, groupId: widget.group?.id, postId: (post ?? widget.post)?.id)));
   }
 
   int getVisibleRepliesCount() {
@@ -1393,11 +1454,12 @@ class GroupPostReaction extends StatelessWidget {
   final List<String>? accountIDs;
   final String selectedIconKey;
   final String deselectedIconKey;
+  final TextStyle? textStyle;
   final bool onTapEnabled;
   final bool onLongPressEnabled;
 
-  GroupPostReaction({required this.groupID, required this.post, required this.reaction,
-    this.accountIDs, required this.selectedIconKey, required this.deselectedIconKey, this.onTapEnabled = true, this.onLongPressEnabled = true});
+  GroupPostReaction({required this.groupID, required this.post, required this.reaction, this.accountIDs,
+    required this.selectedIconKey, required this.deselectedIconKey, this.textStyle, this.onTapEnabled = true, this.onLongPressEnabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -1415,7 +1477,7 @@ class GroupPostReaction extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 6.0),
                         child: Text('+${accountIDs?.length}',
-                            style: Styles().textStyles.getTextStyle("widget.card.detail.tiny.medium_fat")),
+                            style: textStyle ?? Styles().textStyles.getTextStyle("widget.card.detail.tiny.medium_fat")),
                       ))
                 ])));
   }
@@ -2014,13 +2076,6 @@ class ImageChooserWidget extends StatefulWidget{ //TBD Localize properly
 }
 
 class _ImageChooserState extends State<ImageChooserWidget>{
-  // String? _imageUrl;
-
-  @override
-  void initState() {
-    // _imageUrl = widget.imageUrl;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -2039,10 +2094,6 @@ class _ImageChooserState extends State<ImageChooserWidget>{
           StringUtils.isNotEmpty(imageUrl)
               ? Positioned.fill(child: ModalImageHolder(child: Image.network(imageUrl!, semanticLabel: widget.imageSemanticsLabel??"", fit: BoxFit.cover)))
               : Container(),
-          Visibility( visible: showSlant,
-              child: CustomPaint(painter: TrianglePainter(painterColor: Styles().colors.fillColorSecondaryTransparent05, horzDir: TriangleHorzDirection.leftToRight), child: Container(height: 53))),
-          Visibility( visible: showSlant,
-              child: CustomPaint(painter: TrianglePainter(painterColor: Styles().colors.background), child: Container(height: 30))),
           StringUtils.isEmpty(imageUrl) || explicitlyShowAddButton
               ? Container(
               child: Center(

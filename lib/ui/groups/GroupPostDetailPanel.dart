@@ -115,6 +115,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
             title: Text(
               Localization().getStringEx('panel.group.detail.post.header.title', 'Post'),
               style:  Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat.light"),),
+            titleSpacing: 0,
             centerTitle: false),
         backgroundColor: Styles().colors.background,
         bottomNavigationBar: uiuc.TabBar(),
@@ -126,32 +127,29 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     return Stack(children: [
       Stack(alignment: Alignment.topCenter, children: [
         SingleChildScrollView(key: _scrollContainerKey, controller: _scrollController, child:
-        Column(children: [
-          Container(height: _sliverHeaderHeight ?? 0,),
-          _isEditMainPost || StringUtils.isNotEmpty(_post?.imageUrl)
-            ? ImageChooserWidget(key: _postImageHolderKey, buttonVisible: _isEditMainPost,
-            imageUrl:_isEditMainPost ?  _mainPostUpdateData?.imageUrl : _post?.imageUrl,
-            onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,)
-            : Container(),
-          _buildPostContent(),
-          _buildRepliesSection(),
-          _buildPostEdit(),
-          ],)),
-          Container(key: _sliverHeaderKey, color: Styles().colors.background, padding: EdgeInsets.only(left: _outerPadding, bottom: 3), child:
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(children: [
+              Container(height: _sliverHeaderHeight ?? 0,),
+              _isEditMainPost || StringUtils.isNotEmpty(_post?.imageUrl)
+                ? ImageChooserWidget(key: _postImageHolderKey, buttonVisible: _isEditMainPost,
+                  imageUrl:_isEditMainPost ?  _mainPostUpdateData?.imageUrl : _post?.imageUrl,
+                  onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,)
+                : Container(),
+              GroupPostCard(post: _post, group: widget.group, showImage: false),
+              // _buildPostContent(),
+              _buildRepliesSection(),
+              _buildPostEdit(),
+            ],),
+          )),
+          Container(key: _sliverHeaderKey, color: Styles().colors.background, padding: EdgeInsets.only(left: _outerPadding), child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
               Row(children: [
-                Expanded(child:
-                  Semantics(sortKey: OrdinalSortKey(1), container: true, child:
-                    Text(StringUtils.ensureNotEmpty(_post?.subject), maxLines: 5, overflow: TextOverflow.ellipsis,
-                        style: Styles().textStyles.getTextStyle("widget.detail.extra_large.fat"),
-                    )
-                  )
-                ),
-
+                Spacer(),
                 Visibility(
                   visible: Config().showGroupPostReactions && (widget.group?.currentUserHasPermissionToSendReactions == true),
                   child: Padding(
-                    padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 8),
+                    padding: EdgeInsets.all(8.0),
                     child: GroupPostReaction(
                       groupID: widget.group?.id,
                       post: _post,
@@ -159,6 +157,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                       accountIDs: _post?.reactions[thumbsUpReaction],
                       selectedIconKey: 'thumbs-up',
                       deselectedIconKey: 'thumbs-up-gray',
+                      textStyle: Styles().textStyles.getTextStyle("widget.card.detail.light.tiny.medium_fat")
                       // onTapEnabled: _canSendReaction,
                     ),
                   ),
@@ -169,7 +168,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                     Container(child:
                       Semantics(label: Localization().getStringEx('panel.group.detail.post.reply.edit.label', "Edit"), button: true, child:
                         GestureDetector(onTap: _onTapEditMainPost, child:
-                          Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 8), child:
+                          Padding(padding: EdgeInsets.all(8.0), child:
                             Styles().images.getImage('edit', excludeFromSemantics: true))))))),
 
                 Visibility(visible: _isDeletePostVisible && !widget.hidePostOptions, child:
@@ -177,19 +176,19 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                     Container(child:
                       Semantics(label: Localization().getStringEx('panel.group.detail.post.reply.delete.label', "Delete"), button: true, child:
                         GestureDetector(onTap: _onTapDeletePost, child:
-                            Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 8), child:
+                            Padding(padding: EdgeInsets.all(8.0), child:
                               Styles().images.getImage('trash', excludeFromSemantics: true))))))),
 
                 Visibility(visible: _isReportAbuseVisible && !widget.hidePostOptions, child:
                   Semantics(label: Localization().getStringEx('panel.group.detail.post.button.report.label', "Report"), button: true, child:
                     GestureDetector( onTap: () => _onTapReportAbusePostOptions(), child:
-                        Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 8), child:
+                        Padding(padding: EdgeInsets.all(8.0), child:
                           Styles().images.getImage('report', excludeFromSemantics: true))))),
 
                 Visibility(visible: _isReplyVisible && !widget.hidePostOptions, child:
                   Semantics(label: Localization().getStringEx('panel.group.detail.post.reply.reply.label', "Reply"), button: true, child:
                     GestureDetector(onTap: _onTapHeaderReply, child:
-                        Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 16), child:
+                        Padding(padding: EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 16), child:
                           Styles().images.getImage('reply', excludeFromSemantics: true))))),
 
               ]),
@@ -599,12 +598,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Visibility(visible: _isReportAbuseVisible, child: RibbonButton(
-                leftIconKey: "report",
+                leftIconKey: "comment",
                 label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
                 onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true), post: widget.post),
               )),
               Visibility(visible: _isReportAbuseVisible, child: RibbonButton(
-                leftIconKey: "report",
+                leftIconKey: "comment",
                 label: Localization().getStringEx("panel.group.detail.post.button.report.group_admins.labe", "Report to Group Administrator(s)"),
                 onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToGroupAdmins: true), post: widget.post),
               )),

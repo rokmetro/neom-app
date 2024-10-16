@@ -551,6 +551,7 @@
     "widget.card.detail.tiny.medium_fat": { "font_family": "medium", "size": 12.0, "color": "textDark"},
     "widget.card.detail.light.small.fat": { "font_family": "bold", "size": 14.0, "color": "textLight"},
     "widget.card.detail.light.small.regular": { "font_family": "regular", "size": 14.0, "color": "textLight"},
+    "widget.card.detail.light.tiny.medium_fat": { "font_family": "medium", "size": 12.0, "color": "textLight"},
 
     "widget.explore.card.detail.small": {"extends": "widget.card.detail.tiny.medium_fat"},
     "widget.explore.card.detail.regular": {"extends": "widget.item.small"},
