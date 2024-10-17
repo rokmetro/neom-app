@@ -19,14 +19,12 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/Config.dart';
 import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:neom/ext/Group.dart';
 import 'package:neom/service/Analytics.dart';
-import 'package:rokwire_plugin/service/Log.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:neom/utils/AppUtils.dart';
@@ -34,10 +32,8 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:neom/ui/groups/GroupWidgets.dart';
 import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/utils/utils.dart';
-import 'package:sprintf/sprintf.dart';
 
 class GroupPostDetailPanel extends StatefulWidget with AnalyticsInfo {
   final GroupPost? post;
@@ -67,9 +63,10 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   List<Member>? _allMembersAllowedToPost;
   //Reply - Edit/Create/Show
   GroupPost? _focusedReply; //Focused on Reply {Replies Thread Presentation} // User when Refresh post thread
-  String? _selectedReplyId; // Thread Id target for New Reply {Data Create}
   GroupPost? _editingReply; //Edit Mode for Reply {Data Edit}
   PostDataModel? _replyEditData = PostDataModel(); //used for Reply Create / Edit; Empty data for new Reply
+  GlobalKey _repliesKey = GlobalKey();
+  double? _repliesHeight;
 
   bool _loading = false;
 
@@ -80,7 +77,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   final GlobalKey _scrollContainerKey = GlobalKey();
   double? _sliverHeaderHeight;
   //Refresh
-  GlobalKey _postInputKey = GlobalKey();
   GlobalKey _postImageHolderKey = GlobalKey();
 
   @override
@@ -95,6 +91,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _evalSliverHeaderHeight();
+      _evalRepliesHeight();
       if (_focusedReply != null) {
         _scrollToPostEdit();
       }
@@ -137,9 +134,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                   onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,)
                 : Container(),
               GroupPostCard(post: _post, group: widget.group, allMembersAllowedToPost: _allMembersAllowedToPost, showImage: false),
-              // _buildPostContent(),
               _buildRepliesSection(),
-              _buildPostEdit(),
             ],),
           )),
           Container(key: _sliverHeaderKey, color: Styles().colors.background, padding: EdgeInsets.only(left: _outerPadding), child:
@@ -201,138 +196,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     ]);
   }
 
-  Widget _buildPostContent() {
-    TextEditingController bodyController = TextEditingController();
-    bodyController.text = _mainPostUpdateData?.body ?? '';
-    return Semantics(
-        sortKey: OrdinalSortKey(4),
-        container: true,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Padding(
-                  padding: EdgeInsets.only(
-                      left: _outerPadding,
-                      top: 0,
-                      right: _outerPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Visibility(visible: !_isEditMainPost,
-                          child: Semantics(
-                              container: true,
-                              child:
-                              HtmlWidget(
-                                  StringUtils.ensureNotEmpty(_post?.body),
-                                  onTapUrl : (url) {_onTapPostLink(url); return true;},
-                                  textStyle:  Styles().textStyles.getTextStyle("widget.detail.large"),
-                              )
-                          )),
-                      Visibility(
-                          visible: _isEditMainPost,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                    padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
-                                    child: TextField(
-                                        onChanged: (txt) => _mainPostUpdateData?.body = txt,
-                                        controller: bodyController,
-                                        maxLines: null,
-                                        autofocus: true,
-                                        decoration: InputDecoration(
-                                            hintText: Localization().getStringEx("panel.group.detail.post.edit.hint", "Edit the post"),
-                                            border: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Styles().colors.mediumGray,
-                                                    width: 0.0))),
-                                        style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
-                                       )),
-                                Row(children: [
-                                  Flexible(
-                                      flex: 1,
-                                      child: RoundedButton(
-                                          label: Localization().getStringEx('panel.group.detail.post.update.button.update.title', 'Update'),
-                                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                                          borderColor: Styles().colors.fillColorSecondary,
-                                          backgroundColor: Styles().colors.surface,
-                                          onTap: _onTapUpdateMainPost)),
-                                ])
-
-
-                              ])),
-                      Semantics(
-                          sortKey: OrdinalSortKey(2),
-                          container: true,
-                          child: Padding(
-                              padding: EdgeInsets.only(top: 4, right: _outerPadding),
-                              child: Text(
-                                  StringUtils.ensureNotEmpty(
-                                      _post?.member?.displayShortName ),
-                                  style: Styles().textStyles.getTextStyle("widget.detail.large.thin"),
-                                  ))),
-                      Semantics(
-                          sortKey: OrdinalSortKey(3),
-                          container: true,
-                          child: Padding(
-                              padding: EdgeInsets.only(top: 3, right: _outerPadding),
-                              child: Text(
-                                  StringUtils.ensureNotEmpty(
-                                      _post?.displayDateTime),
-                                  semanticsLabel:  sprintf(Localization().getStringEx("panel.group.detail.post.updated.ago.format", "Updated %s ago"),[widget.post?.displayDateTime ?? ""]),
-                                  style: Styles().textStyles.getTextStyle("widget.detail.medium"),))),
-                      Container(height: 6,),
-                      GroupMembersSelectionWidget(
-                        selectedMembers: GroupMembersSelectionWidget.constructUpdatedMembersList(selection:(_isEditMainPost ? _mainPostUpdateData?.members : _post?.members), upToDateMembers: _allMembersAllowedToPost),
-                        allMembers: _allMembersAllowedToPost,
-                        enabled: _isEditMainPost,
-                        groupId: widget.group?.id,
-                        groupPrivacy: widget.group?.privacy,
-                        onSelectionChanged: (members){
-                          setStateIfMounted(() {
-                            _mainPostUpdateData?.members = members;
-                          });
-                        },),
-                      Container(height: 6,),
-                      Visibility(visible: widget.post?.dateScheduledUtc != null, child:
-                        GroupScheduleTimeWidget(
-                          timeZone: null,//TBD pass timezone
-                          scheduleTime: widget.post?.dateScheduledUtc,
-                          enabled: false, //_isEditMainPost, Disable editing since the BB do not support editing of the create notification
-                          onDateChanged: (DateTime? dateTimeUtc){
-                            setStateIfMounted(() {
-                              Log.d(groupUtcDateTimeToString(dateTimeUtc)??"");
-                              _mainPostUpdateData?.dateScheduled = dateTimeUtc;
-                            });
-                          },
-                        )
-                      )
-                    ],
-                  )),
-
-            ]));
-  }
-
   void _loadMembersAllowedToPost() {
     _setLoading(true);
     Groups().loadMembersAllowedToPost(groupId: widget.group!.id).then((members) {
       _allMembersAllowedToPost = members;
       _setLoading(false);
     });
-  }
-
-  void _refreshPostData(){
-    if(widget.group != null) {
-      _setLoading(true);
-      Groups().loadGroupPost(groupId: widget.group!.id, postId: _post?.id).then((updatedPost){
-          _setLoading(false);
-          if(updatedPost != null){
-            _sortReplies(updatedPost.replies);
-            setStateIfMounted((){
-              _post = updatedPost;
-            });
-          }
-      });
-    }
   }
 
   Widget _buildRepliesSection(){
@@ -365,67 +234,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     return result;
   }
 
-  Widget _buildPostEdit() {
-    return Visibility(
-        key: _postEditKey,
-        visible: widget.group?.currentUserHasPermissionToSendReply == true,
-        child: Padding(
-            padding: EdgeInsets.all(_outerPadding),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _buildReplyTextField(),
-              _buildReplyImageSection(),
-              Row(children: [
-                Flexible(
-                    flex: 1,
-                    child: RoundedButton(
-                        label: (_editingReply != null) ?
-                          Localization().getStringEx('panel.group.detail.post.update.button.update.title', 'Update') :
-                          Localization().getStringEx('panel.group.detail.post.create.button.send.title', 'Send'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                        borderColor: Styles().colors.fillColorSecondary,
-                        backgroundColor: Styles().colors.surface,
-                        onTap: _onTapSend)),
-                Container(width: 20),
-                Flexible(
-                    flex: 1,
-                    child: RoundedButton(
-                        label: Localization().getStringEx(
-                            'panel.group.detail.post.create.button.cancel.title',
-                            'Cancel'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                        borderColor: Styles().colors.textSurface,
-                        backgroundColor: Styles().colors.surface,
-                        onTap: _onTapCancel))
-              ])
-            ])));
-  }
-
-  Widget _buildReplyImageSection(){
-    return
-      Container(
-        padding: EdgeInsets.only(bottom: 12),
-        child: ImageChooserWidget(
-          imageUrl: _replyEditData?.imageUrl,
-          showSlant: false,
-          wrapContent: true,
-          buttonVisible: _editingReply!=null,
-          onImageChanged: (String? imageUrl) => _replyEditData?.imageUrl = imageUrl,
-          imageSemanticsLabel: Localization().getStringEx('panel.group.detail.post.reply.reply.label', "Reply"),
-        )
-     );
-  }
-
-  Widget _buildReplyTextField(){
-    return PostInputField(
-      key: _postInputKey,
-      text: _replyEditData?.body,
-      onBodyChanged: (text) => _replyEditData?.body = text,
-    );
-  }
-
   Widget _buildRepliesWidget(
       {List<GroupPost>? replies,
-      double leftPaddingOffset = 0,
+      double leftPaddingOffset = 24.0,
       bool nestedReply = false,
       bool showRepliesCount = true,
       String? focusedReplyId,
@@ -435,75 +246,42 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
       return Container();
     }
     List<Widget> replyWidgetList = [];
-    if(StringUtils.isEmpty(focusedReplyId) && CollectionUtils.isNotEmpty(visibleReplies) ){
-      replyWidgetList.add(_buildRepliesHeader());
-      replyWidgetList.add(Container(height: 8,));
-    }
 
     for (int i = 0; i < visibleReplies!.length; i++) {
       if (i > 0 || nestedReply) {
         replyWidgetList.add(Container(height: 10));
       }
       GroupPost? reply = visibleReplies[i];
-      String? optionsIconPath;
-      void Function()? optionsFunctionTap;
-      if (_isReplyVisible) {
-        optionsIconPath = 'more';
-        optionsFunctionTap = () => _onTapReplyOptions(reply);
-      }
+      // String? optionsIconPath;
+      // void Function()? optionsFunctionTap;
+      // if (_isReplyVisible) {
+      //   optionsIconPath = 'more';
+      //   optionsFunctionTap = () => _onTapReplyOptions(reply);
+      // }
       replyWidgetList.add(
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: _outerPadding),
-            child: Padding(
-              padding: EdgeInsets.only(left: leftPaddingOffset),
-              child: GroupReplyCard(
-                reply: reply,
-                post: widget.post,
-                group: widget.group,
-                iconPath: optionsIconPath,
-                semanticsLabel: "options",
-                showRepliesCount: showRepliesCount,
-                onIconTap: optionsFunctionTap,
-                onCardTap: (){_onTapReplyCard(reply);},
-            ))));
-      if(reply.id == focusedReplyId) {
-        if(CollectionUtils.isNotEmpty(reply.replies)){
-          replyWidgetList.add(Container(height: 8,));
-          replyWidgetList.add(_buildRepliesHeader());
-        }
-        replyWidgetList.add(_buildRepliesWidget(
-            replies: reply.replies,
-            leftPaddingOffset: (leftPaddingOffset /*+ 5*/),
-            nestedReply: true,
-            focusedReplyId: focusedReplyId
-        ));
-      }
+          GroupPostCard(
+            post: reply,
+            group: widget.group,
+            isReply: true,
+          )
+      );
     }
     return Padding(
-        padding: EdgeInsets.only(top: nestedReply ? 0 : 20),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: replyWidgetList));
-  }
-
-  Widget _buildRepliesHeader(){
-    return
-      Semantics(
-        container: true,
-        hint: "Heading",
+        padding: EdgeInsets.only(top: nestedReply ? 0 : 24),
         child: Row(
           children: [
+            Container(height: _repliesHeight, width: 1, color: Styles().colors.surfaceAccent),
             Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: _outerPadding),
-                color: Styles().colors.fillColorPrimary,
-                child: Text("Replies",
-                    style: Styles().textStyles.getTextStyle("widget.heading.medium"),
-                ),
-              )
-        )
-      ],
-    ));
+              child: Padding(
+                padding: EdgeInsets.only(left: leftPaddingOffset),
+                child: Column(
+                  key: _repliesKey,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: replyWidgetList),
+              ),
+            ),
+          ],
+        ));
   }
 
   List<GroupPost>? _getVisibleReplies(List<GroupPost>? replies) {
@@ -522,28 +300,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
       }
     }
     return visibleReplies;
-  }
-
-  //Tap Actions
-  void _onTapReplyCard(GroupPost? reply){
-    if(_isSubReplySupported){  //Forbid sub reply //TODO if we do not bring back this functionality DELETE all related code.
-      if((reply != null) &&
-          ((reply == _focusedReply) || (widget.replyThread!= null && widget.replyThread!.contains(reply)))){
-        //Already focused reply.
-        // Disabled listener for the focused reply. Prevent duplication. Fix for #2374
-        return;
-      }
-
-      Analytics().logSelect(target: 'Reply Card');
-      List<GroupPost> thread = [];
-      if(CollectionUtils.isNotEmpty(widget.replyThread)){
-        thread.addAll(widget.replyThread!);
-      }
-      if(_focusedReply!=null) {
-        thread.add(_focusedReply!);
-      }
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group, focusedReply: reply, hidePostOptions: true, replyThread: thread,)));
-    }
   }
 
   void _onTapDeletePost() {
@@ -694,7 +450,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
   void _deleteReply(GroupPost? reply) {
     _setLoading(true);
-    _clearSelectedReplyId();
     Groups().deletePost(widget.group?.id, reply).then((succeeded) {
       _setLoading(false);
       if (!succeeded) {
@@ -716,9 +471,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   void _onTapPostReply({GroupPost? reply}) {
     Analytics().logSelect(target: 'Post Reply');
     //Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group, focusedReply: reply, hidePostOptions: true,)));
-    setStateIfMounted(() {
-      _selectedReplyId = reply?.id;
-    });
     _clearBodyControllerContent();
     _scrollToPostEdit();
   }
@@ -744,26 +496,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     setStateIfMounted(() { });
   }
 
-  void _onTapUpdateMainPost(){
-    String? body = _mainPostUpdateData?.body;
-    String? imageUrl = _mainPostUpdateData?.imageUrl ?? _post?.imageUrl;
-    List<Member>? toMembers = _mainPostUpdateData?.members;
-    if (StringUtils.isEmpty(body)) {
-      String? validationMsg = Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Post message required");
-      AppAlert.showDialogResult(context, validationMsg);
-      return;
-    }
-    String htmlModifiedBody = HtmlUtils.replaceNewLineSymbols(body);
-
-    _setLoading(true);
-    GroupPost postToUpdate = GroupPost(id: _post?.id, subject: _post?.subject, body: htmlModifiedBody, imageUrl: imageUrl, members: toMembers, dateScheduledUtc: _mainPostUpdateData?.dateScheduled, private: true);
-    Groups().updatePost(widget.group?.id, postToUpdate).then((succeeded) {
-      _mainPostUpdateData = null;
-      _setLoading(false);
-    });
-
-  }
-
   void _onTapEditPost({GroupPost? reply}) {
     Analytics().logSelect(target: 'Edit Reply');
     if (mounted) {
@@ -772,15 +504,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
         _replyEditData?.imageUrl = reply?.imageUrl;
         _replyEditData?.body = reply?.body;
       });
-      _postInputKey = GlobalKey(); //Refresh InputField to hook new data //Edit Reply
       _postImageHolderKey = GlobalKey(); //Refresh ImageHolder to hook new data // Edit Reply
       _scrollToPostEdit();
     }
-  }
-
-  void _onTapPostLink(String? url) {
-    Analytics().logSelect(target: 'link');
-    UrlUtils.launchExternal(url);
   }
 
   void _reloadPost() {
@@ -818,98 +544,24 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     });
   }
 
-  void _onTapCancel() {
-    Analytics().logSelect(target: 'Cancel');
-    if (_editingReply != null) {
-      setStateIfMounted(() {
-        _editingReply = null;
-        _replyEditData?.imageUrl = null;
-        _replyEditData?.body = '';
-      });
-    }
-    else {
-      Navigator.of(context).pop();
-    }
-  }
-
-  void _onTapSend() {
-    Analytics().logSelect(target: 'Send');
-    FocusScope.of(context).unfocus();
-    
-    String? body = _replyEditData?.body;
-    String? imageUrl;
-
-    if (StringUtils.isEmpty(body)) {
-      String validationMsg = ((_editingReply != null))
-          ? Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Post message required")
-          : Localization().getStringEx('panel.group.detail.post.create.reply.validation.body.msg', "Reply message required");
-      AppAlert.showDialogResult(context, validationMsg);
-      return;
-    }
-    String htmlModifiedBody = HtmlUtils.replaceNewLineSymbols(body);
-    
-    _setLoading(true);
-    if (_editingReply != null) {
-      imageUrl = StringUtils.isNotEmpty(_replyEditData?.imageUrl) ? _replyEditData?.imageUrl : _editingReply?.imageUrl;
-      GroupPost postToUpdate = GroupPost(id: _editingReply?.id, subject: _editingReply?.subject, imageUrl: imageUrl , body: body, private: true);
-      Groups().updatePost(widget.group?.id, postToUpdate).then((succeeded) {
-        _onUpdateFinished(succeeded);
-      });
-    } else {
-      String? parentId;
-
-      imageUrl =  _replyEditData?.imageUrl ?? imageUrl; // if _preparedReplyData then this is new Reply if we already have image then this is create new post for group
-      if (_selectedReplyId != null) {
-        parentId = _selectedReplyId;
-      }
-      else if (_focusedReply != null) {
-        parentId = _focusedReply!.id;
-      }
-      else if (_post != null) {
-        parentId = _post!.id;
-      }
-      
-      GroupPost post = GroupPost(parentId: parentId, body: htmlModifiedBody, private: true, imageUrl: imageUrl); // if no parentId then this is a new post for the group.
-      Groups().createPost(widget.group?.id, post).then((succeeded) {
-        _onSendFinished(succeeded);
-      });
-    }
-  }
-
-  void _onSendFinished(bool succeeded) {
-    _setLoading(false);
-    if (succeeded) {
-      setStateIfMounted(() {
-        _clearSelectedReplyId();
-        _clearBodyControllerContent();
-        _clearImageSelection();
-      });
-      // Navigator.of(context).pop(true);
-      _refreshPostData();
-    } else {
-      AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.reply.failed.msg', 'Failed to create new reply.'));
-    }
-  }
-
-  void _onUpdateFinished(bool succeeded) {
-    _setLoading(false);
-    if (succeeded) {
-      Navigator.of(context).pop(true);
-    } else {
-      AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.update.reply.failed.msg', 'Failed to edit reply.'));
-    }
-  }
-
-  void _clearSelectedReplyId() {
-    _selectedReplyId = null;
-  }
-
   void _clearBodyControllerContent() {
     _replyEditData?.body = '';
   }
 
-  void _clearImageSelection(){
-  _replyEditData?.imageUrl = null;
+  void _evalRepliesHeight() {
+    double? repliesHeight;
+    try {
+      final RenderObject? renderBox = _repliesKey.currentContext?.findRenderObject();
+      if ((renderBox is RenderBox) && renderBox.hasSize) {
+        repliesHeight = renderBox.size.height;
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+
+    setStateIfMounted(() {
+      _repliesHeight = repliesHeight;
+    });
   }
 
   //Scroll

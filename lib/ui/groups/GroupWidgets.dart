@@ -1044,8 +1044,9 @@ class GroupPostCard extends StatefulWidget {
   final Group? group;
   final List<Member>? allMembersAllowedToPost;
   final bool showImage;
+  final bool isReply;
 
-  GroupPostCard({Key? key, required this.post, required this.group, this.allMembersAllowedToPost, this.showImage = true}) :
+  GroupPostCard({Key? key, required this.post, required this.group, this.allMembersAllowedToPost, this.showImage = true, this.isReply = false}) :
     super(key: key);
 
   @override
@@ -1139,31 +1140,35 @@ class _GroupPostCardState extends State<GroupPostCard> {
                         deselectedIconKey: 'thumbs-up-gray',
                       ),
                       _buildScheduledDateWidget,
-                      Visibility(
-                          visible: isRepliesLabelVisible,
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Styles().images.getImage('comment') ?? Container(),
-                            Padding(
-                              padding: EdgeInsets.only(left: 6.0),
-                              child: Text(StringUtils.ensureNotEmpty('${visibleRepliesCount.toString()} $repliesLabel'),
-                                style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
-                              ),
+                      widget.isReply ? GestureDetector( onTap: () => _onTapPostOptions(), child:
+                        Styles().images.getImage('ellipsis-alert', excludeFromSemantics: true)
+                        ) : Visibility(
+                        visible: isRepliesLabelVisible,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          Styles().images.getImage('comment') ?? Container(),
+                          Padding(
+                            padding: EdgeInsets.only(left: 6.0),
+                            child: Text(StringUtils.ensureNotEmpty('${visibleRepliesCount.toString()} $repliesLabel'),
+                              style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
                             ),
+                          ),
                         ]),
                       ),
                     ]),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
-                    ),
-                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text('To: $_selectionMembersText',
-                        style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                    if (!widget.isReply)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
                       ),
-                      GestureDetector( onTap: () => _onTapReportAbusePostOptions(), child:
-                        Styles().images.getImage('report', excludeFromSemantics: true, color: Styles().colors.alert)
-                      ),
-                    ]),
+                    if (!widget.isReply)
+                      Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                        Text('To: $_selectionMembersText',
+                          style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                        ),
+                        GestureDetector( onTap: () => _onTapPostOptions(), child:
+                          Styles().images.getImage('report', excludeFromSemantics: true, color: Styles().colors.alert)
+                        ),
+                      ]),
                   ]))))),
     ]);
   }
@@ -1211,7 +1216,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
     UrlUtils.launchExternal(url);
   }
 
-  void _onTapReportAbusePostOptions() {
+  void _onTapPostOptions() {
     bool isReportAbuseVisible = widget.group?.currentUserIsMemberOrAdmin ?? false;
     Analytics().logSelect(target: 'Post Options');
     showModalBottomSheet(
@@ -1226,6 +1231,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                Visibility(visible: isReportAbuseVisible, child: RibbonButton(
+                  leftIconKey: "reply",
+                  label: Localization().getStringEx("panel.group.detail.post.reply.reply.label", "Reply"),
+                  onTap: null,  //TODO
+                )),
                 Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                   leftIconKey: "comment",
                   label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
