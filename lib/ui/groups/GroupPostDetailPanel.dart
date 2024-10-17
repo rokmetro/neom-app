@@ -136,7 +136,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                   imageUrl:_isEditMainPost ?  _mainPostUpdateData?.imageUrl : _post?.imageUrl,
                   onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,)
                 : Container(),
-              GroupPostCard(post: _post, group: widget.group, showImage: false),
+              GroupPostCard(post: _post, group: widget.group, allMembersAllowedToPost: _allMembersAllowedToPost, showImage: false),
               // _buildPostContent(),
               _buildRepliesSection(),
               _buildPostEdit(),

@@ -1042,9 +1042,10 @@ class _GroupCardState extends State<GroupCard> implements NotificationsListener 
 class GroupPostCard extends StatefulWidget {
   final GroupPost? post;
   final Group? group;
+  final List<Member>? allMembersAllowedToPost;
   final bool showImage;
 
-  GroupPostCard({Key? key, required this.post, required this.group, this.showImage = true}) :
+  GroupPostCard({Key? key, required this.post, required this.group, this.allMembersAllowedToPost, this.showImage = true}) :
     super(key: key);
 
   @override
@@ -1156,8 +1157,8 @@ class _GroupPostCardState extends State<GroupPostCard> {
                       child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
                     ),
                     Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Text(
-                        'members',
+                      Text('To: $_selectionMembersText',
+                        style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
                       ),
                       GestureDetector( onTap: () => _onTapReportAbusePostOptions(), child:
                         Styles().images.getImage('report', excludeFromSemantics: true, color: Styles().colors.alert)
@@ -1184,6 +1185,14 @@ class _GroupPostCardState extends State<GroupPostCard> {
             Text("Scheduled: ${widget.post?.displayScheduledTime ?? ""}", style:  Styles().textStyles.getTextStyle('widget.heading.extra_small'),)
         ))
     ]));
+
+  String get _selectionMembersText {
+    if(CollectionUtils.isNotEmpty(widget.post?.members)){
+      return "Selected Members (${widget.post?.members?.length ?? 0})";
+    } else {
+      return "All Members (${widget.allMembersAllowedToPost?.length ?? 0})";
+    }
+  }
 
       // Semantics(child: Container(
       // padding: EdgeInsets.all(6),
