@@ -650,8 +650,6 @@
     "panel.group_member_notifications.toggle_button.title.small.enabled": {"extends": "widget.toggle_button.title.small.enabled"},
     "panel.group_member_notifications.toggle_button.title.small.disabled": {"extends": "widget.toggle_button.title.small.disabled"},
 
-    "panel.group_post_create.heading.regular": {"extends": "widget.toggle_button.title.small.disabled", "letter_spacing" :  1.0},
-
     "panel.wellness.ring.select_predefined.message.regular": {"extends": "widget.info.small"},
     "panel.wellness.ring.select_predefined.button.label.regular": {"font_family": "bold", "size": 18.0, "color": "black"},
     "panel.wellness.ring.select_predefined.button.description.regular": {"font_family": "regular", "size": 14.0, "color": "black"},

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/Config.dart';
+import 'package:neom/ui/groups/GroupPostCreatePanel.dart';
+import 'package:neom/ui/groups/GroupPostEditPanel.dart';
 import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:neom/ext/Group.dart';
@@ -62,9 +62,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   PostDataModel? _mainPostUpdateData;//Main Post Edit
   List<Member>? _allMembersAllowedToPost;
   //Reply - Edit/Create/Show
-  GroupPost? _focusedReply; //Focused on Reply {Replies Thread Presentation} // User when Refresh post thread
-  GroupPost? _editingReply; //Edit Mode for Reply {Data Edit}
-  PostDataModel? _replyEditData = PostDataModel(); //used for Reply Create / Edit; Empty data for new Reply
   GlobalKey _repliesKey = GlobalKey();
   double? _repliesHeight;
 
@@ -73,7 +70,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   //Scroll and focus utils
   ScrollController _scrollController = ScrollController();
   final GlobalKey _sliverHeaderKey = GlobalKey();
-  final GlobalKey _postEditKey = GlobalKey();
   final GlobalKey _scrollContainerKey = GlobalKey();
   double? _sliverHeaderHeight;
   //Refresh
@@ -85,16 +81,11 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     NotificationService().subscribe(this, [Groups.notifyGroupPostsUpdated, Groups.notifyGroupPostReactionsUpdated]);
     _loadMembersAllowedToPost();
     _post = widget.post ?? GroupPost(); //If no post then prepare data for post creation
-    _focusedReply = widget.focusedReply;
     _sortReplies(_post?.replies);
-    _sortReplies(_focusedReply?.replies);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _evalSliverHeaderHeight();
       _evalRepliesHeight();
-      if (_focusedReply != null) {
-        _scrollToPostEdit();
-      }
     });
   }
 
@@ -205,41 +196,16 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   }
 
   Widget _buildRepliesSection(){
-    List<GroupPost>? replies;
-    if (_focusedReply != null) {
-      replies = _generateFocusedThreadList();
-    }
-    else if (_editingReply != null) {
-      replies = [_editingReply!];
-    }
-    else {
-      replies = _post?.replies;
-    }
-
     return Padding(
         padding: EdgeInsets.only(
             bottom: _outerPadding),
-        child: _buildRepliesWidget(replies: replies, focusedReplyId: _focusedReply?.id, showRepliesCount: _focusedReply == null));
-  }
-  
-  List<GroupPost> _generateFocusedThreadList(){
-    List<GroupPost> result = [];
-    if(CollectionUtils.isNotEmpty(widget.replyThread)){
-      result.addAll(widget.replyThread!);
-    }
-    if(_focusedReply!=null){
-      result.add(_focusedReply!);
-    }
-    
-    return result;
+        child: _buildRepliesWidget(replies: _post?.replies));
   }
 
   Widget _buildRepliesWidget(
       {List<GroupPost>? replies,
       double leftPaddingOffset = 24.0,
       bool nestedReply = false,
-      bool showRepliesCount = true,
-      String? focusedReplyId,
       }) {
     List<GroupPost>? visibleReplies = _getVisibleReplies(replies);
     if (CollectionUtils.isEmpty(visibleReplies)) {
@@ -369,110 +335,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
       });
   }
 
-  void _onTapReplyOptions(GroupPost? reply) {
-    Analytics().logSelect(target: 'Reply Options');
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Styles().colors.surface,
-      isScrollControlled: true,
-      isDismissible: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24)),),
-      builder: (context) {
-        return Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 17),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Visibility(visible: _isReplyVisible && _isSubReplySupported, child: RibbonButton(
-                leftIconKey: "reply",
-                label: Localization().getStringEx("panel.group.detail.post.reply.reply.label", "Reply"),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _onTapPostReply(reply: reply);
-                },
-              )),
-              Visibility(visible: _isEditVisible(reply), child: RibbonButton(
-                leftIconKey: "edit",
-                label: Localization().getStringEx("panel.group.detail.post.reply.edit.label", "Edit"),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _onTapEditPost(reply: reply);
-                },
-              )),
-              Visibility(visible: _isDeleteReplyVisible(reply), child: RibbonButton(
-                leftIconKey: "trash",
-                label: Localization().getStringEx("panel.group.detail.post.reply.delete.label", "Delete"),
-                onTap: () {
-                Navigator.of(context).pop();
-                _onTapDeleteReply(reply);
-              },
-              )),
-              Visibility(visible: _isReportAbuseVisible, child: RibbonButton(
-                leftIconKey: "comment",
-                label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
-                onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents: true), post: reply),
-              )),
-              Visibility(visible: _isReportAbuseVisible, child: RibbonButton(
-                leftIconKey: "comment",
-                label: Localization().getStringEx("panel.group.detail.post.button.report.group_admins.labe", "Report to Group Administrator(s)"),
-                onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToGroupAdmins: true), post: reply),
-              )),
-            ],
-          ),
-        );
-      });
-  }
-
-  void _onTapDeleteReply(GroupPost? reply) {
-    Analytics().logSelect(target: 'Delete Reply');
-    AppAlert.showCustomDialog(
-        context: context,
-        contentWidget: Text(Localization().getStringEx(
-            'panel.group.detail.post.reply.delete.confirm.msg',
-            'Are you sure that you want to delete this reply?')),
-        actions: <Widget>[
-          TextButton(
-              child:
-                  Text(Localization().getStringEx('dialog.yes.title', 'Yes')),
-              onPressed: () {
-                Analytics().logAlert(text: 'Are you sure that you want to delete this reply?', selection: 'Yes');
-                Navigator.of(context).pop();
-                _deleteReply(reply);
-              }),
-          TextButton(
-              child: Text(Localization().getStringEx('dialog.no.title', 'No')),
-              onPressed: () {
-                Analytics().logAlert(text: 'Are you sure that you want to delete this reply?', selection: 'No');
-                Navigator.of(context).pop();
-              })
-        ]);
-  }
-
-  void _deleteReply(GroupPost? reply) {
-    _setLoading(true);
-    Groups().deletePost(widget.group?.id, reply).then((succeeded) {
-      _setLoading(false);
-      if (!succeeded) {
-        AppAlert.showDialogResult(
-            context,
-            Localization().getStringEx(
-                'panel.group.detail.post.reply.delete.failed.msg',
-                'Failed to delete reply.'));
-      }
-    });
-  }
-
   void _onTapHeaderReply() {
     Analytics().logSelect(target: 'Reply');
-    _clearBodyControllerContent();
-    _scrollToPostEdit();
-  }
-
-  void _onTapPostReply({GroupPost? reply}) {
-    Analytics().logSelect(target: 'Post Reply');
-    //Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group, focusedReply: reply, hidePostOptions: true,)));
-    _clearBodyControllerContent();
-    _scrollToPostEdit();
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group!, inReplyTo: widget.post?.id)));
   }
 
   void _onTapReportAbuse({required GroupPostReportAbuseOptions options, GroupPost? post}) {
@@ -492,21 +357,8 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   }
 
   void _onTapEditMainPost(){
-    _mainPostUpdateData = PostDataModel(body:_post?.body, imageUrl: _post?.imageUrl, members: GroupMembersSelectionWidget.constructUpdatedMembersList(selection:_post?.members, upToDateMembers: _allMembersAllowedToPost), dateScheduled: _post?.dateScheduledUtc);
-    setStateIfMounted(() { });
-  }
-
-  void _onTapEditPost({GroupPost? reply}) {
-    Analytics().logSelect(target: 'Edit Reply');
-    if (mounted) {
-      setState(() {
-        _editingReply = reply;
-        _replyEditData?.imageUrl = reply?.imageUrl;
-        _replyEditData?.body = reply?.body;
-      });
-      _postImageHolderKey = GlobalKey(); //Refresh ImageHolder to hook new data // Edit Reply
-      _scrollToPostEdit();
-    }
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostEditPanel(post: widget.post, group: widget.group,)));
+    //TODO: then update ui with updated post data
   }
 
   void _reloadPost() {
@@ -522,15 +374,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
           print(e);
         }
         _sortReplies(_post?.replies);
-        GroupPost? updatedReply = deepFindPost(posts, _focusedReply?.id);
-        if(updatedReply!=null){
-          setStateIfMounted(() {
-            _focusedReply = updatedReply;
-            _sortReplies(_focusedReply?.replies);
-          });
-        } else {
-          setStateIfMounted(() {}); // Refresh MainPost
-        }
+        setStateIfMounted(() {}); // Refresh MainPost
       } else {
         _post = null;
       }
@@ -542,10 +386,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     setStateIfMounted(() {
       _loading = loading;
     });
-  }
-
-  void _clearBodyControllerContent() {
-    _replyEditData?.body = '';
   }
 
   void _evalRepliesHeight() {
@@ -579,26 +419,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     setStateIfMounted(() {
       _sliverHeaderHeight = sliverHeaderHeight;
     });
-  }
-
-  void _scrollToPostEdit() {
-    BuildContext? postEditContext = _postEditKey.currentContext;
-    //Scrollable.ensureVisible(postEditContext, duration: Duration(milliseconds: 10));
-    RenderObject? renderObject = postEditContext?.findRenderObject();
-    RenderAbstractViewport? viewport = (renderObject != null) ? RenderAbstractViewport.of(renderObject) : null;
-    double? postEditTop = (viewport != null) ? viewport.getOffsetToReveal(renderObject!, 0.0).offset : null;
-
-    BuildContext? scrollContainerContext = _scrollContainerKey.currentContext;
-    RenderObject? scrollContainerRenderBox = scrollContainerContext?.findRenderObject();
-    double? scrollContainerHeight = ((scrollContainerRenderBox is RenderBox) && scrollContainerRenderBox.hasSize) ? scrollContainerRenderBox.size.height : null;
-
-    if ((scrollContainerHeight != null) && (postEditTop != null)) {
-      double offset = postEditTop - scrollContainerHeight + 120;
-      offset = max(offset, _scrollController.position.minScrollExtent);
-      offset = min(offset, _scrollController.position.maxScrollExtent);
-      _scrollController.animateTo(offset, duration: Duration(milliseconds: 1), curve: Curves.easeIn);
-    }
-
   }
 
   //Utils
@@ -647,10 +467,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     }
   }
 
-  bool _isDeleteReplyVisible(GroupPost? reply) {
-    return _isDeleteVisible(reply);
-  }
-
   bool _isCurrentUserCreator(GroupPost? item) {
     String? currentMemberEmail = widget.group?.currentMember?.userId;
     String? itemMemberUserId = item?.member?.userId;
@@ -678,8 +494,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   bool get _isEditMainPost {
     return _mainPostUpdateData!=null;
   }
-
-  bool get _isSubReplySupported => false; //Disable sub-reply TBD if we do not return i sub-reply remove all internal logic and UI related to it.
 
   // Notifications Listener
   @override

@@ -19,8 +19,9 @@ import 'GroupWidgets.dart';
 
 class GroupPostCreatePanel extends StatefulWidget with AnalyticsInfo {
   final Group group;
+  final String? inReplyTo;
 
-  GroupPostCreatePanel({required this.group});
+  GroupPostCreatePanel({required this.group, this.inReplyTo});
 
   @override
   State<StatefulWidget> createState() => _GroupPostCreatePanelState();
@@ -64,9 +65,10 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
           leading: HeaderBackButton(),
           title: Text(
             Localization().getStringEx('panel.group.detail.post.header.title', 'Post'),
-            style: Styles().textStyles.getTextStyle("panel.group_post_create.heading.regular")
+            style: Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat.light")
           ),
-          centerTitle: false),
+          centerTitle: false,
+          titleSpacing: 0,),
         backgroundColor: Styles().colors.background,
         bottomNavigationBar: uiuc.TabBar(),
         body: Stack(alignment: Alignment.topCenter, children: [
@@ -300,7 +302,8 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
     String htmlModifiedBody = HtmlUtils.replaceNewLineSymbols(body);
     _increaseProgress();
 
-    GroupPost post = GroupPost(subject: subject, body: htmlModifiedBody, private: true, imageUrl: imageUrl, members: _selectedMembers, dateScheduledUtc: scheduleDate); // if no parentId then this is a new post for the group.
+    GroupPost post = GroupPost(subject: subject, body: htmlModifiedBody, private: true, imageUrl: imageUrl, members: _selectedMembers,
+      dateScheduledUtc: scheduleDate, parentId: widget.inReplyTo); // if no parentId then this is a new post for the group.
 
     Groups().createPost(widget.group.id, post).then((success) {
       if(success){

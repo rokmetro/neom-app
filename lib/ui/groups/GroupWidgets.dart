@@ -28,6 +28,7 @@ import 'package:neom/service/FlexUI.dart';
 import 'package:neom/service/Config.dart';
 import 'package:neom/service/Storage.dart';
 import 'package:neom/ui/groups/GroupMembersSelectionPanel.dart';
+import 'package:neom/ui/groups/GroupPostCreatePanel.dart';
 import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:neom/ui/groups/ImageEditPanel.dart';
 import 'package:intl/intl.dart';
@@ -1234,7 +1235,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                 Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                   leftIconKey: "reply",
                   label: Localization().getStringEx("panel.group.detail.post.reply.reply.label", "Reply"),
-                  onTap: null,  //TODO
+                  onTap: _onTapReply
                 )),
                 Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                   leftIconKey: "comment",
@@ -1250,6 +1251,10 @@ class _GroupPostCardState extends State<GroupPostCard> {
             ),
           );
         });
+  }
+
+  void _onTapReply() {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group!, inReplyTo: widget.post?.id)));
   }
 
   void _onTapReportAbuse({required GroupPostReportAbuseOptions options, GroupPost? post}) {
