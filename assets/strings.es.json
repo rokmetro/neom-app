@@ -124,10 +124,15 @@
     "generic.app.feature.checklist.gies": "iDegrees New Student Checklist",
 
     "generic.time.minutes": "minutos",
+    "generic.time.minute": "minuto",
     "generic.time.hours": "horas",
+    "generic.time.hour": "hora",
     "generic.time.days": "días",
+    "generic.time.day": "día",
     "generic.time.months": "meses",
+    "generic.time.month": "mes",
     "generic.time.years": "añoss",
+    "generic.time.year": "año",
 
     "panel.menu.button.events.title":"Eventos",
     "panel.menu.button.events.hint":"",

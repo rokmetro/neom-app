@@ -501,6 +501,7 @@
     "widget.input_field.text.medium": { "font_family": "regular", "size": 18.0, "color": "textDark"},
     "widget.input_field.text.regular": { "font_family": "regular", "size": 16.0, "color": "textDark"},
     "widget.input_field.hint.regular": { "font_family": "regular", "size": 16.0, "color": "textMedium"},
+    "widget.input_field.light.text.regular": { "font_family": "regular", "size": 16.0, "color": "textLight"},
 
     "widget.sheet.title.regular" : {"font_family": "bold", "size": 18.0, "color": "fillColorSecondary"},
 

@@ -94,25 +94,25 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                   _buildScheduleWidget(),
                   _buildNudgesWidget(),
                   Container(height: 12,),
-                  Text(Localization().getStringEx('panel.group.detail.post.create.subject.label', 'Subject'),
-                    style: Styles().textStyles.getTextStyle("widget.title.medium.fat"),),
-                  Padding(
-                    padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
-                    child: TextField(
-                      controller: TextEditingController(text: _postData.subject),
-                      onChanged: (msg)=> _postData.subject = msg,
-                      maxLines: 1,
-                      textCapitalization: TextCapitalization.sentences,
-                      decoration: InputDecoration(
-                        hintText: Localization().getStringEx('panel.group.detail.post.create.subject.field.hint', 'Write a Subject'),
-                        hintStyle: Styles().textStyles.getTextStyle("widget.input_field.hint.regular"),
-                        fillColor: Styles().colors.surface,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Styles().colors.mediumGray,
-                              width: 0.0))),
-                      style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"))),
+                  // Text(Localization().getStringEx('panel.group.detail.post.create.subject.label', 'Subject'),
+                  //   style: Styles().textStyles.getTextStyle("widget.title.medium.fat"),),
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
+                  //   child: TextField(
+                  //     controller: TextEditingController(text: _postData.subject),
+                  //     onChanged: (msg)=> _postData.subject = msg,
+                  //     maxLines: 1,
+                  //     textCapitalization: TextCapitalization.sentences,
+                  //     decoration: InputDecoration(
+                  //       hintText: Localization().getStringEx('panel.group.detail.post.create.subject.field.hint', 'Write a Subject'),
+                  //       hintStyle: Styles().textStyles.getTextStyle("widget.input_field.hint.regular"),
+                  //       fillColor: Styles().colors.surface,
+                  //       filled: true,
+                  //       border: OutlineInputBorder(
+                  //         borderSide: BorderSide(
+                  //             color: Styles().colors.mediumGray,
+                  //             width: 0.0))),
+                  //     style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"))),
                   PostInputField(
                     text: _postData.body,
                     onBodyChanged: (text) => _postData.body = text,
@@ -284,10 +284,10 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
     String? imageUrl = _postData.imageUrl;
     String? subject = _postData.subject;
     DateTime? scheduleDate = _postData.dateScheduled;
-    if (StringUtils.isEmpty(subject)) {
-      AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.validation.subject.msg', "Post subject required"));
-      return;
-    }
+    // if (StringUtils.isEmpty(subject)) {
+    //   AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.validation.subject.msg', "Post subject required"));
+    //   return;
+    // }
 
     if (StringUtils.isEmpty(body)) {
       AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Post message required"));

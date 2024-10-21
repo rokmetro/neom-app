@@ -506,10 +506,13 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
                           child: TextFormField(
                               controller: _imageUrlController,
                               keyboardType: TextInputType.text,
+                              style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
                                 hintText:  Localization().getStringEx("widget.add_image.field.description.label","Image Url"),
                                 labelText:  Localization().getStringEx("widget.add_image.field.description.hint","Image Url"),
+                                labelStyle: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
                               ))),
                       Padding(
                           padding: EdgeInsets.all(10),
@@ -532,7 +535,7 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
                           padding: EdgeInsets.all(10),
                           child: RoundedButton(
                               label:  Localization().getStringEx("widget.add_image.button.clear.label","Clear"), //TBD localize
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
                               borderColor: Styles().colors.fillColorSecondary,
                               backgroundColor: Styles().colors.background,
                               onTap: _onTapClear)),
@@ -1046,8 +1049,9 @@ class GroupPostCard extends StatefulWidget {
   final List<Member>? allMembersAllowedToPost;
   final bool showImage;
   final bool isReply;
+  final bool allowTap;
 
-  GroupPostCard({Key? key, required this.post, required this.group, this.allMembersAllowedToPost, this.showImage = true, this.isReply = false}) :
+  GroupPostCard({Key? key, required this.post, required this.group, this.allMembersAllowedToPost, this.showImage = true, this.isReply = false, this.allowTap = true}) :
     super(key: key);
 
   @override
@@ -1075,7 +1079,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
     return Stack(alignment: Alignment.topRight, children: [
       Semantics(button:true,
         child:GestureDetector(
-          onTap: _onTapCard,
+          onTap: widget.allowTap ? _onTapCard : null,
           child: Container(
               decoration: BoxDecoration(
                   color: Styles().colors.surface,
@@ -1141,9 +1145,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                         deselectedIconKey: 'thumbs-up-gray',
                       ),
                       _buildScheduledDateWidget,
-                      widget.isReply ? GestureDetector( onTap: () => _onTapPostOptions(), child:
-                        Styles().images.getImage('ellipsis-alert', excludeFromSemantics: true)
-                        ) : Visibility(
+                      Visibility(
                         visible: isRepliesLabelVisible,
                         child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           Styles().images.getImage('comment') ?? Container(),
@@ -1154,33 +1156,34 @@ class _GroupPostCardState extends State<GroupPostCard> {
                             ),
                           ),
                         ]),
+                      )
+                    ]),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
+                    ),
+                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Text('To: $_selectionMembersText',
+                        style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                      ),
+                      GestureDetector( onTap: () => _onTapPostOptions(), child:
+                        Styles().images.getImage(widget.isReply ? 'ellipsis-alert' : 'report', excludeFromSemantics: true, color: Styles().colors.alert)
                       ),
                     ]),
-                    if (!widget.isReply)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
-                      ),
-                    if (!widget.isReply)
-                      Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                        Text('To: $_selectionMembersText',
-                          style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
-                        ),
-                        GestureDetector( onTap: () => _onTapPostOptions(), child:
-                          Styles().images.getImage('report', excludeFromSemantics: true, color: Styles().colors.alert)
-                        ),
-                      ]),
                   ]))))),
     ]);
   }
 
-  Widget get _buildDisplayDateWidget =>  Visibility(visible: widget.post?.isScheduled != true, child:
+  Widget get _buildDisplayDateWidget {
+    String displayDateTime = StringUtils.ensureNotEmpty(widget.post?.displayDateTime);
+    return Visibility(visible: widget.post?.isScheduled != true, child:
     Semantics(child: Container(
-      padding: EdgeInsets.only(left: 6),
-      child: Text("${StringUtils.ensureNotEmpty(widget.post?.displayDateTime)} ago",
-          semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
-          textAlign: TextAlign.right,
-          style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')))));
+        padding: EdgeInsets.only(left: 6),
+        child: Text(displayDateTime.toLowerCase().contains("now") ? displayDateTime : "$displayDateTime ago",
+            semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
+            textAlign: TextAlign.right,
+            style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')))));
+  }
 
   Widget get _buildScheduledDateWidget => Visibility(visible: widget.post?.isScheduled == true, child:
     Row( mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.end,
@@ -1254,7 +1257,9 @@ class _GroupPostCardState extends State<GroupPostCard> {
   }
 
   void _onTapReply() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group!, inReplyTo: widget.post?.id)));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group!, inReplyTo: widget.post?.id))).then((_) {
+      Navigator.of(context).pop();
+    });
   }
 
   void _onTapReportAbuse({required GroupPostReportAbuseOptions options, GroupPost? post}) {

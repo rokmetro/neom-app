@@ -58,9 +58,7 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
 
   //Scroll and focus utils
   ScrollController _scrollController = ScrollController();
-  final GlobalKey _sliverHeaderKey = GlobalKey();
   final GlobalKey _scrollContainerKey = GlobalKey();
-  double? _sliverHeaderHeight;
   //Refresh
   GlobalKey _postImageHolderKey = GlobalKey();
 
@@ -71,10 +69,6 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
     _loadMembersAllowedToPost();
     _post = widget.post ?? GroupPost(); //If no post then prepare data for post creation
     _mainPostUpdateData = PostDataModel(body:_post?.body, imageUrl: _post?.imageUrl, members: GroupMembersSelectionWidget.constructUpdatedMembersList(selection:_post?.members, upToDateMembers: _allMembersAllowedToPost), dateScheduled: _post?.dateScheduledUtc);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _evalSliverHeaderHeight();
-    });
   }
 
   @override
@@ -103,7 +97,6 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
     return Stack(children: [
       SingleChildScrollView(key: _scrollContainerKey, controller: _scrollController, child:
         Column(children: [
-          Container(height: _sliverHeaderHeight ?? 0,),
           ImageChooserWidget(key: _postImageHolderKey, buttonVisible: true,
             imageUrl: _mainPostUpdateData?.imageUrl,
             onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,),
@@ -137,19 +130,12 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
                       children: [
                         Container(
                             padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
-                            child: TextField(
-                              onChanged: (txt) => _mainPostUpdateData?.body = txt,
-                              controller: bodyController,
-                              maxLines: null,
-                              autofocus: true,
-                              decoration: InputDecoration(
-                                  hintText: Localization().getStringEx("panel.group.detail.post.edit.hint", "Edit the post"),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Styles().colors.mediumGray,
-                                          width: 0.0))),
-                              style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
-                            )),
+                            child: PostInputField(
+                              text: _mainPostUpdateData?.body ?? '',
+                              onBodyChanged: (text) => _mainPostUpdateData?.body = text,
+                              hint: Localization().getStringEx("panel.group.detail.post.edit.hint", "Edit the post"),
+                            ),
+                        ),
                         Row(children: [
                           Flexible(
                               flex: 1,
@@ -234,8 +220,8 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
     _setLoading(true);
     GroupPost postToUpdate = GroupPost(id: _post?.id, subject: _post?.subject, body: htmlModifiedBody, imageUrl: imageUrl, members: toMembers, dateScheduledUtc: _mainPostUpdateData?.dateScheduled, private: true);
     Groups().updatePost(widget.group?.id, postToUpdate).then((succeeded) {
-      _mainPostUpdateData = null;
       _setLoading(false);
+      Navigator.of(context).pop();
     });
   }
 
@@ -262,23 +248,6 @@ class _GroupPostEditPanelState extends State<GroupPostEditPanel> implements Noti
   void _setLoading(bool loading) {
     setStateIfMounted(() {
       _loading = loading;
-    });
-  }
-
-  //Scroll
-  void _evalSliverHeaderHeight() {
-    double? sliverHeaderHeight;
-    try {
-      final RenderObject? renderBox = _sliverHeaderKey.currentContext?.findRenderObject();
-      if ((renderBox is RenderBox) && renderBox.hasSize) {
-        sliverHeaderHeight = renderBox.size.height;
-      }
-    } on Exception catch (e) {
-      print(e.toString());
-    }
-
-    setStateIfMounted(() {
-      _sliverHeaderHeight = sliverHeaderHeight;
     });
   }
 

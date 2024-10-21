@@ -124,7 +124,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                   imageUrl:_isEditMainPost ?  _mainPostUpdateData?.imageUrl : _post?.imageUrl,
                   onImageChanged: (url) => _mainPostUpdateData?.imageUrl = url,)
                 : Container(),
-              GroupPostCard(post: _post, group: widget.group, allMembersAllowedToPost: _allMembersAllowedToPost, showImage: false),
+              GroupPostCard(post: _post, group: widget.group, allMembersAllowedToPost: _allMembersAllowedToPost, showImage: false, allowTap: false),
               _buildRepliesSection(),
             ],),
           )),
@@ -229,6 +229,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
             post: reply,
             group: widget.group,
             isReply: true,
+            allMembersAllowedToPost: _allMembersAllowedToPost,
           )
       );
     }
@@ -358,13 +359,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
   void _onTapEditMainPost(){
     Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostEditPanel(post: widget.post, group: widget.group,)));
-    //TODO: then update ui with updated post data
   }
 
   void _reloadPost() {
     //TODO: Can we optimize this to only load data for the relevant updated post(s)?
     _setLoading(true);
-    Groups().loadGroupPosts(widget.group?.id).then((posts) {
+    Groups().loadGroupPosts(widget.group?.id, type: GroupPostType.post, order: GroupSortOrder.desc).then((posts) {
       if (CollectionUtils.isNotEmpty(posts)) {
         try {
           // GroupPost? post = (posts as List<GroupPost?>).firstWhere((post) => (post?.id == _post?.id), orElse: ()=> null); //Remove to fix reload Error: type '() => Null' is not a subtype of type '(() => GroupPost)?' of 'orElse'
@@ -374,7 +374,11 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
           print(e);
         }
         _sortReplies(_post?.replies);
-        setStateIfMounted(() {}); // Refresh MainPost
+        setStateIfMounted(() {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _evalRepliesHeight();
+          });
+        }); // Refresh MainPost
       } else {
         _post = null;
       }
