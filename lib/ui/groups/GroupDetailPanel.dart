@@ -895,7 +895,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         return [
           SliverHeaderBar(
             pinned: true,
-            floating: true,
+            floating: false,
             actions: actions,
             title: _group?.title ?? '',
             leadingIconKey: 'caret-left',
@@ -905,13 +905,16 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
               child: Padding(
                 padding: const EdgeInsets.only(top: kToolbarHeight),
                 child: Stack(key: _headerKey, children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 200.0),
-                    child: _buildImageHeader(),
+                  Visibility(
+                    visible: _hasGroupImage,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 200.0),
+                      child: _buildImageHeader(),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0, top: 152.0),
-                    child: _buildGroupInfo(),
+                    padding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: 24.0, top: _hasGroupImage ? 152.0 : 24.0),
+                    child: _buildGroupDetailsHeader(),
                   )
                 ]),
               ),
@@ -926,12 +929,28 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     );
   }
 
+  bool get _hasGroupImage => StringUtils.isNotEmpty(_group?.imageURL);
+
   Widget _buildImageHeader(){
-    return StringUtils.isNotEmpty(_group?.imageURL) ? Semantics(label: "group image", hint: "Double tap to zoom", child:
+    return _hasGroupImage ? Semantics(label: "group image", hint: "Double tap to zoom", child:
       Container(height: 200.0, width: MediaQuery.of(context).size.width, color: Styles().colors.background, child:
         ModalImageHolder(child: Image.network(_group!.imageURL!, excludeFromSemantics: true, fit: BoxFit.cover, headers: Config().networkAuthHeaders)),
       )
     ): Container();
+  }
+
+  Widget _buildGroupDetailsHeader() {
+    return Container(
+      color: Styles().colors.surface,
+      child: Column(
+        children: [
+          _buildGroupInfo(),
+          _buildMembershipRequest(),
+          _buildCancelMembershipRequest(),
+          _buildLeaveGroupWidget(),
+        ],
+      ),
+    );
   }
 
   Widget _buildGroupInfo() {
@@ -1114,9 +1133,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       Column(children: commands,),
     ));
 
-    return Container(color: Styles().colors.surface, child:
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList),
-      );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList);
   }
 
   List<Widget> _buildTabs() {
@@ -1530,7 +1547,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildBadgeWidget() {
     Widget badgeWidget = Container(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: _group!.currentUserStatusColor, borderRadius: BorderRadius.all(Radius.circular(2)),), child:
       Semantics(label: _group?.currentUserStatusText?.toLowerCase(), excludeSemantics: true, child:
-        Text(_group!.currentUserStatusText!.toUpperCase(), style:  Styles().textStyles.getTextStyle('widget.heading.dark.extra_small'),)
+        Text(_group!.currentUserStatusText!.toUpperCase(), style: _group?.currentUserStatusTextStyle,)
       ),
     );
     return _showPolicyButton ? Row(children: <Widget>[
@@ -1603,7 +1620,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   Widget _buildMembershipRequest() {
     if (Auth2().isLoggedIn && _group!.currentUserCanJoin && (_group?.researchProject != true)) {
-      return Container(decoration: BoxDecoration(color: Styles().colors.surface, border: Border(top: BorderSide(color: Styles().colors.surfaceAccent, width: 1))), child:
+      return Container(color: Styles().colors.surface, child:
         Padding(padding: EdgeInsets.all(16), child:
           RoundedButton(label: Localization().getStringEx("panel.group_detail.button.request_to_join.title",  'Request to join'),
             textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.dark"),
@@ -1669,24 +1686,37 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   Widget _buildCancelMembershipRequest() {
     if (Auth2().isOidcLoggedIn && _group!.currentUserIsPendingMember) {
-      return Container(decoration: BoxDecoration(color: Styles().colors.surface, border: Border(top: BorderSide(color: Styles().colors.surfaceAccent, width: 1))), child:
-        Padding(padding: EdgeInsets.all(16), child:
-          RoundedButton(label: Localization().getStringEx("panel.group_detail.button.cancel_request.title",  'Cancel Request'),
-            textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
-            backgroundColor: Styles().colors.surface,
-            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            borderColor: Styles().colors.fillColorSecondary,
-            borderWidth: 2,
-            progress: _confirmationLoading,
-            onTap:() { _onCancelMembershipRequest();  }
-          ),
-        )
+      return Padding(padding: EdgeInsets.all(16), child:
+        RoundedButton(label: Localization().getStringEx("panel.group_detail.button.cancel_request.title",  'Cancel Request'),
+          textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.dark"),
+          backgroundColor: Styles().colors.surface,
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          borderColor: Styles().colors.fillColorSecondary,
+          borderWidth: 2,
+          progress: _confirmationLoading,
+          onTap:() { _onCancelMembershipRequest();  }
+        ),
       );
     }
     else {
       return Container();
     }
-      
+  }
+
+  Widget _buildLeaveGroupWidget() {
+    return Visibility(
+      visible: _canLeaveGroup,
+      child: Padding(padding: EdgeInsets.all(16), child:
+        RoundedButton(label: Localization().getStringEx("panel.group_detail.button.leave.title", 'Leave'),
+            textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.dark"),
+            backgroundColor: Styles().colors.surface,
+            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            borderColor: Styles().colors.fillColorSecondary,
+            borderWidth: 2,
+            onTap: _onTapLeave
+        ),
+      ),
+    );
   }
 
   Widget _buildConfirmationDialog({String? confirmationTextMsg,
