@@ -1177,10 +1177,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
 
   Widget get _buildDisplayDateWidget {
     String displayDateTime = StringUtils.ensureNotEmpty(widget.post?.displayDateTime);
+    bool noSuffix = displayDateTime.toLowerCase().contains("now") || displayDateTime.toLowerCase().contains(",");
     return Visibility(visible: widget.post?.isScheduled != true, child:
     Semantics(child: Container(
         padding: EdgeInsets.only(left: 6),
-        child: Text(displayDateTime.toLowerCase().contains("now") ? displayDateTime : "$displayDateTime ago",
+        child: Text(noSuffix ? displayDateTime : "$displayDateTime ago",
             semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
             textAlign: TextAlign.right,
             style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')))));

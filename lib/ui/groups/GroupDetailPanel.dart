@@ -869,7 +869,11 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         physics: const NeverScrollableScrollPhysics(),
         children: [
           SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildEvents()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildPosts(), _buildScheduledPosts()],)),
+          SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            _buildPosts(),
+            if (_isAdmin)
+              _buildScheduledPosts()
+          ],)),
           SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildMessages()),
           SingleChildScrollView(scrollDirection: Axis.vertical, child: _buildPolls()),
           SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],)),
