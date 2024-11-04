@@ -114,6 +114,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   bool               _updatingEvents = false;
   int                _allEventsCount = 0;
 
+  GlobalKey          _groupDetailsKey = GlobalKey();
+  double?            _groupDetailsHeight;
+
   List<GroupPost>    _posts = <GroupPost>[];
   List<Member>?      _allMembersAllowedToPost;
   GlobalKey          _lastPostKey = GlobalKey();
@@ -261,6 +264,10 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
     _postId = widget.groupPostId;
     _loadGroup(loadEvents: true);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _evalGroupDetailsHeight();
+    });
 
     super.initState();
   }
@@ -954,7 +961,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildGroupDetailsHeader() {
     return Container(
       color: Styles().colors.surface,
+      height: _groupDetailsHeight,
       child: Column(
+        key: _groupDetailsKey,
         children: [
           _buildGroupInfo(),
           _buildMembershipRequest(),
@@ -2373,6 +2382,21 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         Scrollable.ensureVisible(currentContext, duration: Duration(milliseconds: 10));
       }
     }
+  }
+
+  void _evalGroupDetailsHeight() {
+    double? groupDetailsHeight;
+    try {
+      final RenderObject? renderBox = _groupDetailsKey.currentContext?.findRenderObject();
+      if ((renderBox is RenderBox) && renderBox.hasSize) {
+        groupDetailsHeight = renderBox.size.height;
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+    setStateIfMounted(() {
+      _groupDetailsHeight = groupDetailsHeight;
+    });
   }
 
   void _increaseProgress() {

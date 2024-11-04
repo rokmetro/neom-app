@@ -224,7 +224,7 @@ class _BrowseSection extends StatelessWidget {
 
   Widget _buildHeading(BuildContext context) {
     return Padding(padding: EdgeInsets.all(8.0), child:
-      InkWell(onTap: () => _onTap(context), child:
+      GestureDetector(onTap: () => _onTap(context), child:
         Stack(
           alignment: Alignment.bottomRight,
           children: [
@@ -239,12 +239,12 @@ class _BrowseSection extends StatelessWidget {
               //   ),
               // ],)
             ],),
-            Opacity(opacity: _hasFavoriteContent ? 1 : 0, child:
+            Visibility(visible: _hasFavoriteContent, child:
               Semantics(label: 'Favorite' /* TBD: Localization */, button: true, child:
-                InkWell(onTap: () => _onTapSectionFavorite(context), child:
+                GestureDetector(onTap: () => _onTapSectionFavorite(context), child:
                   Container(
                     decoration: BoxDecoration(
-                        color: Styles().colors.black,
+                        color: Styles().colors.fillColorPrimary,
                         border: Border.all(color: Styles().colors.fillColorSecondaryVariant),
                         borderRadius: BorderRadius.circular(24.0)
                     ),
@@ -379,8 +379,7 @@ class _BrowseSection extends StatelessWidget {
 
       case "inbox":        _onTapNotifications(context); break;
 
-      case "polls.create_poll":              _onTapCreatePoll(context); break;
-      case "polls.recent_polls":             _onTapViewPolls(context); break;
+      case "polls":             _onTapViewPolls(context); break;
 
       case "recent.recent_items":            _onTapRecentItems(context); break;
 
@@ -417,11 +416,6 @@ class _BrowseSection extends StatelessWidget {
   void _onTapGroups(BuildContext context) {
     Analytics().logSelect(target: "All Groups");
     Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: GroupsHomePanel.routeName), builder: (context) => GroupsHomePanel()));
-  }
-
-  void _onTapCreatePoll(BuildContext context) {
-    Analytics().logSelect(target: "Create Poll");
-    CreatePollPanel.present(context);
   }
 
   void _onTapViewPolls(BuildContext context) {

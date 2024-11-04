@@ -30,7 +30,6 @@ import 'package:neom/service/Storage.dart';
 import 'package:neom/ui/polls/PollProgressPainter.dart';
 import 'package:neom/ui/polls/CreatePollPanel.dart';
 import 'package:neom/ui/polls/PollBubblePinPanel.dart';
-import 'package:neom/ui/widgets/AccessWidgets.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
@@ -66,8 +65,6 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
   bool _groupPollsLoading = false;
   List<Group>? _myGroups;
 
-  bool _hasPollsAccess = false;
-  
   final GlobalKey _keyBleDescriptionText = GlobalKey();
   double _bleDescriptionTextHeight = 0;
 
@@ -119,7 +116,6 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
 
   Widget _buildScaffoldBody() {
     List<Widget> bodyWidgets = [];
-    Widget? accessWidget = AccessCard.builder(resource: 'polls');
     Widget content = Expanded(child:
       CustomScrollView(
           controller: _scrollController,
@@ -139,17 +135,9 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
       )
     );
 
-    if (accessWidget != null) {
-      bodyWidgets.add(Padding(padding: const EdgeInsets.only(top: 16), child: accessWidget));
-      _hasPollsAccess = false;
-    } else {
-      bodyWidgets.add(content);
-      bodyWidgets.add(_buildCreatePollButton());
-      if (!_hasPollsAccess) {
-        _loadPolls();
-      }
-      _hasPollsAccess = true;
-    }
+    bodyWidgets.add(content);
+    bodyWidgets.add(_buildCreatePollButton());
+    _loadPolls();
     return Column(children: bodyWidgets);
   }
 
