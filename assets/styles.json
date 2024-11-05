@@ -406,8 +406,8 @@
     "widget.info.dark.small.medium_fat": { "font_family": "medium", "size": 14.0, "color": "textDark"},
     "widget.info.dark.tiny": { "font_family": "regular", "size": 12.0, "color": "textDark"},
 
-    "widget.tab.selected": {"font_family": "extra_bold", "size": 16.0, "color": "textPrimary"},
-    "widget.tab.not_selected": {"font_family": "medium", "size": 16.0, "color": "textPrimary"},
+    "widget.tab.selected": {"font_family": "extra_bold", "size": 16.0, "color": "textDark"},
+    "widget.tab.not_selected": {"font_family": "medium", "size": 16.0, "color": "textDark"},
 
     "widget.button.title.enabled": { "font_family": "bold", "size": 16.0, "color": "textDark"},
     "widget.button.title.disabled": { "font_family": "bold", "size": 16.0, "color": "textMedium"},

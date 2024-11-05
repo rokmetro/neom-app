@@ -368,11 +368,11 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
   }
 
   Widget _buildCreatePollButton() {
-    return Container(padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), color:Styles().colors.surface,child:
+    return Container(padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), color:Styles().colors.background,child:
       RoundedButton(label:Localization().getStringEx("panel.polls_home.text.create_poll","Create a Poll"),
           textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-          borderColor: Styles().colors.fillColorSecondary,
-          backgroundColor: Styles().colors.surface,
+          borderColor: Styles().colors.fillColorSecondaryVariant,
+          backgroundColor: Styles().colors.fillColorSecondaryVariant,
         onTap:_onCreatePollTapped
     ));
   }
@@ -451,9 +451,7 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
         Polls().getMyPolls(cursor: _myPollsCursor)!.then((PollsChunk? result) {
           setStateIfMounted(() {
             if (result != null) {
-              if (_myPolls == null) {
-                _myPolls = [];
-              }
+              _myPolls ??= [];
               _myPolls!.addAll(result.polls!);
               _myPollsCursor = (0 < result.polls!.length) ? result.cursor : null;
               _myPollsError = null;
@@ -480,9 +478,7 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
         Polls().getRecentPolls(cursor: _recentPollsCursor)!.then((PollsChunk? result){
           setStateIfMounted((){
             if (result != null) {
-              if (_recentPolls == null) {
-                _recentPolls = [];
-              }
+              _recentPolls ??= [];
               _stripRecentLocalPolls(result.polls);
               _recentPolls!.addAll(result.polls!);
               _recentPollsCursor = (0 < result.polls!.length) ? result.cursor : null;
@@ -508,9 +504,7 @@ class _PollsHomePanelState extends State<PollsHomePanel> implements Notification
         if (CollectionUtils.isNotEmpty(groupIds)) {
           Polls().getGroupPolls(groupIds: groupIds, cursor: _groupPollsCursor)!.then((PollsChunk? result) {
             if (result != null) {
-              if (_groupPolls == null) {
-                _groupPolls = [];
-              }
+              _groupPolls ??= [];
               _groupPolls!.addAll(result.polls!);
               _groupPollsCursor = (0 < result.polls!.length) ? result.cursor : null;
               _groupPollsError = null;
