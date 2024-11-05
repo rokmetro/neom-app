@@ -32,7 +32,7 @@
 			"browse.surveys": ["public_surveys"],
 			"browse.polls": ["create_poll", "recent_polls"],
 
-			"settings": ["contact", "favorites", "notifications"],
+			"settings": ["favorites", "notifications"],
 			"authenticate": ["connect", "connected", "feedback"],
 			"authenticate.connect": ["phone_or_email"],
 			"authenticate.connected": ["code", "password", "passkey"],
