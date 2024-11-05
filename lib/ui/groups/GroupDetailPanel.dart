@@ -28,6 +28,7 @@ import 'package:neom/ui/events2/Event2Widgets.dart';
 import 'package:neom/ui/groups/GroupMemberNotificationsPanel.dart';
 import 'package:neom/ui/groups/GroupPostDetailPanel.dart';
 import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
+import 'package:neom/ui/polls/PollWidgets.dart';
 import 'package:neom/ui/widgets/CustomFlexibleSpaceBar.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:neom/ui/widgets/InfoPopup.dart';
@@ -1403,7 +1404,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       for (Poll? groupPoll in _groupPolls!) {
         if (groupPoll != null) {
           pollsContentList.add(Container(height: 10));
-          pollsContentList.add(GroupPollCard(poll: groupPoll, group: _group));
+          pollsContentList.add(PollCard(poll: groupPoll, group: _group, showGroupName: false,));
         }
       }
 

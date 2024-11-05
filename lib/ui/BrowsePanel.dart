@@ -19,7 +19,6 @@ import 'package:neom/ui/home/HomeRecentItemsWidget.dart';
 import 'package:neom/ui/home/HomeTwitterWidget.dart';
 import 'package:neom/ui/home/HomeWidgets.dart';
 import 'package:neom/ui/messages/MessagesHomePanel.dart';
-import 'package:neom/ui/polls/CreatePollPanel.dart';
 import 'package:neom/ui/polls/PollsHomePanel.dart';
 import 'package:neom/ui/surveys/PublicSurveysPanel.dart';
 import 'package:neom/ui/wallet/WalletHomePanel.dart';

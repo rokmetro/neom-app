@@ -10,6 +10,7 @@ import 'package:neom/service/Config.dart';
 import 'package:neom/ui/home/HomePanel.dart';
 import 'package:neom/ui/home/HomeWidgets.dart';
 import 'package:neom/ui/polls/CreatePollPanel.dart';
+import 'package:neom/ui/polls/PollWidgets.dart';
 import 'package:neom/ui/polls/PollsHomePanel.dart';
 import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/ui/widgets/SemanticsWidgets.dart';
@@ -58,15 +59,15 @@ class _HomePollsSectionWidgetState extends State<HomePollsSectionWidget> {
 
   Widget get _widgetContent {
     LinkedHashSet<String>? favorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
-    bool hasCreatePoll = favorites?.contains('create_poll') ?? false;
+    // bool hasCreatePoll = favorites?.contains('create_poll') ?? false;
     bool hasRecentPolls = favorites?.contains('recent_polls') ?? false;
     return Column(children: [
       if (hasRecentPolls)
         HomeRecentPollsWidget(updateController: widget.updateController,),
-      if (hasRecentPolls && hasCreatePoll)
-        Container(height: 16),
-      if (hasCreatePoll)
-        HomeCreatePollWidget(updateController: widget.updateController,),
+      // if (hasRecentPolls && hasCreatePoll)
+      //   Container(height: 16),
+      // if (hasCreatePoll)
+      //   HomeCreatePollWidget(updateController: widget.updateController,),
     ],);
   }
 }
@@ -180,10 +181,7 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
 
   @override
   Widget build(BuildContext context) {
-    return HomeBannerSubsectionWidget(
-      title: HomeRecentPollsWidget.title,
-      child: _buildContent(),
-    );
+    return _buildContent();
   }
 
   Widget _buildContent() {
@@ -253,7 +251,7 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
     }
     else {
       contentWidget = Padding(padding: EdgeInsets.only(left: 16, right: 16), child:
-      PollCard(poll: _recentPolls?.first, group: _getGroup(_recentPolls?.first.groupId))
+        PollCard(poll: _recentPolls?.first, group: _getGroup(_recentPolls?.first.groupId))
       );
     }
 
