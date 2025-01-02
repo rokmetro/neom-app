@@ -286,6 +286,10 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     }
     else if (_group != null) {
       content = _buildGroupContent();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _evalGroupHeaderHeight();
+      });
     }
     else {
       content = _buildErrorContent();
@@ -299,25 +303,20 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       ),
       backgroundColor: Styles().colors.background,
       bottomNavigationBar: uiuc.TabBar(),
-      body: RefreshIndicator(onRefresh: _onPullToRefresh, child:
-      content,
+      body: RefreshIndicator(onRefresh: _onPullToRefresh,
+      child: content,
       ),
     );
   }
 
   Widget _buildLoadingContent() {
-    return Stack(children: <Widget>[
-      Column(children: <Widget>[
-        Expanded(
-          child: Center(
-            child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary), ),
-          ),
+    return Column(children: <Widget>[
+      Expanded(
+        child: Center(
+          child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary), ),
         ),
-      ]),
-      SafeArea(
-          child: HeaderBackButton()
       ),
-    ],);
+    ]);
   }
 
   Widget _buildErrorContent() {
