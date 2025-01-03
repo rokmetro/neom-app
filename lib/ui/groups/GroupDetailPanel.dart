@@ -129,8 +129,6 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   int                _progress = 0;
 
-  List<Event2>?      _groupEvents;
-
   GlobalKey          _groupHeaderKey = GlobalKey();
   double?            _groupHeaderHeight;
 
@@ -333,48 +331,6 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   }
 
   Widget _buildGroupContent() {
-    List<Widget> content = [
-      _buildImageHeader(),
-      _buildGroupInfo()
-    ];
-    if(_isMemberOrAdmin) {
-      content.add(_buildTabs());
-      content.add(_buildViewPager());
-    } else {
-      content.addAll(_buildNonMemberContent());
-    }
-
-    return Column(children: <Widget>[
-      Expanded(child:
-        SingleChildScrollView(scrollDirection: Axis.vertical, child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: content,),
-        ),
-      ),
-      _buildMembershipRequest(),
-      _buildCancelMembershipRequest(),
-    ],);
-  }
-
-  Widget _buildGroupContent() {
-    Widget content;
-    if (_isMemberOrAdmin) {
-      content = TabBarView(
-        controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: _GroupEventsContent()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: _GroupPostsContent()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: _GroupScheduledPostsContent()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: _GroupMessagesContent()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: _GroupPollsContent()),
-          SingleChildScrollView(scrollDirection: Axis.vertical, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],)),
-        ],
-      );
-    }
-    else {
-      //non-member
-    }
-
     return NestedScrollView(
       controller: _scrollController,
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -395,7 +351,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           ),
         ];
       },
-      body: content,
+      body: _isMemberOrAdmin ? _buildViewPager() : SingleChildScrollView(scrollDirection: Axis.vertical, child:
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: _buildNonMemberContent(),),
+      ),
     );
   }
 
@@ -838,6 +796,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           ExpandablePageView(
             children: pages,
             controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
             onPageChanged: (int index){
               _tabController?.animateTo(index, duration: Duration(milliseconds: _animationDurationInMilliSeconds));
               _currentTab = _tabAtIndex(index) ?? _currentTab;
@@ -871,7 +830,8 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         return _GroupPollsContent(group: _group,  updateController: _updateController);
       case _DetailTab.Scheduled:
         return _GroupScheduledPostsContent(group: _group,  updateController: _updateController);
-
+      case _DetailTab.About:
+        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [_buildAbout(), _buildPrivacyDescription(), _buildAdmins()],);
       default: Container();
     }
     return Container();
@@ -1084,16 +1044,16 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildMembershipRequest() {
     if (Auth2().isLoggedIn && _group!.currentUserCanJoin && (_group?.researchProject != true)) {
       return Container(decoration: BoxDecoration(color: Styles().colors.surface, border: Border(top: BorderSide(color: Styles().colors.surfaceAccent, width: 1))), child:
-      Padding(padding: EdgeInsets.all(16), child:
-      RoundedButton(label: Localization().getStringEx("panel.group_detail.button.request_to_join.title",  'Request to join'),
-          textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
-          backgroundColor: Styles().colors.surface,
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-          borderColor: Styles().colors.fillColorSecondary,
-          borderWidth: 2,
-          onTap:() { _onMembershipRequest();  }
-      ),
-      ),
+        Padding(padding: EdgeInsets.all(16), child:
+          RoundedButton(label: Localization().getStringEx("panel.group_detail.button.request_to_join.title",  'Request to join'),
+              textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.dark"),
+              backgroundColor: Styles().colors.surface,
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              borderColor: Styles().colors.fillColorSecondary,
+              borderWidth: 2,
+              onTap:() { _onMembershipRequest();  }
+          ),
+        ),
       );
     }
     else {
