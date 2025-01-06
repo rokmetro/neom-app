@@ -1066,6 +1066,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
     String? creatorName = widget.post?.creatorName;
     String? htmlBody = widget.post?.body;
     String? imageUrl = widget.post?.imageUrl;
+    List<String>? memberIds = widget.group.id != null ? widget.post?.getMemberAccountIds(groupId: widget.group.id!) : null;
     int visibleRepliesCount = _visibleRepliesCount;
     bool isRepliesLabelVisible = (visibleRepliesCount > 0);
     String? repliesLabel = (visibleRepliesCount == 1)
@@ -1131,15 +1132,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
                     ],),
                     Container(height: 16.0),
                     Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      //TODO: fix reactions with Social service
-                      // GroupPostReaction(
-                      //   groupID: widget.group?.id,
-                      //   post: widget.post,
-                      //   reaction: thumbsUpReaction,
-                      //   accountIDs: widget.post?.reactions[thumbsUpReaction],
-                      //   selectedIconKey: 'thumbs-up',
-                      //   deselectedIconKey: 'thumbs-up-gray',
-                      // ),
+                      GroupReaction(
+                        groupId: widget.group.id,
+                        entityId: widget.post?.id,
+                        reactionSource: SocialEntityType.post,
+                      ),
                       _buildScheduledDateWidget,
                       Visibility(
                         visible: isRepliesLabelVisible,
@@ -1159,9 +1156,9 @@ class _GroupPostCardState extends State<GroupPostCard> {
                       child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
                     ),
                     Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      // Text('To: $_selectionMembersText',
-                      //   style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
-                      // ),
+                      Text('To: ${memberIds?.length ?? 0} members',
+                        style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                      ),
                       GestureDetector( onTap: () => _onTapPostOptions(), child:
                         Styles().images.getImage(widget.isReply ? 'ellipsis-alert' : 'report', excludeFromSemantics: true, color: Styles().colors.alert)
                       ),
@@ -1172,12 +1169,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
 
   Widget get _buildDisplayDateWidget {
     String displayDateTime = StringUtils.ensureNotEmpty(widget.post?.displayDateTime);
-    bool noSuffix = displayDateTime.toLowerCase().contains("now") || displayDateTime.toLowerCase().contains(",");
     return Visibility(visible: widget.post?.isScheduled != true, child:
     Semantics(child: Container(
         padding: EdgeInsets.only(left: 6),
-        child: Text(noSuffix ? displayDateTime : "$displayDateTime ago",
-            semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
+        child: Text(displayDateTime,
+            semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""}",
             textAlign: TextAlign.right,
             style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')))));
   }
@@ -1239,7 +1235,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
   }
 
   void _onTapReply() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group!, inReplyTo: widget.post?.id))).then((_) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group, inReplyTo: widget.post?.id))).then((_) {
       Navigator.of(context).pop();
     });
   }
