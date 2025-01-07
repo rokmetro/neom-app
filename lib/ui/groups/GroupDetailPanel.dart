@@ -1035,7 +1035,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
             Padding(
                 padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
                 child: Text(headingText,
-                    style:   Styles().textStyles.getTextStyle('widget.title.dark.large.extra_fat'))),
+                    style:   Styles().textStyles.getTextStyle('widget.title.large.extra_fat'))),
             SingleChildScrollView(scrollDirection: Axis.horizontal, child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: content))
           ]))
     ]);
@@ -1304,7 +1304,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
     showModalBottomSheet(
         context: context,
-        backgroundColor: Colors.white,
+        backgroundColor: Styles().colors.surface,
         isScrollControlled: true,
         isDismissible: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),

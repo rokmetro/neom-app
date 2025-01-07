@@ -119,7 +119,7 @@ class _ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Prof
   Widget build(BuildContext context) =>
       Padding(padding: EdgeInsets.zero, child:
         Column(children: [
-          Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
+          Text(_descriptionText, style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
           Padding(padding: EdgeInsets.only(top: 24), child:
             _photoWidget,
           ),
@@ -148,7 +148,7 @@ class _ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Prof
         ],),
       );
 
-    String get _desriptionText {
+    String get _descriptionText {
       switch (widget.contentType) {
         case ProfileInfo.connectionsInfo: return Localization().getStringEx('panel.profile.info.connections.edit.description.text', 'Choose how your profile displays for your Connections.');
         case ProfileInfo.directoryInfo: return Localization().getStringEx('panel.profile.info.directory.edit.description.text', 'Choose how your profile displays in the User Directory.');
@@ -299,6 +299,10 @@ class _ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Prof
 
     Widget get _nameWidget =>
       Text(widget.profile?.fullName ?? '', style: nameTextStyle, textAlign: TextAlign.center,);
+
+    @override
+    TextStyle? get nameTextStyle =>
+        Styles().textStyles.getTextStyleEx('widget.message.medium_large.fat', fontHeight: 0.85, textOverflow: TextOverflow.ellipsis);
 
     // Edit: Directory Visibility
 
@@ -613,7 +617,7 @@ class _ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Prof
   Widget _sectionHeadingWidget(String? title, { String? hint }) =>
     Padding(padding: EdgeInsets.only(bottom: 2), child:
       RichText(textAlign: TextAlign.left, text:
-        TextSpan(style: Styles().textStyles.getTextStyle('widget.title.tiny.fat.spaced'), children: [
+        TextSpan(style: Styles().textStyles.getTextStyle('widget.title.light.tiny.fat.spaced'), children: [
           TextSpan(text: title?.toUpperCase()),
           if (hint?.isNotEmpty == true)
             TextSpan(text: ' ' + (hint?.toUpperCase() ?? ''), style: Styles().textStyles.getTextStyle('widget.title.tiny'))

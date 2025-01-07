@@ -117,7 +117,7 @@ class _DirectoryAccountCardState extends State<DirectoryAccountCard> {
       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(child:
           Padding(padding: EdgeInsets.only(top: 12), child:
-          DirectoryProfileDetails(widget.account.profile),
+            DirectoryProfileDetails(widget.account.profile, widget.account.identifiers),
           ),
         ),
         Expanded(child:
@@ -179,37 +179,35 @@ class _DirectoryAccountCardState extends State<DirectoryAccountCard> {
 
 class DirectoryProfileDetails extends StatelessWidget {
   final Auth2UserProfile? profile;
+  final List<Auth2PublicAccountIdentifier>? identifiers;
 
-  DirectoryProfileDetails(this.profile, { super.key });
+  DirectoryProfileDetails(this.profile, this.identifiers, { super.key });
   
   String? get college => null;
   String? get department => null;
   String? get major => null;
   
-  String? get email => null;
-  String? get email2 => null;
-  String? get phone => null;
   String? get website => null;
   
   @override
-  Widget build(BuildContext context) =>
-      //TODO: list all emails and phones or how to choose which?
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        if (profile?.college?.isNotEmpty == true)
-          Text(profile?.college ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
-        if (profile?.department?.isNotEmpty == true)
-          Text(profile?.department ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
-        if (profile?.major?.isNotEmpty == true)
-          Text(profile?.major ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
-        if (Auth2().emails.isNotEmpty)
-          _linkDetail(Auth2().emails.first, 'mailto:${email}'),
-        if (profile?.email2?.isNotEmpty == true)
-          _linkDetail(profile?.email2 ?? '', 'mailto:${email2}'),
-        if (Auth2().phones.isNotEmpty == true)
-          _linkDetail(Auth2().phones.first, 'tel:${phone}'),
-        if (profile?.website?.isNotEmpty == true)
-          _linkDetail(profile?.website ?? '', UrlUtils.fixUrl(profile?.website ?? '', scheme: 'https') ?? profile?.website ?? ''),
-      ],);
+  Widget build(BuildContext context) {
+    List<Auth2PublicAccountIdentifier> emails = _identifiersForType(Auth2Identifier.typeEmail);
+    List<Auth2PublicAccountIdentifier> phones = _identifiersForType(Auth2Identifier.typePhone);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      if (profile?.college?.isNotEmpty == true)
+        Text(profile?.college ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
+      if (profile?.department?.isNotEmpty == true)
+        Text(profile?.department ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
+      if (profile?.major?.isNotEmpty == true)
+        Text(profile?.major ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
+      if (emails.isNotEmpty)
+        Column(children: List.generate(emails.length, (index) => _linkDetail(emails[index].identifier ?? '', 'mailto:${emails[index].identifier}')),),
+      if (phones.isNotEmpty)
+        Column(children: List.generate(phones.length, (index) => _linkDetail(phones[index].identifier ?? '', 'tel:${phones[index].identifier}')),),
+      if (profile?.website?.isNotEmpty == true)
+        _linkDetail(profile?.website ?? '', UrlUtils.fixUrl(profile?.website ?? '', scheme: 'https') ?? profile?.website ?? ''),
+    ],);
+  }
 
   Widget _linkDetail(String text, String url) =>
     InkWell(onTap: () => _onTapLink(url, analyticsTarget: text), child:
@@ -219,6 +217,16 @@ class DirectoryProfileDetails extends StatelessWidget {
   void _onTapLink(String url, { String? analyticsTarget }) {
     Analytics().logSelect(target: analyticsTarget ?? url);
     _launchUrl(url);
+  }
+
+  List<Auth2PublicAccountIdentifier> _identifiersForType(String type) {
+    List<Auth2PublicAccountIdentifier> typeIdentifiers = [];
+    for (Auth2PublicAccountIdentifier publicIdentifier in identifiers ?? []) {
+      if (publicIdentifier.code == type) {
+        typeIdentifiers.add(publicIdentifier);
+      }
+    }
+    return typeIdentifiers;
   }
 }
 

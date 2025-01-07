@@ -304,6 +304,7 @@
     "widget.title.light.little": {"font_family": "medium", "size": 12.0, "color": "textColorPrimary"},
     "widget.title.light.little.fat": {"font_family": "bold", "size": 12.0, "color": "textColorPrimary"},
     "widget.title.light.tiny": {"font_family": "medium", "size": 10.0, "color": "textColorPrimary"},
+    "widget.title.light.tiny.fat.spaced": {"extends" : "widget.title.tiny.fat", "letter_spacing": 1.0, "color": "textLight"},
     "widget.title.variant.regular.fat": {"font_family": "bold", "size": 16.0, "color": "fillColorSecondaryVariant"},
     "widget.title.disabled.medium.fat": {"font_family": "bold", "size": 18.0, "color": "disabledTextColor"},
 
@@ -447,7 +448,8 @@
     "widget.button.title.regular.thin": { "font_family": "regular", "size": 18.0, "color": "textDark"},
     "widget.button.title.regular.thin.underline": { "font_family": "regular", "size": 18.0, "color": "textDark", "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.button.title.medium": { "font_family": "medium", "size": 16.0, "color": "textDark"},
-    "widget.button.title.medium.fat": { "font_family": "bold", "size": 16.0, "color": "textPrimary"},
+    "widget.button.title.medium.light": { "font_family": "medium", "size": 16.0, "color": "textLight"},
+    "widget.button.title.medium.fat": { "font_family": "bold", "size": 16.0, "color": "textLight"},
     "widget.button.title.medium.fat.dark": { "font_family": "bold", "size": 16.0, "color": "textDark"},
     "widget.button.title.medium.fat.variant": { "font_family": "bold", "size": 16.0, "color": "fillColorPrimaryVariant"},
     "widget.button.title.medium.fat.variant2": { "font_family": "bold", "size": 16.0, "color": "surface"},
@@ -661,7 +663,7 @@
     "panel.group.detail.light.regular": {"extends": "widget.item.light.regular.thin"},
     "panel.group.detail.light.small": {"extends": "widget.card.title.small.fat", "color": "textLight"},
 
-    "panel.group_member_notifications.error.msg": {"extends": "widget.message.medium_large.fat"},
+    "panel.group_member_notifications.error.msg": {"extends": "widget.message.medium_large.fat", "color": "textLight"},
     "panel.group_member_notifications.toggle_button.title.fat.enabled": {"extends": "widget.toggle_button.title.regular.enabled"},
     "panel.group_member_notifications.toggle_button.title.fat.disabled": {"extends": "widget.toggle_button.title.regular.disabled"},
     "panel.group_member_notifications.toggle_button.title.small.enabled": {"extends": "widget.toggle_button.title.small.enabled"},
