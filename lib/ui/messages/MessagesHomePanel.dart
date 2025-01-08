@@ -400,7 +400,7 @@ class _MessagesHomePanelState extends State<MessagesHomePanel> with TickerProvid
                   return  FilterListItem(
                     title: filterValues[index].name,
                     description: (subLabels != null) ? subLabels[index] : null,
-                    selected: selectedFilterValue == filterValues[index].value,
+                    //selected: selectedFilterValue == filterValues[index].value,
                     onTap: () { _onFilterValue(_selectedFilter, filterValues[index]); },
                   );
                 }
