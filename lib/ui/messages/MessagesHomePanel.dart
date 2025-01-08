@@ -397,11 +397,13 @@ class _MessagesHomePanelState extends State<MessagesHomePanel> with TickerProvid
                 separatorBuilder: (context, index) => Divider(height: 1, color: Styles().colors.fillColorPrimary.withAlpha(77),),
                 itemCount: filterValues.length,
                 itemBuilder: (context, index) {
-                  return  FilterListItem(
+                  return FilterListItem(
                     title: filterValues[index].name,
                     description: (subLabels != null) ? subLabels[index] : null,
-                    //selected: selectedFilterValue == filterValues[index].value,
-                    onTap: () { _onFilterValue(_selectedFilter, filterValues[index]); },
+                    iconKey: (selectedFilterValue == filterValues[index].value) ? 'check-circle-filled' : 'check-circle-outline-gray',
+                    onTap: () {
+                      _onFilterValue(_selectedFilter, filterValues[index]);
+                    },
                   );
                 }
             ),
