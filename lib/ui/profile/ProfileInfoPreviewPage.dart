@@ -26,11 +26,12 @@ class ProfileInfoPreviewPage extends StatefulWidget {
   final ProfileInfo contentType;
   final Auth2UserProfile? profile;
   final Auth2UserPrivacy? privacy;
+  final List<Auth2Identifier>? identifiers;
   final Uint8List? pronunciationAudioData;
   final Uint8List? photoImageData;
   final String? photoImageToken;
   final void Function()? onEditInfo;
-  ProfileInfoPreviewPage({super.key, required this.contentType, this.profile, this.privacy, this.photoImageData, this.photoImageToken, this.pronunciationAudioData, this.onEditInfo });
+  ProfileInfoPreviewPage({super.key, required this.contentType, this.profile, this.privacy, this.identifiers, this.photoImageData, this.photoImageToken, this.pronunciationAudioData, this.onEditInfo });
 
   @override
   State<StatefulWidget> createState() => _ProfileInfoPreviewPageState();
@@ -51,6 +52,7 @@ class _ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<P
     );
 
     _profile = Auth2UserProfile.fromFieldsVisibility(widget.profile, profileVisibility, permitted: _permittedVisibility);
+    _identifiers = List.generate(widget.identifiers?.length ?? 0, (index) => Auth2PublicAccountIdentifier.fromUserIdentifier(widget.identifiers![index]));
 
     super.initState();
   }
@@ -128,7 +130,7 @@ class _ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<P
           ),
         ],),
         Padding(padding: EdgeInsets.only(top: 12, bottom: 12), child:
-          DirectoryProfileDetails(_profile, []) //TODO: add identifiers
+          DirectoryProfileDetails(_profile, _identifiers, linkTextStyle: Styles().textStyles.getTextStyleEx('widget.button.title.small.underline.dark',),)
         ),
         //_shareButton,
     ],)

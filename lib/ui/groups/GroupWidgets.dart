@@ -1094,7 +1094,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                               BoxDecoration(shape: BoxShape.circle, color: Colors.white, image:
                                 DecorationImage( fit: BoxFit.cover, image: Image.memory(Auth2().profilePicture!).image)
                               )
-                            ) : Styles().images.getImage('person-circle-header') ?? Container(),
+                            ) : Styles().images.getImage('person-circle-white') ?? Container(),
                           Padding(
                             padding: EdgeInsets.only(left: 8),
                             child:Text(StringUtils.ensureNotEmpty(creatorName),
@@ -1199,7 +1199,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
   }
 
   void _onTapPostOptions() {
-    bool isReportAbuseVisible = widget.group?.currentUserIsMemberOrAdmin ?? false;
+    bool isReportAbuseVisible = widget.group.currentUserIsMemberOrAdmin ?? false;
     Analytics().logSelect(target: 'Post Options');
     showModalBottomSheet(
         context: context,

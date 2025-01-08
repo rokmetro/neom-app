@@ -180,8 +180,9 @@ class _DirectoryAccountCardState extends State<DirectoryAccountCard> {
 class DirectoryProfileDetails extends StatelessWidget {
   final Auth2UserProfile? profile;
   final List<Auth2PublicAccountIdentifier>? identifiers;
+  final TextStyle? linkTextStyle;
 
-  DirectoryProfileDetails(this.profile, this.identifiers, { super.key });
+  DirectoryProfileDetails(this.profile, this.identifiers, { super.key, this.linkTextStyle });
   
   String? get college => null;
   String? get department => null;
@@ -191,8 +192,8 @@ class DirectoryProfileDetails extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    List<Auth2PublicAccountIdentifier> emails = _identifiersForType(Auth2Identifier.typeEmail);
-    List<Auth2PublicAccountIdentifier> phones = _identifiersForType(Auth2Identifier.typePhone);
+    List<Auth2PublicAccountIdentifier> emails = Auth2PublicAccountIdentifier.listForType(identifiers, Auth2Identifier.typeEmail);
+    List<Auth2PublicAccountIdentifier> phones = Auth2PublicAccountIdentifier.listForType(identifiers, Auth2Identifier.typePhone);
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (profile?.college?.isNotEmpty == true)
         Text(profile?.college ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'),),
@@ -211,22 +212,12 @@ class DirectoryProfileDetails extends StatelessWidget {
 
   Widget _linkDetail(String text, String url) =>
     InkWell(onTap: () => _onTapLink(url, analyticsTarget: text), child:
-      Text(text, style: Styles().textStyles.getTextStyleEx('widget.button.title.small.underline', decorationColor: Styles().colors.fillColorPrimary),),
+      Text(text, style: linkTextStyle ?? Styles().textStyles.getTextStyleEx('widget.button.title.small.underline.light',),),
     );
 
   void _onTapLink(String url, { String? analyticsTarget }) {
     Analytics().logSelect(target: analyticsTarget ?? url);
     _launchUrl(url);
-  }
-
-  List<Auth2PublicAccountIdentifier> _identifiersForType(String type) {
-    List<Auth2PublicAccountIdentifier> typeIdentifiers = [];
-    for (Auth2PublicAccountIdentifier publicIdentifier in identifiers ?? []) {
-      if (publicIdentifier.code == type) {
-        typeIdentifiers.add(publicIdentifier);
-      }
-    }
-    return typeIdentifiers;
   }
 }
 
