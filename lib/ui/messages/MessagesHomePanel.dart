@@ -138,23 +138,22 @@ class _MessagesHomePanelState extends State<MessagesHomePanel> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(color: Styles().colors.surface, child:
+      Container(color: Styles().colors.backgroundAccent, child:
         Row(children: [
           Expanded(child:
             Padding(padding: EdgeInsets.only(left: 16), child:
-              Text(Localization().getStringEx('panel.messages.header.messages.label', 'MESSAGES'), style: Styles().textStyles.getTextStyle("widget.label.medium.fat"),)
+              Text(Localization().getStringEx('panel.messages.header.messages.label', 'MESSAGES'), style: Styles().textStyles.getTextStyle("widget.title.light.large.fat"),)
             ),
           ),
           Semantics( label: Localization().getStringEx('dialog.close.title', 'Close'), hint: Localization().getStringEx('dialog.close.hint', ''), inMutuallyExclusiveGroup: true, button: true, child:
             InkWell(onTap : _onTapClose, child:
               Container(padding: EdgeInsets.only(left: 8, right: 16, top: 16, bottom: 16), child:
-                Styles().images.getImage('close-circle', excludeFromSemantics: true),
+                Styles().images.getImage('close-circle-white', excludeFromSemantics: true),
               ),
             ),
           ),
         ],),
       ),
-      Container(color: Styles().colors.surfaceAccent, height: 1,),
       // _buildBanner(),
       _buildAdditionalButtons(),
       _buildFilters(),
