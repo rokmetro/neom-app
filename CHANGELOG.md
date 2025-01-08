@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - NEOM U
 ### Fixed
+- Group details UI and posts functionality not working [#27](https://github.com/rokmetro/neom-app/issues/27)
+- My directory info styling
 - Clean Message UI [#28](https://github.com/rokmetro/neom-app/issues/28)
+### Added
+- Email and phone identifier visibility toggling
 
 ## [0.5.0] = 2024-12-21
 ### Added
