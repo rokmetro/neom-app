@@ -402,9 +402,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             hintText: "Message ${_getConversationTitle()}",
-                            hintStyle: Styles().textStyles.getTextStyle('widget.item.small')?.copyWith(color: Styles().colors.textDark),
+                            hintStyle: Styles().textStyles.getTextStyle('widget.item.small'),
                           ),
-                          style: Styles().textStyles.getTextStyle('widget.title.regular')?.copyWith(color: Styles().colors.textDark),
+                          style: Styles().textStyles.getTextStyle('widget.title.dark.regular'),
                         )
 
                     ),
