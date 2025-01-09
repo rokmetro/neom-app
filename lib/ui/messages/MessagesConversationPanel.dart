@@ -222,7 +222,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         child: Center(
             child: Text(
                 dateText,
-                style: Styles().textStyles.getTextStyle('widget.description.small')?.copyWith(color: Styles().colors.textLight),
+                style: Styles().textStyles.getTextStyle('widget.description.small.light'),
             )
         )
     );
