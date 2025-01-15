@@ -303,6 +303,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
     //TODO: work on UI
     Widget get _nameWidget => _textFieldSection(_ProfileField.fullName,
       headingTitle: Localization().getStringEx('panel.profile.info.title.full_name.text', 'Full Name'),
+      required: true,
       visibilityToggle: false,
     );
 
@@ -544,10 +545,12 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
     bool autocorrect = true,
     bool enabled = true,
     bool public = false,
+    bool required = false,
     bool visibilityToggle = true,
   }) => _fieldSection(
     headingTitle: headingTitle,
-    headingHint: headingTitle,
+    headingHint: headingHint,
+    required: required,
     fieldControl: _textFieldControl(profileField: field,
         textInputType: textInputType,
         autocorrect: autocorrect,
@@ -575,23 +578,25 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
   Widget _fieldSection({
     String? headingTitle, String? headingHint,
-    Widget? fieldControl,
+    bool required = false, Widget? fieldControl,
   }) => Padding(padding: EdgeInsets.only(top: 12), child:
     Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
       if (headingTitle?.isNotEmpty == true)
-        _sectionHeadingWidget(headingTitle ?? '', hint: headingHint),
+        _sectionHeadingWidget(headingTitle ?? '', hint: headingHint, required: required,),
       if (fieldControl != null)
         fieldControl
     ],)
   );
 
-  Widget _sectionHeadingWidget(String? title, { String? hint }) =>
+  Widget _sectionHeadingWidget(String? title, { String? hint, bool required = false }) =>
     Padding(padding: EdgeInsets.only(bottom: 2), child:
       RichText(textAlign: TextAlign.left, text:
         TextSpan(style: Styles().textStyles.getTextStyle('widget.title.light.tiny.fat.spaced'), children: [
           TextSpan(text: title?.toUpperCase()),
           if (hint?.isNotEmpty == true)
-            TextSpan(text: ' ' + (hint?.toUpperCase() ?? ''), style: Styles().textStyles.getTextStyle('widget.title.tiny'))
+            TextSpan(text: ' ' + (hint?.toUpperCase() ?? ''), style: Styles().textStyles.getTextStyle('widget.title.light.tiny')),
+          if (required)
+            WidgetSpan(child: Padding(padding: EdgeInsets.only(left: 4), child: Styles().images.getImage('asterisk'))),
         ]),
       ),
     );
@@ -781,6 +786,10 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
     }
     else {
       Auth2UserProfile profile = _Auth2UserProfileUtils.buildModified(widget.profile, _fieldTextControllers);
+      if (StringUtils.isEmpty(profile.fullName)) {
+        AppAlert.showDialogResult(context, Localization().getStringEx('panel.profile.info.dialog.missing.name.text', 'Please enter your full name.'));
+        return false;
+      }
       Auth2UserPrivacy privacy = Auth2UserPrivacy.fromOther(widget.privacy,
         fieldsVisibility: Auth2AccountFieldsVisibility.fromOther(widget.privacy?.fieldsVisibility,
             profile: _Auth2UserProfileFieldsVisibilityUtils.buildModified(_profileVisibility, _fieldVisibilities),

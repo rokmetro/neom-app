@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:neom/service/Config.dart';
@@ -69,12 +70,15 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
       body: SingleChildScrollView(child:
         Container(
           constraints: BoxConstraints(maxWidth: Config().webContentMaxWidth),
-          child: Column(children: [
-            _headerWidget,
-            _titleWidget,
-            _profileWidget,
-            _footerWidget,
-          ],),
+          child: Column(
+            crossAxisAlignment: kIsWeb ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+            children: [
+              _headerWidget,
+              _titleWidget,
+              _profileWidget,
+              _footerWidget,
+            ],
+          ),
         )
       ),
     ),
@@ -86,11 +90,9 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
 
   Widget get _titleWidget =>
     Padding(padding: EdgeInsets.only(left: 32, right: 32, top: 24, bottom: 16), child:
-      Center(child:
-        Text(Localization().getStringEx('panel.onboarding.profile_info.title', 'Directory'),
-          style: Styles().textStyles.getTextStyle('widget.title.extra_huge.fat'),
-          textAlign: TextAlign.center,
-        ),
+      Text(Localization().getStringEx('panel.onboarding.profile_info.title', 'PROFILE AND DIRECTORY'),
+        style: Styles().textStyles.getTextStyle('panel.onboarding.profile_info.heading.title'),
+        textAlign: TextAlign.center,
       )
     );
 
@@ -101,6 +103,7 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
         params: {
           ProfileInfoPage.editParamKey : true,
         },
+        showProfileCommands: false,
         onStateChanged: _onProfileStateChanged,
       ),
     );
@@ -119,11 +122,12 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
         backgroundColor: Styles().colors.fillColorSecondary,
         label: Localization().getStringEx('panel.onboarding.profile_info.continue.title', 'Continue'),
         hint: Localization().getStringEx('panel.onboarding.profile_info.continue.hint', ''),
-        textStyle: _canContinue ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.medium.fat.variant"),
+        textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
         textAlign: TextAlign.center,
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         progress: _onboarding2Progress || _saving,
-        onTap: _canContinue ? _onTapContinue : null,
+        progressColor: Styles().colors.textLight,
+        onTap: _onTapContinue,
         rightIconKey: null,
     ),
   );
@@ -138,34 +142,27 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
 
   bool get _isLoaded => (_profileInfoKey.currentState?.isLoading == false);
   bool get _isEditing => (_profileInfoKey.currentState?.isEditing == true);
-  bool get _isProfilePublic => (_profileInfoKey.currentState?.directoryVisibility == true);
 
   void _onTapContinue() {
     Analytics().logSelect(target: "Continue");
     if (_canContinue) {
-      if (_isProfilePublic) {
-
-        if (_isEditing) {
-          setState(() {
-            _saving = true;
-          });
-          _profileInfoKey.currentState?.saveEdit().then((bool result){
-            if (mounted) {
-              setState(() {
-                _saving = false;
-              });
-              if (result) {
-                _finishProfile();
-              }
+      if (_isEditing) {
+        setState(() {
+          _saving = true;
+        });
+        _profileInfoKey.currentState?.saveEdit().then((bool result){
+          if (mounted) {
+            setState(() {
+              _saving = false;
+            });
+            if (result) {
+              _finishProfile();
             }
-          });
-        }
-        else {
-          _profileInfoKey.currentState?.setEditing(true);
-        }
+          }
+        });
       }
       else {
-        _finishProfile();
+        _profileInfoKey.currentState?.setEditing(true);
       }
     }
   }
