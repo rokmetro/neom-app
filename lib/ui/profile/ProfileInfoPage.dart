@@ -118,7 +118,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
         if (directoryVisibility == true)
           Column(children: [
             Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
-              Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
+              Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.info.tiny'), textAlign: TextAlign.center,),
             ),
 
             _editing ? _editContent : _previewContent,
@@ -170,7 +170,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
         Row(children: [
           Expanded(child:
             Padding(padding: EdgeInsets.only(left: 16, top: 12), child:
-              Text(Localization().getStringEx('panel.profile.info.directory_visibility.command.toggle.title', 'Directory Visibility'), style: Styles().textStyles.getTextStyle('widget.detail.dark.regular.fat'),)
+              Text(Localization().getStringEx('panel.profile.info.directory_visibility.command.toggle.title', 'Directory Visibility'), style: Styles().textStyles.getTextStyle('widget.item.light.regular.fat'),)
             ),
           ),
           _updatingDirectoryVisibility ? _directoryVisibilityProgress : _directoryVisibilityToggleButton,
@@ -217,12 +217,12 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
     if (0 < messages.length)
       spanList.add(TextSpan(text: messages.first));
     for (int index = 1; index < messages.length; index++) {
-      spanList.add(TextSpan(text: visibilityValue, style : Styles().textStyles.getTextStyle("widget.detail.dark.small.fat"),));
+      spanList.add(TextSpan(text: visibilityValue, style : Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat"),));
       spanList.add(TextSpan(text: messages[index]));
     }
 
     return RichText(textAlign: TextAlign.left, text:
-      TextSpan(style: Styles().textStyles.getTextStyle("widget.detail.dark.small"), children: spanList)
+      TextSpan(style: Styles().textStyles.getTextStyle("widget.detail.light.small.thin"), children: spanList)
     );
   }
 
@@ -529,7 +529,7 @@ class ProfileDirectoryMyInfoBasePageState<T extends StatefulWidget> extends Stat
   // Name Text Style
 
   TextStyle? get nameTextStyle =>
-    Styles().textStyles.getTextStyleEx('widget.message.medium_large.fat', fontHeight: 0.85, textOverflow: TextOverflow.ellipsis);
+    Styles().textStyles.getTextStyleEx('widget.message.medium_large.fat', fontHeight: 0.85, textOverflow: TextOverflow.ellipsis, color: Styles().colors.textLight);
 
   // Positive and Permitted visibility
 

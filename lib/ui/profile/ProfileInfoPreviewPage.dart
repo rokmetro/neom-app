@@ -10,7 +10,6 @@ import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/auth2.directory.dart';
-import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
@@ -101,7 +100,7 @@ class ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<Pr
         DirectoryPronunciationButton.spacer(),
       Column(mainAxisSize: MainAxisSize.min, children: [
         Padding(padding: EdgeInsets.only(top: 16), child:
-          Text(_profile?.fullName ?? '', style: nameTextStyle, textAlign: TextAlign.center,),
+          Text(_profile?.fullName ?? 'Manav', style: nameTextStyle, textAlign: TextAlign.center,),
         ),
         if (_profile?.pronouns?.isNotEmpty == true)
           Text(_profile?.pronouns ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),

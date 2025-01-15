@@ -759,7 +759,7 @@ class DirectoryProfileCard extends StatelessWidget {
     Container(decoration: _cardDecoration, child: child);
 
   Decoration get _cardDecoration => BoxDecoration(
-    color: Styles().colors.surface,
+    color: Styles().colors.gradientColorPrimary,
     border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
     borderRadius: BorderRadius.all(Radius.circular(roundingRadius)),
     boxShadow: [BoxShadow(color: Styles().colors.blackTransparent018, spreadRadius: 1.0, blurRadius: 3.0, offset: Offset(1, 1))],
