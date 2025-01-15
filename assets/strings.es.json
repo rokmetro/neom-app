@@ -815,7 +815,7 @@
     "panel.onboarding.confirm_phone.validation.invalid.text": "Código incorrecto.",
     "panel.onboarding.confirm_phone.link.cancel.text": "No se pudo eliminar el número de teléfono de tu cuenta.",
 
-    "panel.onboarding.profile_info.title":"User Directory",
+    "panel.onboarding.profile_info.title":"Directory",
     "panel.onboarding.profile_info.title.hint":"Header 1",
     "panel.onboarding.profile_info.continue.title":"Continue",
     "panel.onboarding.profile_info.continue.hint":"",

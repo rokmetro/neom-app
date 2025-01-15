@@ -115,7 +115,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
       return Column(children: [
         _directoryVisibilityControl,
 
-        if (directoryVisibility == true)
+        // if (directoryVisibility == true)
           Column(children: [
             Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
               Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
