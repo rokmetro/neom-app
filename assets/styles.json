@@ -466,8 +466,6 @@
     "widget.button.title.medium.fat.underline.highlight": { "extends": "widget.button.title.medium.fat.underline", "color": "textDark", "decoration_color": "white" },
     "widget.button.title.small": { "font_family": "regular", "size": 14.0, "color": "textDark"},
     "widget.button.title.small.underline": { "font_family": "regular", "size": 14.0, "color": "textPrimary", "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
-    "widget.button.title.small.underline.light": { "extends": "widget.button.title.small.underline", "color": "textPrimary", "decoration_color":  "textPrimary"},
-    "widget.button.title.small.underline.dark": { "extends": "widget.button.title.small.underline", "color": "textDark", "decoration_color":  "textDark"},
     "widget.button.title.small.medium": { "font_family": "medium", "size": 14.0, "color": "fillColorPrimary"},
     "widget.button.title.small.medium.underline": { "font_family": "medium", "size": 14.0, "color": "fillColorPrimary",  "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.button.title.small.medium.underline.highlight": { "extends": "widget.button.title.small.medium.underline", "color": "textPrimary", "decoration_color":  "textPrimary"},

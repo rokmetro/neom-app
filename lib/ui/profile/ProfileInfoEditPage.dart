@@ -707,6 +707,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
       if (profileField != null) {
         _fieldVisibilities[profileField] = (_permittedVisibility.contains(visibility)) ? Auth2FieldVisibility.private : _positiveVisibility;
       } else if (identifier?.id != null) {
+        _identifierVisibility ??= {};
         _identifierVisibility?[identifier!.id!] = (_permittedVisibility.contains(visibility)) ? Auth2FieldVisibility.private : _positiveVisibility;
       }
     });
@@ -720,7 +721,9 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
   Widget get _cancelEditButton => RoundedButton(
     label: Localization().getStringEx('dialog.cancel.title', 'Cancel'),
-    fontFamily: Styles().fontFamilies.bold, fontSize: 16,
+    textStyle: Styles().textStyles.getTextStyle('widget.button.light.title.medium'),
+    backgroundColor: Styles().colors.background,
+    borderColor: Styles().colors.fillColorSecondary,
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     onTap: _onCancelEdit,
   );
@@ -766,7 +769,9 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
   Widget get _saveEditButton => RoundedButton(
     label: Localization().getStringEx('dialog.save.title', 'Save'),
-    fontFamily: Styles().fontFamilies.bold, fontSize: 16,
+    textStyle: Styles().textStyles.getTextStyle('widget.button.light.title.medium'),
+    backgroundColor: Styles().colors.background,
+    borderColor: Styles().colors.fillColorSecondary,
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     progress: _saving,
     onTap: _onSaveEdit,
