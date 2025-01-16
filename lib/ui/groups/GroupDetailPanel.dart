@@ -19,7 +19,6 @@ import 'dart:typed_data';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/FlexUI.dart';
@@ -617,7 +616,6 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildGroupDetailsHeader() {
     return Container(
       color: Styles().colors.surface,
-      // height: _groupDetailsHeight,
       child: Column(
         children: [
           _buildGroupInfo(),

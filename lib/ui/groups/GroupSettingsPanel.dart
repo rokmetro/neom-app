@@ -951,7 +951,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
 
   //Buttons
   Widget _buildButtonsLayout() {
-    return SafeArea(child: Container( color: Styles().colors.surface,
+    return Container( color: Styles().colors.background,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Center(
         child:
@@ -960,8 +960,8 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
             Expanded(
               child: RoundedButton(
                 label: Localization().getStringEx("panel.groups_settings.button.update.title", "Update Settings"),
-                textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat"),
-                backgroundColor: Colors.white,
+                textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat.variant_two"),
+                backgroundColor: Styles().colors.background,
                 borderColor: _canUpdate ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
                 progress: _updating,
                 enabled: _canUpdate,
@@ -974,8 +974,8 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
                 label: _isResearchProject ?
                   Localization().getStringEx("panel.project_settings.button.delete.title", "Delete this Project") : //TBD localize
                   Localization().getStringEx("panel.groups_settings.button.delete.title", "Delete this Group"),  //TBD localize
-                textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat"),
-                backgroundColor: Colors.white,
+                textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat.variant_two"),
+                backgroundColor: Styles().colors.background,
                 borderColor: _canUpdate ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
                 progress: _deleting,
                 enabled: _canUpdate,
@@ -985,7 +985,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
           ],)
         ],),
       )
-      ,),);
+      ,);
   }
 
   void _onUpdateTap() {
