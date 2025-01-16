@@ -1020,9 +1020,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       children: [
         Expanded(
           child: RichText(textScaler: MediaQuery.of(context).textScaler,
-            text: TextSpan(text: Localization().getStringEx("","Your activity in the app is private. Please review the "), style:  Styles().textStyles.getTextStyle("widget.title.tiny"),
+            text: TextSpan(text: Localization().getStringEx("","Your activity in the app is private. Please review the "), style:  Styles().textStyles.getTextStyle("widget.title.dark.tiny"),
             children: [
-              TextSpan(text: Localization().getStringEx("", "Student Code."), style: Styles().textStyles.getTextStyle("widget.title.tiny")),  //recognizer: TapGestureRecognizer()..onTap = () => _onPrivacy()),
+              TextSpan(text: Localization().getStringEx("", "Student Code."), style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")),  //recognizer: TapGestureRecognizer()..onTap = () => _onPrivacy()),
               // WidgetSpan(
               //     child: Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Styles().images.getImage('external-link', excludeFromSemantics: true)),
               // )

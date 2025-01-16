@@ -591,7 +591,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
         TextSpan(style: Styles().textStyles.getTextStyle('widget.title.light.tiny.fat.spaced'), children: [
           TextSpan(text: title?.toUpperCase()),
           if (hint?.isNotEmpty == true)
-            TextSpan(text: ' ' + (hint?.toUpperCase() ?? ''), style: Styles().textStyles.getTextStyle('widget.title.tiny'))
+            TextSpan(text: ' ' + (hint?.toUpperCase() ?? ''), style: Styles().textStyles.getTextStyle('widget.title.dark.tiny'))
         ]),
       ),
     );

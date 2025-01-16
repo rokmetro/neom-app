@@ -103,7 +103,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
       //     title: Localization().getStringEx('panel.events2.home.attributes.launch.header.title', 'Events'),
       //     bgImageKey: 'event-filters-background',
       //     descriptionBuilder: _buildOnboardingDescription,
-      //     sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.fat.highlight'),
+      //     sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.light.tiny.fat'),
       //     sectionDescriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
       //     sectionRequiredMarkTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.extra_fat.highlight'),
       //     applyBuilder: _buildOnboardingApply,
@@ -323,7 +323,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
 
       dynamic result = await Navigator.push(context, CupertinoPageRoute(builder: (context) => ContentAttributesPanel(
         title: Localization().getStringEx('panel.events2.home.attributes.filters.header.title', 'Event Filters'),
-        description: Localization().getStringEx('panel.events2.home.attributes.filters.header.description', 'Choose one or more attributes to filter the events.'),
+        description: Localization().getStringEx('panel.events2.home.attributes.filters.header.description', 'Choose at least one attribute to filter the events.'),
         contentAttributes: contentAttributes,
         selection: selection,
         scope: Events2.contentAttributesScope,

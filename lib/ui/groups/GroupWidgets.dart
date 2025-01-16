@@ -80,7 +80,7 @@ class GroupSectionTitle extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         Semantics(label: _semanticsLabel, hint: description, header: true, excludeSemantics: true, child:
           RichText(text:
-            TextSpan(text: title, style: titleTextStyle ?? Styles().textStyles.getTextStyle("widget.title.tiny.fat"),
+            TextSpan(text: title, style: titleTextStyle ?? Styles().textStyles.getTextStyle("widget.title.light.tiny.fat"),
               children: [
                 TextSpan(text: (requiredMark == true) ?  " *" : "", style: requiredMarkTextStyle ?? Styles().textStyles.getTextStyle("widget.title.tiny.extra_fat"),
               )
@@ -2292,14 +2292,14 @@ class _GroupMemberProfileInfoState extends State<GroupMemberProfileInfoWidget> {
           Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text(widget.name ?? "", style: Styles().textStyles.getTextStyle("widget.title.tiny.fat")),
+                Text(widget.name ?? "", style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")),
                 Container(width: 8),
                 Visibility(visible: widget.isAdmin == true,
                   child: Text("ADMIN", style: Styles().textStyles.getTextStyle("widget.label.tiny.fat"),),
                 )
               ]),
               Visibility(visible: StringUtils.isNotEmpty(widget.additionalInfo),
-                  child: Text(widget.additionalInfo?? "", style: Styles().textStyles.getTextStyle("widget.title.tiny")))
+                  child: Text(widget.additionalInfo?? "", style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")))
             ],)
         ]),
       );
