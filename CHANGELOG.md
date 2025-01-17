@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased - NEOM U
 ### Fixed
 - Events filter styling and group details header UI [#35](https://github.com/rokmetro/neom-app/issues/35)
+- Fix onboarding profile name entry [#36](https://github.com/rokmetro/neom-app/issues/36)
 
 ## [0.5.1] = 2025-01-08
 ### Fixed
@@ -94,6 +95,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pre-demo issues [#2](https://github.com/rokmetro/neom-app/issues/2)
 
 ## Unreleased - Illinois
+
+## [6.1.42] - 2025-01-17
+### Fixed
+- Appointments: fix drop down dym layer size [#4480](https://github.com/rokwire/illinois-app/issues/4480).
+### Changed
+- Updated onboarding profile info page [#4612](https://github.com/rokwire/illinois-app/issues/4612).
+- Control Messages/Connections availability from app storage settings  [#4631](https://github.com/rokwire/illinois-app/issues/4632).
+- Notifications UI [#4489](https://github.com/rokwire/illinois-app/issues/4489).
+
+## [6.1.41] - 2025-01-16
+### Changed
+- Hide Connections (messaging) from Sections and Directory [#4622](https://github.com/rokwire/illinois-app/issues/4622).
+- GroupDetailPanel UI updates (in progress) [#4483](https://github.com/rokwire/illinois-app/issues/4483).
+### Added
+- Show post replies count [#4618](https://github.com/rokwire/illinois-app/issues/4618).
+- Link previews for videos in group posts [#4581](https://github.com/rokwire/illinois-app/issues/4581)
+
+## [6.1.40] - 2025-01-15
+### Changed
+- GroupDetailPanel UI updates (in progress) [#4483](https://github.com/rokwire/illinois-app/issues/4483).
 
 ## [6.1.39] - 2025-01-14
 ### Changed

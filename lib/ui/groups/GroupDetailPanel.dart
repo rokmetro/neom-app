@@ -1470,7 +1470,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       padding: EdgeInsets.only(left: 24, right: 24, top: 28, bottom: 24),
       border: Border.all(color: Styles().colors.textDark, width: 1),
       alignment: Alignment.center,
-      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.univerity_name', 'University of Illinois')),
+      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.university_name', 'University of Illinois')),
       infoTextStyle: Styles().textStyles.getTextStyle('widget.description.regular.thin'),
       closeIcon: Styles().images.getImage('close-circle', excludeFromSemantics: true),
     ),);
@@ -1954,6 +1954,7 @@ class _GroupPostsContent extends StatefulWidget{
 class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAliveClientMixin<_GroupPostsContent>
     implements NotificationsListener {
   List<Post>         _posts = <Post>[];
+  List<Post>         _pinedPosts = <Post>[];
   GlobalKey          _lastPostKey = GlobalKey();
   bool?              _refreshingPosts;
   bool?              _loadingPostsPage;
@@ -1974,6 +1975,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
     ]);
 
     _loadInitialPosts();
+    _loadPinnedPosts();
     super.initState();
   }
 
@@ -1992,20 +1994,10 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
   }
 
   Widget _buildPosts() {
-    List<Widget> postsContent = [];
-
-    for (int i = 0; i <_posts.length ; i++) {
-      Post? post = _posts[i];
-      if (i > 0) {
-        postsContent.add(Container(height: 16));
-      }
-
-      postsContent.add(GroupPostCard(
-        key: (i == 0) ? _lastPostKey : null,
-        post: post,
-        group: _group!,
-        isAdmin: widget.groupAdmins?.map((Member admin) => admin.userId == post.creatorId).isNotEmpty,
-      ));
+    List<Widget> postsContent = _buildPostCardsContent(posts: _posts, lastPostKey: _lastPostKey);
+    List<Widget> pinnedPostsContent =_buildPostCardsContent(posts: _pinedPosts);
+    if(CollectionUtils.isNotEmpty(_pinedPosts)){
+      pinnedPostsContent.add(Container(height: 24,));
     }
 
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_hasMorePosts != false) && (0 < _posts.length)) {
@@ -2030,6 +2022,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       Column(children: <Widget>[
         Visibility(visible: CollectionUtils.isEmpty(_posts) && _loadingPostsPage == false,
             child: _buildEmptyContent()),
+        ...pinnedPostsContent,
         ...postsContent])),
       _loadingPostsPage == true
         ? Center(
@@ -2038,6 +2031,25 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
             child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary))))
         : Container()
     ]);
+  }
+
+  List<Widget> _buildPostCardsContent({required List<Post> posts, GlobalKey? lastPostKey}){
+    List<Widget> content = [];
+    for (int i = 0; i <posts.length ; i++) {
+      Post? post = posts[i];
+      if (i > 0) {
+        content.add(Container(height: 16));
+      }
+
+      content.add(GroupPostCard(
+        key: (i == 0) ? lastPostKey : null,
+        post: post,
+        group: _group!,
+        isAdmin: widget.groupAdmins?.map((Member admin) => admin.userId == post.creatorId).isNotEmpty,
+      ));
+    }
+
+    return content;
   }
 
   Widget _buildEmptyContent() => Container(height: 100,
@@ -2066,7 +2078,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_refreshingPosts != true)) {
       int limit = _posts.length + (delta ?? 0);
       _refreshingPosts = true;
-      Social().loadPosts(groupId: _groupId, type: PostType.post, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? posts) {
+      Social().loadPosts(groupId: _groupId, type: PostType.post, showCommentsCount: true, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? posts) {
         _refreshingPosts = false;
         if (mounted && (posts != null)) {
           setState(() {
@@ -2104,6 +2116,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
         groupId: _groupId,
         type: PostType.post,
         status: PostStatus.active,
+        showCommentsCount: true,
         offset: _posts.length,
         limit: _GroupDetailPanelState._postsPageSize,
         sortBy: SocialSortBy.date_created);
@@ -2114,6 +2127,18 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       }
     }
   }
+
+  Future<void> _loadPinnedPosts() async =>
+      Social().loadPosts(
+          groupId: _groupId,
+          type: PostType.post,
+          status: PostStatus.active,
+          sortBy: SocialSortBy.date_created).
+            then((List<Post>? posts) =>
+                setStateIfMounted(() =>
+                  _pinedPosts = posts?.where(
+                          (post) => post.isPinned == true
+                  ).toList() ?? []));
 
   // Member?  _getPostCreatorAsMember(Post? post) {
   //   Iterable<Member>? creatorProfiles = widget.groupMembers?.where((member) => member.userId == post?.creatorId);
@@ -2144,6 +2169,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
   void _initUpdateListener() => widget.updateController?.stream.listen((command) {
     if (command is String && command == GroupDetailPanel.notifyRefresh) {
       _refreshCurrentPosts();
+      _loadPinnedPosts();
     // } else if(command is String && command == _GroupDetailPostsContent.notifyPostRefresh) {
     //   _refreshCurrentPosts();
     }  else if(command is String && command == _GroupPostsContent.notifyPostRefreshWithScrollToLast) {
@@ -2165,18 +2191,23 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       Post? post = param is Post ? param : null;
       if(post?.isPost == true){
         _refreshCurrentPosts(delta: 1);
+        if(post?.isPinned == true)
+          _loadPinnedPosts();
       }
     }
     else if (name == Social.notifyPostUpdated) {
       Post? post = param is Post ? param : null;
       if(post?.isPost == true){
         _refreshCurrentPosts();
+        _loadPinnedPosts();
       }
     }
     else if (name == Social.notifyPostDeleted) {
       Post? post = param is Post ? param : null;
       if(post?.isPost == true) {
         _refreshCurrentPosts(delta: -1);
+        if(post?.isPinned == true)
+          _loadPinnedPosts();
       }
     }
   }
@@ -2496,7 +2527,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
   }
 
   Future<void> _loadMessagesPage() async {
-    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message , offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
+    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
     if (messagesPage != null) {
       _messages.addAll(messagesPage);
       if (messagesPage.length < _GroupDetailPanelState._postsPageSize) {
@@ -2704,6 +2735,7 @@ class _GroupScheduledPostsState extends State<_GroupScheduledPostsContent> with 
       _refreshingScheduledPosts = true;
       Social().loadPosts(groupId: _group?.id,
           type: PostType.post,
+          showCommentsCount: true,
           offset: 0,
           limit: limit,
           order: SocialSortOrder.desc,
@@ -2748,6 +2780,7 @@ class _GroupScheduledPostsState extends State<_GroupScheduledPostsContent> with 
         offset: _scheduledPosts.length,
         limit: _GroupDetailPanelState._postsPageSize,
         status: PostStatus.draft,
+        showCommentsCount: true,
         sortBy: SocialSortBy.activation_date);
     if (scheduledPostsPage != null) {
       _scheduledPosts.addAll(scheduledPostsPage);
