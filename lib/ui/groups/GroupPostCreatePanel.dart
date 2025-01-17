@@ -82,6 +82,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
               key: _postImageHolderKey,
               imageUrl: _postData.imageUrl,
               buttonVisible: true ,
+              backgroundColor: Styles().colors.dividerLineAccent,
               onImageChanged: (url) => setStateIfMounted((){_postData.imageUrl = url;})),
             Container(
               padding: EdgeInsets.symmetric(horizontal: _outerPadding),
@@ -95,7 +96,6 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                     child: GroupMembersSelectionWidget(allMembers: _allMembersAllowedToPost, selectedMembers: _selectedMembers, groupId: _groupId, groupPrivacy: widget.group.privacy, onSelectionChanged: _onMembersSelectionChanged),
                   ),
                   Container(height: 12,),
-                  _buildScheduleWidget(),
                   _buildNudgesWidget(),
                   Container(height: 12,),
                   // Visibility(visible: _isPost,
@@ -122,11 +122,15 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                   //   ],)
                   // ),
                   PostInputField(
-                    title: widget.type == PostType.post ?  "POST" : "MESSAGE",
+                    title: widget.type == PostType.post ?  "" : "MESSAGE",
                     text: _postData.body,
+                    hint: "Write a post...",
                     onBodyChanged: (text) => _postData.body = text,
                     // hint:  Localization().getStringEx( "panel.group.detail.post.create.body.field.hint",  "Write a Post ..."),
                   ),
+                  Container(height: 12,),
+                  _buildScheduleWidget(),
+                  Container(height: 12,),
                   Visibility(visible: _isPost,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 6),
