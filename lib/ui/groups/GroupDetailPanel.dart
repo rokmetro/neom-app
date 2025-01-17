@@ -596,7 +596,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           child: _buildImageHeader(),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: _hasGroupImage ? 72.0 : 24.0, top: _hasGroupImage ? 152.0 : 24.0),
+          padding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: 56.0, top: _hasGroupImage ? 152.0 : 24.0),
           child: _buildGroupDetailsHeader(),
         )
       ]),
@@ -1216,7 +1216,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     int leftAreaFlex = 0,
   }) {
     return Dialog(
-        backgroundColor: Styles().colors.fillColorPrimary,
+        backgroundColor: Styles().colors.background,
         child: StatefulBuilder(builder: (context, setStateEx) {
           return Padding(
               padding: EdgeInsets.all(16),
@@ -1229,9 +1229,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                   Expanded(flex: leftAreaFlex, child: Container()),
                   Expanded(flex: negativeButtonFlex, child: RoundedButton(
                       label: StringUtils.ensureNotEmpty(negativeButtonLabel, defaultValue: Localization().getStringEx("panel.group_detail.button.back.title", "Back")),
-                      textStyle: Styles().textStyles.getTextStyle("widget.button.title.large"),
-                      borderColor: Styles().colors.surface,
-                      backgroundColor: Styles().colors.surface,
+                      textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                      borderColor: Styles().colors.fillColorSecondary,
+                      backgroundColor: Styles().colors.background,
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       onTap: () {
                         Analytics().logAlert(text: confirmationTextMsg, selection: negativeButtonLabel);
@@ -1240,9 +1240,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                   Container(width: 16),
                   Expanded(flex: positiveButtonFlex, child: RoundedButton(
                     label: positiveButtonLabel ?? '',
-                    textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                    borderColor: Styles().colors.surface,
-                    backgroundColor: Styles().colors.surface,
+                    textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                    borderColor: Styles().colors.fillColorSecondary,
+                    backgroundColor: Styles().colors.background,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     progress: _confirmationLoading,
                     onTap: () {
@@ -1284,7 +1284,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                         label: Localization().getStringEx("panel.group_detail.button.group.about.title", "About this group"),//TBD localize
                         onTap: () {
                           Navigator.pop(context);
-                          setStateIfMounted(()=> _currentTab = _DetailTab.About);
+                          _onTab(_DetailTab.About);
                         })),
                 Visibility(
                     visible: _canEditGroup,
@@ -1352,7 +1352,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                         })),
                 Visibility(visible: _canReportAbuse, child: RibbonButton(
                   leftIconKey: "report",
-                  label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
+                  label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.label", "Report to Dean of Students"),
                   onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true)   ),
                 )),
               ]));
@@ -1527,7 +1527,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   void _onTapSettings(){
     Analytics().logSelect(target: "Group Settings", attributes: _group?.analyticsAttributes);
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupSettingsPanel(group: _group,))).then((exit){
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupSettingsPanel(group: _group, groupStats: _groupStats,))).then((exit){
       if(exit == true){
         Navigator.of(context).pop();
       }

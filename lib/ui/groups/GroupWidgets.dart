@@ -496,48 +496,50 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
               ),
             ),
             Container(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: TextFormField(
-                              controller: _imageUrlController,
-                              keyboardType: TextInputType.text,
-                              style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
-                                hintText:  Localization().getStringEx("widget.add_image.field.description.label","Image Url"),
-                                labelText:  Localization().getStringEx("widget.add_image.field.description.hint","Image Url"),
-                                labelStyle: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
-                              ))),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label: Localization().getStringEx("widget.add_image.button.use_url.label","Use Url"),
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              onTap: _onTapUseUrl)),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label:  Localization().getStringEx("widget.add_image.button.chose_device.label","Choose from Device"),
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              progress: _showProgress,
-                              onTap: _onTapChooseFromDevice)),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label:  Localization().getStringEx("widget.add_image.button.clear.label","Clear"), //TBD localize
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              onTap: _onTapClear)),
-                    ]))
+              color: Styles().colors.background,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: TextFormField(
+                            controller: _imageUrlController,
+                            keyboardType: TextInputType.text,
+                            style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
+                              fillColor: Styles().colors.surface,
+                              filled: true,
+                              hintText:  Localization().getStringEx("widget.add_image.field.description.hint","Image URL"),
+                              hintStyle: Styles().textStyles.getTextStyle('widget.input_field.hint.regular'),
+                            ))),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label: Localization().getStringEx("widget.add_image.button.use_url.label","Use Url"),
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            onTap: _onTapUseUrl)),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label:  Localization().getStringEx("widget.add_image.button.chose_device.label","Choose from Device"),
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            progress: _showProgress,
+                            onTap: _onTapChooseFromDevice)),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label:  Localization().getStringEx("widget.add_image.button.clear.label","Clear"), //TBD localize
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            onTap: _onTapClear)),
+                  ]))
           ],
         ));
   }
@@ -1232,7 +1234,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                 )),
                 // Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                 //   leftIconKey: "comment",
-                //   label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
+                //   label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.label", "Report to Dean of Students"),
                 //   onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true), post: widget.post),
                 // )),
                 // Visibility(visible: isReportAbuseVisible, child: RibbonButton(

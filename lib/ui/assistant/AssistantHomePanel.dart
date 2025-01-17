@@ -64,7 +64,7 @@ class AssistantHomePanel extends StatefulWidget {
           useRootNavigator: true,
           routeSettings: RouteSettings(),
           clipBehavior: Clip.antiAlias,
-          backgroundColor: Styles().colors.background,
+          backgroundColor: Styles().colors.surface,
           constraints: BoxConstraints(maxHeight: height, minHeight: height),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
           builder: (context) {

@@ -231,7 +231,8 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
                   button: true, excludeSemantics: true, child:
                   RoundedButton(
                     label: StringUtils.isNotEmpty(_group?.imageURL) ? Localization().getStringEx("panel.groups_settings.modify_image","Modify cover image") : Localization().getStringEx("panel.groups_settings.add_image","Add Cover Image"),
-                    textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat"),
+                    textStyle: _canUpdate ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat.variant_two"),
+                    backgroundColor: Styles().colors.background,
                     borderColor: _canUpdate ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
                     contentWeight: 0.8,
                     onTap: _onTapAddImage,)
@@ -472,8 +473,8 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
             RoundedButton(
               label: Localization().getStringEx("panel.groups_create.button.attributes.title", "Edit"),
               hint: Localization().getStringEx("panel.groups_create.button.attributes.hint", ""),
-              textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-              backgroundColor: Styles().colors.surface,
+              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+              backgroundColor: Styles().colors.background,
               borderColor: Styles().colors.fillColorSecondary,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               onTap: _onTapAttributes,
@@ -1254,7 +1255,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
     int leftAreaFlex = 0,
   }) {
     return Dialog(
-        backgroundColor: Styles().colors.fillColorPrimary,
+        backgroundColor: Styles().colors.background,
         child: StatefulBuilder(builder: (context, setStateEx) {
           return Padding(
               padding: EdgeInsets.all(16),
@@ -1267,9 +1268,9 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
                   Expanded(flex: leftAreaFlex, child: Container()),
                   Expanded(flex: negativeButtonFlex, child: RoundedButton(
                       label: StringUtils.ensureNotEmpty(negativeButtonLabel, defaultValue: Localization().getStringEx("panel.group_detail.button.back.title", "Back")),
-                      textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.thin"),
-                      borderColor: Styles().colors.surface,
-                      backgroundColor: Styles().colors.surface,
+                      textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                      borderColor: Styles().colors.fillColorSecondary,
+                      backgroundColor: Styles().colors.background,
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       onTap: () {
                         Analytics().logAlert(text: confirmationTextMsg, selection: negativeButtonLabel);
@@ -1278,9 +1279,9 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
                   Container(width: 16),
                   Expanded(flex: positiveButtonFlex, child: RoundedButton(
                     label: positiveButtonLabel ?? '',
-                    textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                    borderColor: Styles().colors.surface,
-                    backgroundColor: Styles().colors.surface,
+                    textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                    borderColor: Styles().colors.fillColorSecondary,
+                    backgroundColor: Styles().colors.background,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     progress: _confirmationProgress,
                     onTap: () {
