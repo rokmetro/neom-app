@@ -103,15 +103,22 @@ class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPane
         params: {
           ProfileInfoPage.editParamKey : true,
         },
-        showProfileCommands: false,
         onStateChanged: _onProfileStateChanged,
+        onboarding: true,
       ),
     );
 
   Widget get _footerWidget => _isLoaded ? _continueCommandSection : Container();
 
-  Widget get _continueCommandSection => Padding(padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32), child:
-    _continueCommandButton,
+  Widget get _continueCommandSection => Padding(padding: EdgeInsets.symmetric(horizontal: 32), child:
+    Column(children: [
+      Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
+        Text(Localization().getStringEx('panel.onboarding.profile_info.description.text', 'To adjust your profile information and its visibility at any time, go to My Profile.'), style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
+      ),
+      Padding(padding: EdgeInsets.only(bottom: 32), child:
+        _continueCommandButton,
+      ),
+    ],),
   );
 
   bool get _canContinue => (_onboarding2Progress != true) && (_saving != true);
