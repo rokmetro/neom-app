@@ -249,6 +249,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
       child: GroupScheduleTimeWidget(
         scheduleTime: _postData.dateScheduled,
         onDateChanged: (DateTime? dateTimeUtc) => _postData.dateScheduled = dateTimeUtc,
+        showOnlyDropdown: true,
       )
     );
   }

@@ -2905,7 +2905,7 @@ class GroupScheduleTimeWidget extends StatefulWidget {
     this.onDateChanged,
     this.enabled = true,
     this.enableTimeZone = false,
-    this.showOnlyDropdown = true,
+    this.showOnlyDropdown = false,
   });
 
   @override
