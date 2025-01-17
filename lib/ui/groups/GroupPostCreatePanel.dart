@@ -181,20 +181,25 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                       flex: 1,
                       child: RoundedButton(
                         label: Localization().getStringEx('panel.group.detail.post.create.button.send.title', 'Send'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                        textStyle: Styles().textStyles.getTextStyle("widget.input_field.light.text.regular"),
                         borderColor: Styles().colors.fillColorSecondary,
-                        backgroundColor: Styles().colors.surface,
+                        backgroundColor: Styles().colors.black,
+                        maxBorderRadius: 6.0,
                         onTap: _onTapSend)),
-                    Container(width: 20),
+                    Container(width: 16),
                     Flexible(
                       flex: 1,
                       child: RoundedButton(
                         label: Localization().getStringEx('panel.group.detail.post.create.button.cancel.title', 'Cancel'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                        textStyle: Styles().textStyles.getTextStyle("widget.card.title.small"),
                         borderColor: Styles().colors.textDark,
-                        backgroundColor: Styles().colors.surface,
-                        onTap: _onTapCancel))
-                  ])
+                        backgroundColor: Styles().colors.fillColorSecondary,
+                        maxBorderRadius: 6.0,
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                        onTap: _onTapCancel)),
+                    Container(width: 140),
+                  ]),
+                  const SizedBox(height: 16,),
               ],),
             )
 
