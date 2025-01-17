@@ -66,7 +66,17 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
   bool get _showAccountCommands => (widget.onboarding == false);
 
   bool get isLoading => _loading;
+  bool get isEditing => _editing;
   bool get directoryVisibility => (_privacy?.public == true);
+
+  void setEditing(bool value) {
+    if (mounted && (_editing != value)) {
+      setState(() {
+        _editing = value;
+        widget.onStateChanged?.call();
+      });
+    }
+  }
 
   Future<bool> saveEdit() =>
     _profileInfoEditKey.currentState?.saveEdit() ?? Future.value(false);
