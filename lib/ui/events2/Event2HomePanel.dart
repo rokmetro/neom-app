@@ -25,7 +25,6 @@ import 'package:neom/ui/events2/Event2TimeRangePanel.dart';
 import 'package:neom/ui/events2/Event2Widgets.dart';
 import 'package:neom/ui/explore/ExploreMapPanel.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
 import 'package:neom/ui/widgets/TextTabBar.dart';
 import 'package:neom/utils/AppUtils.dart';

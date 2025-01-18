@@ -428,10 +428,10 @@ class _ContentAttributesPanelState extends State<ContentAttributesPanel> {
         Expanded(flex: 1, child: Container()),
         Expanded(flex: 2, child: RoundedButton(
           label: Localization().getStringEx('panel.content.attributes.button.clear.title', 'Clear'),
-            textColor: canClearAttributes ? Styles().colors.fillColorPrimary : Styles().colors.textMedium,
-            borderColor: canClearAttributes ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
-          backgroundColor: Styles().colors.surface,
-          textStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.fat.variant'),
+          textColor: Styles().colors.fillColorPrimary,
+          borderColor: Styles().colors.fillColorSecondary,
+          backgroundColor: Styles().colors.background,
+          textStyle: canClearAttributes ? Styles().textStyles.getTextStyle('widget.button.light.title.medium.fat') : Styles().textStyles.getTextStyle('widget.button.disabled.title.medium.fat.variant_two'),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           enabled: canClearAttributes,
           onTap: _onTapClearAttributes
