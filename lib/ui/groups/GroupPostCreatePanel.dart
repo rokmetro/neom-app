@@ -81,7 +81,6 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
             ImageChooserWidget(
               key: _postImageHolderKey,
               imageUrl: _postData.imageUrl,
-              buttonVisible: true ,
               backgroundColor: Styles().colors.dividerLineAccent,
               onImageChanged: (url) => setStateIfMounted((){_postData.imageUrl = url;})),
             Container(
@@ -136,7 +135,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                       padding: EdgeInsets.symmetric(vertical: 6),
                       child: EnabledToggleButton(
                           label: "Pin post to top of all posts (Only one pinned post per group is allowed. Pinning this post will automatically unpin any past admin posts.)",
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(6),
                           border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
                           enabled: CollectionUtils.isEmpty(_selectedMembers),
                           toggled: _pinPost,
@@ -158,7 +157,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                         padding: EdgeInsets.symmetric(vertical: 6),
                         child: EnabledToggleButton(
                             label: "Also post to additional groups...",
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(6),
                             border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
                             enabled: CollectionUtils.isEmpty(_selectedMembers),
                             toggled: _allowSenPostToOtherGroups,

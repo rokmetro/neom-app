@@ -1731,23 +1731,23 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
             Padding(
                 padding: EdgeInsets.only(top: 8, bottom: 8),
                 child: Container(
-                    decoration: PostInputField.fieldDecoration,
+                    // decoration: PostInputField.fieldDecoration,
                     child: TextField(
                       controller: _bodyController,
                       onChanged: _notifyChanged,
                       maxLines: 15,
                       minLines: 7,
                       textCapitalization: TextCapitalization.sentences,
-                      decoration:
-                      InputDecoration(
+                      style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
+                      decoration: InputDecoration(
                           hintText: _hint,
                           hintStyle: Styles().textStyles.getTextStyle("widget.input_field.hint.regular"),
                           fillColor: Styles().colors.surface,
                           filled: true,
-                          border: InputBorder.none,
+                          border: OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(10.0))),
                           contentPadding: EdgeInsets.all(8)
                       ),
-                        style: Styles().textStyles.getTextStyle('')))),
+                    ))),
           ],
         )
     );
@@ -2164,13 +2164,11 @@ typedef void OnImageChangedListener(String? imageUrl);
 class ImageChooserWidget extends StatefulWidget{ //TBD Localize properly
   final String? imageUrl;
   final bool wrapContent;
-  final bool showSlant;
-  final bool buttonVisible;
   final OnImageChangedListener? onImageChanged;
   final String? imageSemanticsLabel;
   final Color backgroundColor;
 
-  const ImageChooserWidget({Key? key, this.imageUrl, this.onImageChanged, this.wrapContent = false, this.showSlant = true, this.buttonVisible = false, this.imageSemanticsLabel,
+  const ImageChooserWidget({Key? key, this.imageUrl, this.onImageChanged, this.wrapContent = false, this.imageSemanticsLabel,
   this.backgroundColor = Colors.transparent}) : super(key: key);
 
   @override
@@ -2183,8 +2181,6 @@ class _ImageChooserState extends State<ImageChooserWidget>{
   Widget build(BuildContext context) {
     final double _imageHeight = 200;
     bool wrapContent = widget.wrapContent;
-    bool explicitlyShowAddButton = widget.buttonVisible;
-    bool showSlant = widget.showSlant;
     String? imageUrl = widget.imageUrl; // For some reason sometimes the widget url is present but the _imageUrl is null
 
     return Container(
@@ -2193,30 +2189,24 @@ class _ImageChooserState extends State<ImageChooserWidget>{
         ),
         color: Styles().colors.background,
         child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-          StringUtils.isNotEmpty(imageUrl)
-              ? Positioned.fill(child: ModalImageHolder(child: Image.network(imageUrl!, semanticLabel: widget.imageSemanticsLabel??"", fit: BoxFit.cover)))
-              : Container(),
-          StringUtils.isEmpty(imageUrl) || explicitlyShowAddButton
-              ? Container(
-              decoration: BoxDecoration(
-                color: widget.backgroundColor
-              ),
-              child: Center(
-                  child: Semantics(
-                      label: Localization().getStringEx("panel.group.detail.post.add_image", "Add cover image"),
-                      hint: Localization().getStringEx("panel.group.detail.post.add_image.hint", ""),
-                      button: true,
-                      excludeSemantics: true,
-                      child: RoundedButton(
-                          label:StringUtils.isEmpty(imageUrl)? Localization().getStringEx("panel.group.detail.post.add_image", "Add image") : Localization().getStringEx("panel.group.detail.post.change_image", "Edit Image"), // TBD localize
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium"),
-                          contentWeight: 0.8,
-                          maxBorderRadius: 6,
-                          backgroundColor: Styles().colors.fillColorSecondary,
-                          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-                          onTap: (){ _onTapAddImage();}
-                      )))):
-          Container()
+          Positioned.fill(child: StringUtils.isNotEmpty(imageUrl) ? ModalImageHolder(child: Image.network(imageUrl!, semanticLabel: widget.imageSemanticsLabel??"", fit: BoxFit.cover)) : Container(color: widget.backgroundColor)),
+          Center(
+            child: Semantics(
+                label: Localization().getStringEx("panel.group.detail.post.add_image", "Add cover image"),
+                hint: Localization().getStringEx("panel.group.detail.post.add_image.hint", ""),
+                button: true,
+                excludeSemantics: true,
+                child: RoundedButton(
+                    label:StringUtils.isEmpty(imageUrl)? Localization().getStringEx("panel.group.detail.post.add_image", "Add image") : Localization().getStringEx("panel.group.detail.post.change_image", "Edit Image"), // TBD localize
+                    textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium"),
+                    contentWeight: 0.8,
+                    maxBorderRadius: 6,
+                    backgroundColor: Styles().colors.fillColorSecondary,
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                    onTap: (){ _onTapAddImage();}
+                )
+            )
+          )
         ]));
   }
 
@@ -2978,7 +2968,7 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget> {
           color: Styles().colors.surfaceAccent,
           width: 1,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -3228,6 +3218,16 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget> {
     showTimePicker(
       context: context,
       initialTime: _time ?? TimeOfDay(hour: 0, minute: 0),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            timePickerTheme: TimePickerThemeData(
+              dayPeriodColor: Styles().colors.fillColorSecondary,
+            ),
+          ),
+          child: child!,
+        );
+      },
     ).then((TimeOfDay? result) {
       if ((result != null) && mounted) {
         setState(() {
