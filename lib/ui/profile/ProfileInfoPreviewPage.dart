@@ -10,6 +10,7 @@ import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/auth2.directory.dart';
+import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
@@ -19,10 +20,15 @@ class ProfileInfoPreviewPage extends StatefulWidget {
   final Auth2UserProfile? profile;
   final Auth2UserPrivacy? privacy;
   final List<Auth2Identifier>? identifiers;
+  final bool onboarding;
   final Uint8List? pronunciationAudioData;
   final Uint8List? photoImageData;
   final String? photoImageToken;
-  ProfileInfoPreviewPage({super.key, required this.contentType, this.profile, this.privacy, this.identifiers, this.photoImageData, this.photoImageToken, this.pronunciationAudioData });
+
+  ProfileInfoPreviewPage({super.key, required this.contentType,
+    this.profile, this.privacy, this.identifiers, this.onboarding = false,
+    this.photoImageData, this.photoImageToken, this.pronunciationAudioData
+  });
 
   @override
   State<StatefulWidget> createState() => ProfileInfoPreviewPageState();
@@ -88,9 +94,10 @@ class ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<Pr
           ),
         ],),
         Padding(padding: EdgeInsets.only(top: 12, bottom: 12), child:
-          DirectoryProfileDetails(_profile, _identifiers, linkTextStyle: Styles().textStyles.getTextStyleEx('widget.button.title.small.underline',),)
+          DirectoryProfileDetails(_profile, _identifiers,),
         ),
-        _shareButton,
+        if (widget.onboarding == false)
+          _shareButton,
     ],)
   );
 
@@ -100,7 +107,7 @@ class ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<Pr
         DirectoryPronunciationButton.spacer(),
       Column(mainAxisSize: MainAxisSize.min, children: [
         Padding(padding: EdgeInsets.only(top: 16), child:
-          Text(_profile?.fullName ?? 'Manav', style: nameTextStyle, textAlign: TextAlign.center,),
+          Text(_profile?.fullName ?? '', style: nameTextStyle, textAlign: TextAlign.center,),
         ),
         if (_profile?.pronouns?.isNotEmpty == true)
           Text(_profile?.pronouns ?? '', style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),

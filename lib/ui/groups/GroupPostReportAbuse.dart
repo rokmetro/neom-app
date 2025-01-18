@@ -148,8 +148,8 @@ class _GroupPostReportAbusePanelState extends State<GroupPostReportAbusePanel> {
             RoundedButton(
               label: Localization().getStringEx("panel.group.detail.post.report_abuse.button.send.label", "Send"),
               hint: Localization().getStringEx("panel.group.detail.post.report_abuse.button.send.hint", "Tap to send report"),
-              textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-              backgroundColor: Styles().colors.surface,
+              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+              backgroundColor: Styles().colors.background,
               borderColor: Styles().colors.fillColorSecondary,
               progress:  _sending,
               onTap: _onSend,
@@ -179,7 +179,7 @@ class _GroupPostReportAbusePanelState extends State<GroupPostReportAbusePanel> {
       padding: EdgeInsets.only(left: 24, right: 24, top: 28, bottom: 24),
       border: Border.all(color: Styles().colors.textDark, width: 1),
       alignment: Alignment.topRight,
-      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.univerity_name', 'University of Illinois')),
+      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.university_name', 'University of Illinois')),
       infoTextStyle: Styles().textStyles.getTextStyle('widget.description.regular.thin'),
       closeIcon: Styles().images.getImage('close-circle'),
     ),);
