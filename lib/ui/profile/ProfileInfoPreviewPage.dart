@@ -20,16 +20,21 @@ class ProfileInfoPreviewPage extends StatefulWidget {
   final Auth2UserProfile? profile;
   final Auth2UserPrivacy? privacy;
   final List<Auth2Identifier>? identifiers;
+  final bool onboarding;
   final Uint8List? pronunciationAudioData;
   final Uint8List? photoImageData;
   final String? photoImageToken;
-  ProfileInfoPreviewPage({super.key, required this.contentType, this.profile, this.privacy, this.identifiers, this.photoImageData, this.photoImageToken, this.pronunciationAudioData });
+
+  ProfileInfoPreviewPage({super.key, required this.contentType,
+    this.profile, this.privacy, this.identifiers, this.onboarding = false,
+    this.photoImageData, this.photoImageToken, this.pronunciationAudioData
+  });
 
   @override
-  State<StatefulWidget> createState() => _ProfileInfoPreviewPageState();
+  State<StatefulWidget> createState() => ProfileInfoPreviewPageState();
 }
 
-class _ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<ProfileInfoPreviewPage> {
+class ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<ProfileInfoPreviewPage> {
 
   Auth2UserProfile? _profile;
   List<Auth2PublicAccountIdentifier>? _identifiers;
@@ -89,9 +94,10 @@ class _ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<P
           ),
         ],),
         Padding(padding: EdgeInsets.only(top: 12, bottom: 12), child:
-          DirectoryProfileDetails(_profile, _identifiers, linkTextStyle: Styles().textStyles.getTextStyleEx('widget.button.title.small.underline.dark',),)
+          DirectoryProfileDetails(_profile, _identifiers,),
         ),
-        _shareButton,
+        if (widget.onboarding == false)
+          _shareButton,
     ],)
   );
 
@@ -119,7 +125,7 @@ class _ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<P
     Expanded(child:
       LinkButton(
         title: AppTextUtils.appTitleString('panel.profile.info.command.link.share.text', 'Share my info outside the ${AppTextUtils.appTitleMacro} app'),
-        textStyle: Styles().textStyles.getTextStyle('widget.button.title.small.underline.dark'),
+        textStyle: Styles().textStyles.getTextStyle('widget.button.title.small.underline'),
         textAlign: TextAlign.left,
         padding: EdgeInsets.symmetric(vertical: 16),
         onTap: _onShare,

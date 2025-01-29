@@ -20,6 +20,7 @@ import 'package:device_calendar/device_calendar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart' as emoji;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -30,8 +31,8 @@ import 'package:neom/service/Config.dart';
 import 'package:neom/service/Storage.dart';
 import 'package:neom/ui/directory/DirectoryWidgets.dart';
 import 'package:neom/ui/groups/GroupMembersSelectionPanel.dart';
-import 'package:neom/ui/groups/GroupPostCreatePanel.dart';
 import 'package:neom/ui/groups/ImageEditPanel.dart';
+import 'package:neom/ui/widgets/WebEmbed.dart';
 import 'package:intl/intl.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/group.dart';
@@ -81,7 +82,7 @@ class GroupSectionTitle extends StatelessWidget {
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         Semantics(label: _semanticsLabel, hint: description, header: true, excludeSemantics: true, child:
           RichText(text:
-            TextSpan(text: title, style: titleTextStyle ?? Styles().textStyles.getTextStyle("widget.title.tiny.fat"),
+            TextSpan(text: title, style: titleTextStyle ?? Styles().textStyles.getTextStyle("widget.title.light.tiny.fat"),
               children: [
                 TextSpan(text: (requiredMark == true) ?  " *" : "", style: requiredMarkTextStyle ?? Styles().textStyles.getTextStyle("widget.title.tiny.extra_fat"),
               )
@@ -497,48 +498,50 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
               ),
             ),
             Container(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: TextFormField(
-                              controller: _imageUrlController,
-                              keyboardType: TextInputType.text,
-                              style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
-                                hintText:  Localization().getStringEx("widget.add_image.field.description.label","Image Url"),
-                                labelText:  Localization().getStringEx("widget.add_image.field.description.hint","Image Url"),
-                                labelStyle: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
-                              ))),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label: Localization().getStringEx("widget.add_image.button.use_url.label","Use Url"),
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              onTap: _onTapUseUrl)),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label:  Localization().getStringEx("widget.add_image.button.chose_device.label","Choose from Device"),
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              progress: _showProgress,
-                              onTap: _onTapChooseFromDevice)),
-                      Padding(
-                          padding: EdgeInsets.all(10),
-                          child: RoundedButton(
-                              label:  Localization().getStringEx("widget.add_image.button.clear.label","Clear"), //TBD localize
-                              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
-                              borderColor: Styles().colors.fillColorSecondary,
-                              backgroundColor: Styles().colors.background,
-                              onTap: _onTapClear)),
-                    ]))
+              color: Styles().colors.background,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: TextFormField(
+                            controller: _imageUrlController,
+                            keyboardType: TextInputType.text,
+                            style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.textDark)),
+                              fillColor: Styles().colors.surface,
+                              filled: true,
+                              hintText:  Localization().getStringEx("widget.add_image.field.description.hint","Image URL"),
+                              hintStyle: Styles().textStyles.getTextStyle('widget.input_field.hint.regular'),
+                            ))),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label: Localization().getStringEx("widget.add_image.button.use_url.label","Use Url"),
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            onTap: _onTapUseUrl)),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label:  Localization().getStringEx("widget.add_image.button.chose_device.label","Choose from Device"),
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            progress: _showProgress,
+                            onTap: _onTapChooseFromDevice)),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RoundedButton(
+                            label:  Localization().getStringEx("widget.add_image.button.clear.label","Clear"), //TBD localize
+                            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                            borderColor: Styles().colors.fillColorSecondary,
+                            backgroundColor: Styles().colors.background,
+                            onTap: _onTapClear)),
+                  ]))
           ],
         ));
   }
@@ -1044,13 +1047,14 @@ class _GroupCardState extends State<GroupCard> implements NotificationsListener 
 
 class GroupPostCard extends StatefulWidget {
   final Post? post;
+  final List<Reaction>? postReactions;
   final Group group;
   final bool? isAdmin;
   final bool showImage;
   final bool isReply;
-  final bool allowTap;
+  final bool? isClickable;
 
-  GroupPostCard({Key? key, required this.post, required this.group, this.isAdmin, this.showImage = true, this.isReply = false, this.allowTap = true}) :
+  GroupPostCard({Key? key, required this.post, required this.group, this.isAdmin, this.postReactions, this.isClickable = true, this.showImage = true, this.isReply = false}) :
     super(key: key);
 
   @override
@@ -1058,11 +1062,12 @@ class GroupPostCard extends StatefulWidget {
 }
 
 class _GroupPostCardState extends State<GroupPostCard> {
-  static const double _smallImageSize = 64;
-  List<Reaction> _reactions = [];
+  // static const double _smallImageSize = 64;
+  late List<Reaction> _reactions;
 
   @override
   void initState() {
+    _reactions = widget.postReactions ?? [];
     super.initState();
   }
 
@@ -1071,7 +1076,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
     String? htmlBody = widget.post?.body;
     String? imageUrl = widget.post?.imageUrl;
     List<String>? memberIds = widget.group.id != null ? widget.post?.getMemberAccountIds(groupId: widget.group.id!) : null;
-    int visibleRepliesCount = _visibleRepliesCount;
+    int visibleRepliesCount = (widget.post?.commentsCount ?? 0);
     bool isRepliesLabelVisible = (visibleRepliesCount > 0);
     String? repliesLabel = (visibleRepliesCount == 1)
         ? Localization().getStringEx('widget.group.card.reply.single.reply.label', 'reply')
@@ -1079,7 +1084,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
     return Stack(alignment: Alignment.topRight, children: [
       Semantics(button:true,
         child:GestureDetector(
-          onTap: widget.allowTap ? _onTapCard : null,
+          onTap: widget.isClickable == true ? _onTapCard : null,
           child: Container(
               decoration: BoxDecoration(
                   color: Styles().colors.surface,
@@ -1088,77 +1093,107 @@ class _GroupPostCardState extends State<GroupPostCard> {
               child: Padding(
                   padding: EdgeInsets.all(12),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  Container(
+                    padding: EdgeInsets.only(bottom: 14),
+                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(child:
                           Visibility(visible: widget.post?.creatorId != null,
-                            child: GroupMemberProfileInfoWidget(
-                              name: widget.post?.creatorName,
-                              userId: widget.post?.creatorId,
-                              isAdmin: widget.isAdmin,
-                              additionalInfo:widget.post?.isScheduled != true ? widget.post?.displayDateTime : null,
-                              // updateController: widget.updateController,
-                            )
-                          )
-                        ),
-                      ],
+                              child: GroupMemberProfileInfoWidget(
+                                  name: widget.post?.creatorName,
+                                  userId: widget.post?.creatorId,
+                                  isAdmin: widget.isAdmin,
+                                  additionalInfo:widget.post?.isScheduled != true ? widget.post?.displayDateTime : null,
+                                // updateController: widget.updateController,
+                              ))),
+                        _pinWidget,
+                        _buildScheduledDateWidget,
+                    ])),
+                    Visibility(visible: widget.post?.isPost == true,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 6),
+                            child: Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
+                              Expanded(
+                                  child: Text(StringUtils.ensureNotEmpty(widget.post!.subject),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: Styles().textStyles.getTextStyle('widget.card.title.regular.fat') )),
+                            ])),
                     ),
-                    Container(height: 16.0),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          flex: 2,
-                          child: HtmlWidget(
+                          HtmlWidget(
                               "<div style= text-overflow:ellipsis;max-lines:3> ${StringUtils.ensureNotEmpty(htmlBody)}</div>",
                               onTapUrl : (url) {_onLinkTap(url); return true;},
                               textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small")
-                          )),
-                        StringUtils.isEmpty(imageUrl) || !widget.showImage ? Container() :
-                        Expanded(
-                          flex: 1,
-                          child: Semantics(
-                            label: "post image",
-                            button: true,
-                            hint: "Double tap to zoom the image",
-                            child: Container(
-                                padding: EdgeInsets.only(left: 8),
-                                child: SizedBox(
-                                  width: _smallImageSize,
-                                  height: _smallImageSize,
-                                  child: ModalImageHolder(child: Image.network(imageUrl!, excludeFromSemantics: true, fit: BoxFit.fill,)),),)
-                            ))
-                    ],),
-                    Container(height: 16.0),
-                    Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      Expanded(
-                          child: _buildReactionsLayoutWidget
-                      ),
-                      _buildScheduledDateWidget,
-                      Visibility(
-                        visible: isRepliesLabelVisible,
-                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Styles().images.getImage('comment') ?? Container(),
-                          Padding(
-                            padding: EdgeInsets.only(left: 6.0),
-                            child: Text(StringUtils.ensureNotEmpty('${visibleRepliesCount.toString()} $repliesLabel'),
-                              style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
-                            ),
                           ),
-                        ]),
-                      )
-                    ]),
+                          // Html(data: htmlBody, style: {
+                          //   "body": Style(
+                          //       color: Styles().colors.fillColorPrimary,
+                          //       fontFamily: Styles().fontFamilies.regular,
+                          //       fontSize: FontSize(16),
+                          //       maxLines: 3,
+                          //       textOverflow: TextOverflow.ellipsis,
+                          //       margin: EdgeInsets.zero,
+                          //   ),
+                          // }, onLinkTap: (url, context, attributes, element) => _onLinkTap(url))
+
+                        Visibility(visible: StringUtils.isNotEmpty(imageUrl) && widget.showImage,
+                          child: Container(
+                            padding: EdgeInsets.only(top: 14),
+                            child: Image.network(imageUrl!, alignment: Alignment.center, fit: BoxFit.fitWidth, headers: Config().networkAuthHeaders, excludeFromSemantics: true)
+                        )),
+                        if (!kIsWeb)
+                          WebEmbed(body: htmlBody),
+                        // Container(
+                        //   constraints: BoxConstraints(maxHeight: 200),
+                        //     child: Semantics(
+                        //     label: "post image",
+                        //     button: true,
+                        //     hint: "Double tap to zoom the image",
+                        //     child: Container(
+                        //         padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
+                        //         child: SizedBox(
+                        //           width: _smallImageSize,
+                        //           height: _smallImageSize,
+                        //           child: ModalImageHolder(child: Image.network(imageUrl!, excludeFromSemantics: true, fit: BoxFit.fill,)),),)
+                        //     ))
+                    ],),
                     Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end, mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child:
+                            // Container(),
+                            GroupReactionsLayout(reactions: _reactions, group: widget.group)
+                          ),
+                          Visibility(
+                              visible: isRepliesLabelVisible,
+                              child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Text(StringUtils.ensureNotEmpty(visibleRepliesCount.toString()),
+                                        style: Styles().textStyles.getTextStyle('widget.description.small'))),
+                                Padding(
+                                    padding: EdgeInsets.only(left: 8),
+                                    child: Text(StringUtils.ensureNotEmpty(repliesLabel),
+                                        style: Styles().textStyles.getTextStyle('widget.description.small')))
+                              ])),
+                        ],
+                      )
+                    ),
+Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Divider(color: Styles().colors.dividerLineAccent, thickness: 1),
                     ),
                     Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Text('To: ${memberIds?.length ?? 0} members',
-                        style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
+                          style: Styles().textStyles.getTextStyle('widget.card.detail.tiny.medium_fat')
                       ),
                       GestureDetector( onTap: () => _onTapPostOptions(), child:
-                        Styles().images.getImage(widget.isReply ? 'ellipsis-alert' : 'report', excludeFromSemantics: true, color: Styles().colors.alert)
+                      Styles().images.getImage(widget.isReply ? 'ellipsis-alert' : 'report', excludeFromSemantics: true, color: Styles().colors.alert)
                       ),
                     ]),
                   ]))))),
@@ -1166,97 +1201,28 @@ class _GroupPostCardState extends State<GroupPostCard> {
   }
 
   //ReactionWidget //TBD move to GroupReaction when ready to hook BB
-  Widget get _buildReactionsLayoutWidget {
-    Map<String, List<Reaction>> sameEmojiReactions = _sameEmojiReactions;
-    return Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          ...sameEmojiReactions.keys.map((String emoji) =>
-              _buildReactionWidget(
-                  occurrences: sameEmojiReactions[emoji]?.length,
-                  reaction: sameEmojiReactions[emoji]?.
-                  firstWhere(
-                          (Reaction reaction) => reaction.isCurrentUserReacted,
-                      orElse: () => (CollectionUtils.isNotEmpty(sameEmojiReactions[emoji]) ? sameEmojiReactions[emoji]?.first : null)
-                          ?? Reaction()))
-          ).toList(),
-          Container(
-              padding: EdgeInsets.only(right: 6),
-              child: InkWell(
-                  onTap: () => ReactionKeyboard.showEmojiBottomSheet(context: context, onSelect: _reactWithEmoji),
-                  child: Padding(padding: EdgeInsets.all(0),
-                      child: Image.asset("images/add_reaction_icon.png", width: 40, fit: BoxFit.fitWidth,))
-              )),
-        ]
-    );
-  }
 
-  Widget _buildReactionWidget({Reaction? reaction, int? occurrences}){
-    return Padding( padding: EdgeInsets.all(4),
-        child: InkWell(
-            onTap: () => _deleteReaction(reaction), //TBD call BB to remove reaction
-            child: Container(
-                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 6),
-                decoration: BoxDecoration(
-                    color: Styles().colors.fillColorPrimaryTransparent015,
-                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                    border: Border.all(color: Styles().colors.fillColorPrimary,)),
-                child: Row(mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(reaction?.data ?? ""),
-                      Visibility(visible: (occurrences ?? 0 ) > 1,
-                          child: Text(occurrences?.toString() ?? "")
-                      )
-                    ])
-            )
-        )
-    );
-  }
+  ////
+
+  // ignore: unused_element
+  Widget get _buildDisplayDateWidget =>  Visibility(visible: widget.post?.isScheduled != true, child:
+    Semantics(child: Container(
+      padding: EdgeInsets.only(left: 6),
+      child: Text(StringUtils.ensureNotEmpty(widget.post?.displayDateTime),
+          semanticsLabel: "Updated ${widget.post?.displayDateTime ?? ""} ago",
+          textAlign: TextAlign.right,
+          style: Styles().textStyles.getTextStyle('widget.description.small')))));
 
   Widget get _buildScheduledDateWidget => Visibility(visible: widget.post?.isScheduled == true, child:
-    Row( mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.end,
+  Row( mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.end,
       children:[
         Container(width: 6,),
         Container( padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), decoration: BoxDecoration(color: Styles().colors.mediumGray1, borderRadius: BorderRadius.all(Radius.circular(2)),), child:
           Semantics(label: "Scheduled for ${widget.post?.displayScheduledTime ?? ""}", excludeSemantics: true, child:
             Text("Scheduled: ${widget.post?.displayScheduledTime ?? ""}", style:  Styles().textStyles.getTextStyle('widget.heading.extra_small'),)
-        ))
-    ]));
-
-  void _onTapCard() {
-    Analytics().logSelect(target: "Group post");
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group)));
-  }
-
-  void _onLinkTap(String? url) {
-    Analytics().logSelect(target: url);
-    UrlUtils.launchExternal(url);
-  }
-
-  void _reactWithEmoji(emoji.Emoji emoji){
-    _sendReaction(
-        Reaction(
-          data: emoji.emoji,
-          type: ReactionType.emoji,
-          dateCreatedUtc: DateTime.now().toUtc(),
-          engager: Creator(accountId: widget.group.currentMember?.userId, name: widget.group.currentMember?.name),
+          )
         )
-    );
-  }
-
-  void _sendReaction(Reaction? reaction){ //TBD hook to BB
-    if(reaction != null)
-      setStateIfMounted(() =>
-          _reactions.add(reaction)
-      );
-  }
-
-  void _deleteReaction(Reaction? reaction){ //TBD remove
-    if(reaction != null)
-      setStateIfMounted(() =>
-          _reactions.remove(reaction)
-      );
-  }
+      ]));
 
   void _onTapPostOptions() {
     bool isReportAbuseVisible = widget.group.currentUserIsMemberOrAdmin ?? false;
@@ -1276,11 +1242,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
                 Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                     leftIconKey: "reply",
                     label: Localization().getStringEx("panel.group.detail.post.reply.reply.label", "Reply"),
-                    onTap: _onTapReply
+                    onTap: _onTapCard
                 )),
                 // Visibility(visible: isReportAbuseVisible, child: RibbonButton(
                 //   leftIconKey: "comment",
-                //   label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
+                //   label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.label", "Report to Dean of Students"),
                 //   onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true), post: widget.post),
                 // )),
                 // Visibility(visible: isReportAbuseVisible, child: RibbonButton(
@@ -1294,57 +1260,34 @@ class _GroupPostCardState extends State<GroupPostCard> {
         });
   }
 
-  void _onTapReply() {
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: widget.group, inReplyTo: widget.post?.id))).then((_) {
-      Navigator.of(context).pop();
-    });
-  }
+  Widget get _pinWidget => Visibility(visible: widget.post?.isPinned == true, child:
+      InkWell(
+        onTap: _onUnpin ,
+        child: Container(
+          padding: EdgeInsets.only(left: 16, bottom: 16, top: 0, right: 0),
+          child: Styles().images.getImage("pin", size: 16, fit: BoxFit.fitHeight)
+  )));
 
-  // void _onTapReportAbuse({required GroupPostReportAbuseOptions options, Post? post}) {
-  //   String? analyticsTarget;
-  //   if (options.reportToDeanOfStudents && !options.reportToGroupAdmins) {
-  //     analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.students_dean.description.text', 'Report violation of Student Code to Dean of Students');
-  //   }
-  //   else if (!options.reportToDeanOfStudents && options.reportToGroupAdmins) {
-  //     analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.group_admins.description.text', 'Report obscene, threatening, or harassing content to Group Administrators');
-  //   }
-  //   else if (options.reportToDeanOfStudents && options.reportToGroupAdmins) {
-  //     analyticsTarget = Localization().getStringEx('panel.group.detail.post.report_abuse.both.description.text', 'Report violation of Student Code to Dean of Students and obscene, threatening, or harassing content to Group Administrators');
-  //   }
-  //   Analytics().logSelect(target: analyticsTarget);
-  //
-  //   Navigator.of(context).pushReplacement(CupertinoPageRoute(builder: (context) => GroupPostReportAbuse(options: options, groupId: widget.group?.id, postId: (post ?? widget.post)?.id)));
-  // }
+  void _onUnpin(){
+    //TBD hook BB
+    if(widget.group.currentUserIsAdmin) {
+      widget.post?.unpinPost();
+      if (widget.post != null)
+        Social().updatePost(post: widget.post!).then((succeeded) {
 
-  int get _visibleRepliesCount {
-    int result = 2;
-    //TBD: DDGS - implement replies
-    // List<GroupPost>? replies = widget.post?.replies;
-    List<Comment>? replies = null;
-    if (replies != null) {
-      //TBD: DD - implement comments count
-      // bool? memberOrAdmin = widget.group.currentUserIsMemberOrAdmin;
-      // for (Comment? reply in replies) {
-      //   if ((reply!.private != true) || (memberOrAdmin == true)) {
-      //     result++;
-      //   }
-      // }
-      result = replies.length;
+        });
     }
-    return result;
   }
 
-  Map<String, List<Reaction>> get _sameEmojiReactions{
-    return _reactions.fold(<String, List<Reaction>>{}, (map, element) {
-      if(element.data != null){
-        List<Reaction>? collection = map[element.data];
-        if(collection == null){
-          map[element.data!] = collection = <Reaction>[];
-        }
-        collection.add(element);
-      }
-      return map;
-    });
+  void _onTapCard() {
+    Analytics().logSelect(target: "Group post");
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group, postReactions: _reactions,)));
+    // Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupReactionTest()));
+  }
+
+  void _onLinkTap(String? url) {
+    Analytics().logSelect(target: url);
+    UrlUtils.launchExternal(url);
   }
 }
 
@@ -1355,20 +1298,22 @@ class GroupReplyCard extends StatefulWidget {
   final Comment? reply;
   final Post? post;
   final Group? group;
+  final Member? creator;
   final String? iconPath;
   final String? semanticsLabel;
   final void Function()? onIconTap;
   final void Function()? onCardTap;
   final bool showRepliesCount;
 
-  GroupReplyCard({required this.reply, required this.post, required this.group, this.iconPath, this.onIconTap, this.semanticsLabel, this.showRepliesCount = true, this.onCardTap});
+  GroupReplyCard({required this.reply, required this.post, required this.group, this.iconPath, this.onIconTap, this.semanticsLabel, this.showRepliesCount = true, this.onCardTap, this.creator});
 
   @override
   _GroupReplyCardState createState() => _GroupReplyCardState();
 }
 
 class _GroupReplyCardState extends State<GroupReplyCard> with NotificationsListener{
-  static const double _smallImageSize = 64;
+  // static const double _smallImageSize = 64;
+  List<Reaction> _reactions = []; //TBD load
 
   @override
   void initState() {
@@ -1406,20 +1351,24 @@ class _GroupReplyCardState extends State<GroupReplyCard> with NotificationsListe
             padding: EdgeInsets.all(12),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Semantics( child:
-                  Text(StringUtils.ensureNotEmpty(widget.reply?.creatorName),
-                    style: Styles().textStyles.getTextStyle("widget.card.title.small.fat")),
-                ),
-                Expanded(child: Container()),
-                Visibility(
-                  visible: Config().showGroupPostReactions &&
-                      (widget.group?.currentUserHasPermissionToSendReactions == true),
-                  child: GroupReaction(
-                    groupId: widget.group?.id,
-                    entityId: widget.reply?.id,
-                    reactionSource: SocialEntityType.comment,
-                  ),
-                ),
+                Expanded(child: Expanded(child:
+                Visibility(visible: widget.reply?.creatorId != null,
+                    child: GroupMemberProfileInfoWidget(
+                      name: widget.reply?.creatorName,
+                      userId: widget.reply?.creatorId,
+                      isAdmin: widget.creator?.isAdmin == true,
+                      additionalInfo: widget.post?.displayDateTime,
+                      // updateController: widget.updateController,
+                    ))),),
+                // Visibility(
+                //   visible: Config().showGroupPostReactions &&
+                //       (widget.group?.currentUserHasPermissionToSendReactions == true),
+                //   child: GroupReaction(
+                //     groupId: widget.group?.id,
+                //     entityId: widget.reply?.id,
+                //     reactionSource: SocialEntityType.comment,
+                //   ),
+                // ),
                 Visibility(
                     visible: StringUtils.isNotEmpty(widget.iconPath),
                     child: Semantics( child:Container(
@@ -1430,64 +1379,79 @@ class _GroupReplyCardState extends State<GroupReplyCard> with NotificationsListe
                             padding: EdgeInsets.only(left: 10, top: 3),
                             child: (StringUtils.isNotEmpty(widget.iconPath) ? Styles().images.getImage(widget.iconPath!, excludeFromSemantics: true,) : Container())))))))
               ]),
-              Row(
-                children: [
-                  Expanded(
-                      flex: 2,
-                      child: Container(
-                          child: Semantics( child:
-                          Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child:
-                              HtmlWidget(
-                                  StringUtils.ensureNotEmpty(bodyText),
-                                  onTapUrl : (url) {_onLinkTap(url); return true;},
-                                  textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small"),
-                                  customStylesBuilder: (element) => (element.localName == "span") ? {"color": ColorUtils.toHex(Styles().colors.textDisabled)}: null //Not able to use Transparent colour, it's not parsed correctly
-                                  // customStylesBuilder: (element) => (element.localName == "a") ? {"color": ColorUtils.toHex(Styles().colors.blackTransparent018 ?? Colors.blue)} : null
-                              )
-                              // Html(
-                              //   data: bodyText,
-                              //   style: {
-                              //   "body": Style(
-                              //       color: Styles().colors.fillColorPrimary,
-                              //       fontFamily: Styles().fontFamilies.regular,
-                              //       fontSize: FontSize(16),
-                              //       maxLines: 3000,
-                              //       textOverflow: TextOverflow.ellipsis,
-                              //       margin: EdgeInsets.zero
-                              //   ),
-                              //   "span": Style(
-                              //       color: Styles().colors.blackTransparent018,
-                              //       fontFamily: Styles().fontFamilies.regular,
-                              //       fontSize: FontSize(16),
-                              //       maxLines: 1,
-                              //       textOverflow: TextOverflow.ellipsis)
-                              //   },
-                              //   onLinkTap: (url, context, attributes, element) => _onLinkTap(url))
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                            child: Semantics( child:
+                            Padding(
+                                padding: EdgeInsets.only(top: 12),
+                                child:
+                                HtmlWidget(
+                                    StringUtils.ensureNotEmpty(bodyText),
+                                    onTapUrl : (url) {_onLinkTap(url); return true;},
+                                    textStyle:  Styles().textStyles.getTextStyle("widget.card.title.small"),
+                                    customStylesBuilder: (element) => (element.localName == "span") ? {"color": ColorUtils.toHex(Styles().colors.textDisabled)}: null //Not able to use Transparent colour, it's not parsed correctly
+                                    // customStylesBuilder: (element) => (element.localName == "a") ? {"color": ColorUtils.toHex(Styles().colors.blackTransparent018 ?? Colors.blue)} : null
+                                )
+                                // Html(
+                                //   data: bodyText,
+                                //   style: {
+                                //   "body": Style(
+                                //       color: Styles().colors.fillColorPrimary,
+                                //       fontFamily: Styles().fontFamilies.regular,
+                                //       fontSize: FontSize(16),
+                                //       maxLines: 3000,
+                                //       textOverflow: TextOverflow.ellipsis,
+                                //       margin: EdgeInsets.zero
+                                //   ),
+                                //   "span": Style(
+                                //       color: Styles().colors.blackTransparent018,
+                                //       fontFamily: Styles().fontFamilies.regular,
+                                //       fontSize: FontSize(16),
+                                //       maxLines: 1,
+                                //       textOverflow: TextOverflow.ellipsis)
+                                //   },
+                                //   onLinkTap: (url, context, attributes, element) => _onLinkTap(url))
 
-                          )))),
-                  StringUtils.isEmpty(widget.reply?.imageUrl)? Container() :
-                  Expanded(
-                      flex: 1,
-                      child: Semantics (
-                        button: true, label: "Image",
-                       child: Container(
-                          padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
-                          child: SizedBox(
-                          width: _smallImageSize,
-                          height: _smallImageSize,
-                           child: ModalImageHolder(child: Image.network(widget.reply!.imageUrl!, excludeFromSemantics: true, fit: BoxFit.fill,)),),))
-                  )
-                ],),
+                            )))),
+                    // StringUtils.isEmpty(widget.reply?.imageUrl)? Container() :
+                    // Expanded(
+                    //     flex: 1,
+                    //     child: Semantics (
+                    //       button: true, label: "Image",
+                    //      child: Container(
+                    //         padding: EdgeInsets.only(left: 8, bottom: 8, top: 8),
+                    //         child: SizedBox(
+                    //         width: _smallImageSize,
+                    //         height: _smallImageSize,
+                    //          child: ModalImageHolder(child: Image.network(widget.reply!.imageUrl!, excludeFromSemantics: true, fit: BoxFit.fill,)),),))
+                    // )
+                  ],)),
+              Visibility(visible: StringUtils.isNotEmpty(widget.reply?.imageUrl),
+                child: Container(
+                      padding: EdgeInsets.only(top: 14),
+                      child: Image.network(widget.reply!.imageUrl!, alignment: Alignment.center, fit: BoxFit.fitWidth, headers: Config().networkAuthHeaders, excludeFromSemantics: true)
+              )),
+
+              if (!kIsWeb)
+                WebEmbed(body: bodyText),
               Container(
                     padding: EdgeInsets.only(top: 12),
                     child: Row(children: [
-                      Expanded(
-                          child: Container(
-                            child: Semantics(child: Text(StringUtils.ensureNotEmpty(widget.reply?.displayDateTime),
-                                semanticsLabel: "Updated ${widget.reply?.displayDateTime ?? ""} ago",
-                                style: Styles().textStyles.getTextStyle('widget.description.small'))),)),
+                    Visibility(
+                      visible: Config().showGroupPostReactions,
+                      child: Expanded(
+                          child:
+                          // Container()
+                          GroupReactionsLayout(reactions: _reactions)
+                          // Container(
+                          //   child: Semantics(child: Text(StringUtils.ensureNotEmpty(widget.reply?.displayDateTime),
+                          //       semanticsLabel: "Updated ${widget.reply?.displayDateTime ?? ""} ago",
+                          //       style: Styles().textStyles.getTextStyle('widget.description.small'))),)
+                      )),
                 ],),)
             ])))));
   }
@@ -1671,11 +1635,18 @@ typedef void OnBodyChangedListener(String text);
 
 class PostInputField extends StatefulWidget{
   final EdgeInsets? padding;
+  final String? title;
   final String? hint;
   final String? text;
   final OnBodyChangedListener? onBodyChanged;
 
-  const PostInputField({Key? key, this.padding, this.hint, this.text, this.onBodyChanged}) : super(key: key);
+  const PostInputField({Key? key, this.padding, this.hint, this.text, this.onBodyChanged, this.title}) : super(key: key);
+
+  static get fieldDecoration => BoxDecoration(
+      color: Styles().colors.surface,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: Styles().colors.surfaceAccent, width: 1)
+  );
   
   @override
   State<StatefulWidget> createState() {
@@ -1688,14 +1659,14 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
   TextEditingController _linkTextController = TextEditingController();
   TextEditingController _linkUrlController = TextEditingController();
   
-  EdgeInsets? _padding;
+  // EdgeInsets? _padding;
   String? _hint;
 
   @override
   void initState() {
     super.initState();
-    _padding = widget.padding ?? EdgeInsets.only(top: 5);
-    _hint = widget.hint ?? Localization().getStringEx("panel.group.detail.post.reply.create.body.field.hint", "Write a Reply ...");
+    // _padding = widget.padding ?? EdgeInsets.only(top: 5);
+    _hint = widget.hint;  /*?? Localization().getStringEx("panel.group.detail.post.reply.create.body.field.hint", "Write a Reply ...");*/
     _bodyController.text = widget.text ?? "";
   }
   
@@ -1724,28 +1695,29 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
   Widget build(BuildContext context) {
     return Container(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: _padding!,
+                padding: EdgeInsets.zero,
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: Styles().images.getImage('bold-dark', semanticLabel: 'Bold') ?? Container(),
-                        onPressed: _onTapBold),
+                          icon: Styles().images.getImage('bold-dark', semanticLabel: 'Bold', color: Styles().colors.iconPrimary) ?? Container(),
+                          onPressed: _onTapBold),
                       Padding(
-                          padding: EdgeInsets.only(left: 20),
+                          padding: EdgeInsets.only(left: 0),
                           child: IconButton(
-                              icon: Styles().images.getImage('italic-dark', semanticLabel: 'Italic') ?? Container(),
+                              icon: Styles().images.getImage('italic-dark', semanticLabel: 'Italic', color: Styles().colors.iconPrimary) ?? Container(),
                               onPressed: _onTapItalic)),
                       Padding(
-                          padding: EdgeInsets.only(left: 20),
+                          padding: EdgeInsets.only(left: 0),
                           child: IconButton(
-                              icon: Styles().images.getImage('underline-dark', semanticLabel: 'Underline') ?? Container(),
+                              icon: Styles().images.getImage('underline-dark', semanticLabel: 'Underline', color: Styles().colors.iconPrimary) ?? Container(),
                               onPressed: _onTapUnderline)),
                       Padding(
-                          padding: EdgeInsets.only(left: 20),
+                          padding: EdgeInsets.only(left: 0),
                           child: Semantics(button: true, child:
                           GestureDetector(
                               onTap: _onTapEditLink,
@@ -1753,26 +1725,32 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
                                   Localization().getStringEx(
                                       'panel.group.detail.post.create.link.label',
                                       'Link'),
-                                  style: Styles().textStyles.getTextStyle('widget.group.input_field.link')))))
+                                  style: Styles().textStyles.getTextStyle('widget.group.input_field.link')?.apply(color: Styles().colors.textAccent)))))
                     ])),
+            Visibility(
+              visible: widget.title?.isNotEmpty == true,
+              child: Text(widget.title ?? "", style: Styles().textStyles.getTextStyle("widget.title.small.fat"))
+            ),
             Padding(
-                padding: EdgeInsets.only(top: 8, bottom: 16),
-                child: TextField(
-                    controller: _bodyController,
-                    onChanged: _notifyChanged,
-                    maxLines: 15,
-                    minLines: 1,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                        hintText: _hint,
-                        hintStyle: Styles().textStyles.getTextStyle("widget.input_field.hint.regular"),
-                        fillColor: Styles().colors.surface,
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Styles().colors.mediumGray,
-                                width: 0.0))),
-                    style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'))),
+                padding: EdgeInsets.only(top: 8, bottom: 8),
+                child: Container(
+                    // decoration: PostInputField.fieldDecoration,
+                    child: TextField(
+                      controller: _bodyController,
+                      onChanged: _notifyChanged,
+                      maxLines: 15,
+                      minLines: 7,
+                      textCapitalization: TextCapitalization.sentences,
+                      style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
+                      decoration: InputDecoration(
+                          hintText: _hint,
+                          hintStyle: Styles().textStyles.getTextStyle("widget.input_field.hint.regular"),
+                          fillColor: Styles().colors.surface,
+                          filled: true,
+                          border: OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+                          contentPadding: EdgeInsets.all(8)
+                      ),
+                    ))),
           ],
         )
     );
@@ -2189,12 +2167,12 @@ typedef void OnImageChangedListener(String? imageUrl);
 class ImageChooserWidget extends StatefulWidget{ //TBD Localize properly
   final String? imageUrl;
   final bool wrapContent;
-  final bool showSlant;
-  final bool buttonVisible;
   final OnImageChangedListener? onImageChanged;
   final String? imageSemanticsLabel;
+  final Color backgroundColor;
 
-  const ImageChooserWidget({Key? key, this.imageUrl, this.onImageChanged, this.wrapContent = false, this.showSlant = true, this.buttonVisible = false, this.imageSemanticsLabel}) : super(key: key);
+  const ImageChooserWidget({Key? key, this.imageUrl, this.onImageChanged, this.wrapContent = false, this.imageSemanticsLabel,
+  this.backgroundColor = Colors.transparent}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ImageChooserState();
@@ -2206,8 +2184,6 @@ class _ImageChooserState extends State<ImageChooserWidget>{
   Widget build(BuildContext context) {
     final double _imageHeight = 200;
     bool wrapContent = widget.wrapContent;
-    bool explicitlyShowAddButton = widget.buttonVisible;
-    bool showSlant = widget.showSlant;
     String? imageUrl = widget.imageUrl; // For some reason sometimes the widget url is present but the _imageUrl is null
 
     return Container(
@@ -2216,24 +2192,24 @@ class _ImageChooserState extends State<ImageChooserWidget>{
         ),
         color: Styles().colors.background,
         child: Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-          StringUtils.isNotEmpty(imageUrl)
-              ? Positioned.fill(child: ModalImageHolder(child: Image.network(imageUrl!, semanticLabel: widget.imageSemanticsLabel??"", fit: BoxFit.cover)))
-              : Container(),
-          StringUtils.isEmpty(imageUrl) || explicitlyShowAddButton
-              ? Container(
-              child: Center(
-                  child: Semantics(
-                      label: Localization().getStringEx("panel.group.detail.post.add_image", "Add cover image"),
-                      hint: Localization().getStringEx("panel.group.detail.post.add_image.hint", ""),
-                      button: true,
-                      excludeSemantics: true,
-                      child: RoundedButton(
-                          label:StringUtils.isEmpty(imageUrl)? Localization().getStringEx("panel.group.detail.post.add_image", "Add image") : Localization().getStringEx("panel.group.detail.post.change_image", "Edit Image"), // TBD localize
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                          contentWeight: 0.8,
-                          onTap: (){ _onTapAddImage();}
-                      )))):
-          Container()
+          Positioned.fill(child: StringUtils.isNotEmpty(imageUrl) ? ModalImageHolder(child: Image.network(imageUrl!, semanticLabel: widget.imageSemanticsLabel??"", fit: BoxFit.cover)) : Container(color: widget.backgroundColor)),
+          Center(
+            child: Semantics(
+                label: Localization().getStringEx("panel.group.detail.post.add_image", "Add cover image"),
+                hint: Localization().getStringEx("panel.group.detail.post.add_image.hint", ""),
+                button: true,
+                excludeSemantics: true,
+                child: RoundedButton(
+                    label:StringUtils.isEmpty(imageUrl)? Localization().getStringEx("panel.group.detail.post.add_image", "Add image") : Localization().getStringEx("panel.group.detail.post.change_image", "Edit Image"), // TBD localize
+                    textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium"),
+                    contentWeight: 0.8,
+                    maxBorderRadius: 6,
+                    backgroundColor: Styles().colors.fillColorSecondary,
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                    onTap: (){ _onTapAddImage();}
+                )
+            )
+          )
         ]));
   }
 
@@ -2302,14 +2278,14 @@ class _GroupMemberProfileInfoState extends State<GroupMemberProfileInfoWidget> {
           Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text(widget.name ?? "", style: Styles().textStyles.getTextStyle("widget.title.tiny.fat")),
+                Text(widget.name ?? "", style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")),
                 Container(width: 8),
                 Visibility(visible: widget.isAdmin == true,
                   child: Text("ADMIN", style: Styles().textStyles.getTextStyle("widget.label.tiny.fat"),),
                 )
               ]),
               Visibility(visible: StringUtils.isNotEmpty(widget.additionalInfo),
-                  child: Text(widget.additionalInfo?? "", style: Styles().textStyles.getTextStyle("widget.title.tiny")))
+                  child: Text(widget.additionalInfo?? "", style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")))
             ],)
         ]),
       );
@@ -2891,36 +2867,44 @@ class GroupMemberSettingsLayout extends StatelessWidget{
 
 class GroupScheduleTimeWidget extends StatefulWidget {
   final Location? timeZone;
-
   final DateTime? scheduleTime;
   final bool? enabled;
   final bool enableTimeZone;
+  final bool showOnlyDropdown;
   final Function(DateTime?)? onDateChanged;
 
-  const GroupScheduleTimeWidget({super.key,  this.timeZone, this.scheduleTime, this.onDateChanged, this.enabled = true, this.enableTimeZone = false,});
+  const GroupScheduleTimeWidget({
+    super.key,
+    this.timeZone,
+    this.scheduleTime,
+    this.onDateChanged,
+    this.enabled = true,
+    this.enableTimeZone = false,
+    this.showOnlyDropdown = false,
+  });
 
   @override
   State<StatefulWidget> createState() => _GroupScheduleTimeState();
-
 }
 
-class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
+class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget> {
   bool required = false;
   bool _expanded = false;
+  bool _isChecked = false; // State for the checkbox
 
   late Location _timeZone;
   DateTime? _date;
   TimeOfDay? _time;
 
-  TZDateTime? get _dateTime => _date!= null ? _dateTimeWithDateAndTimeOfDay(_date!, _time) : null;
+  TZDateTime? get _dateTime =>
+      _date != null ? _dateTimeWithDateAndTimeOfDay(_date!, _time) : null;
 
-  // DateTime? get _dateTimeUtc => _date!=null && _time!=null ?
-  //     DateTime.fromMillisecondsSinceEpoch(_dateTimeWithDateAndTimeOfDay(_date!, _time).toUtc().millisecondsSinceEpoch, isUtc: true) : null;
   DateTime? get _dateTimeUtc => _dateTime?.toUtc();
 
   @override
   void initState() {
-    _timeZone = timeZoneDatabase.locations[widget.timeZone] ?? DateTimeLocal.timezoneLocal;
+    _timeZone = timeZoneDatabase.locations[widget.timeZone] ??
+        DateTimeLocal.timezoneLocal;
     DateTime? dateTimeUtc = widget.scheduleTime;
     if (dateTimeUtc != null) {
       TZDateTime scheduleTime = TZDateTime.from(dateTimeUtc, _timeZone);
@@ -2933,91 +2917,273 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(padding: EdgeInsets.only(top: 16), child:
-          Text("Schedule: ", style: Styles().textStyles.getTextStyle('widget.group.members.light.title'),)),
-        Expanded(child: _buildDropdown())
-    ]);
+    return widget.showOnlyDropdown ? _buildDropdownViewWithCheckbox() : _buildFullView();
   }
 
-  Widget _buildDropdown(){
-    // String title = (_time != null? DateFormat("EEE, MMM dd, h:mma").format(_dateWithTimeOfDay(_time!)) : "");
-    DateTime? selectedTime = _dateTime?.toLocal();
-    String title = (selectedTime != null? DateFormat("EEE, MMM dd, h:mma").format(selectedTime) : "");
-
-    return Padding(padding: EdgeInsets.zero, child:
-    Column(children: <Widget>[
-      Container(
-        decoration: BoxDecoration(
-            color: widget.enabled == true ? Styles().colors.surface : null,
-            border: Border.all(color: /*widget.enabled == true ? Styles().colors.mediumGray2 :*/ Styles().colors.surfaceAccent, width: 1),
-            borderRadius: BorderRadius.all(Radius.circular(4))
+  Widget _buildFullView() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 16),
+          child: Text(
+            "Schedule: ",
+            style:
+            Styles().textStyles.getTextStyle('widget.group.members.light.title'),
+          ),
         ),
-        child: Column(children: <Widget>[
-          Semantics(button: true, label: title,
-              child: InkWell(
-                onTap: (){
-                  if(widget.enabled == true) {
-                    setStateIfMounted(() {
-                      _expanded = !_expanded;
-                    });
-                  }
-                },
-                child: Padding(padding: sectionHeadingContentPadding, child:
-                Row(children: [
-                  Expanded(child:
-                    Semantics ( label: title, child:
-                      RichText(text:
-                        TextSpan(text: title, style: Styles().textStyles.getTextStyle("widget.title.medium.fat"), semanticsLabel: "", children: required ? <InlineSpan>[
-                          TextSpan(text: ' *', style: Styles().textStyles.getTextStyle('widget.label.small.fat'), semanticsLabel: ""),
-                  ] : null),
-                  ))
-                  ),
-                  Visibility(visible: widget.enabled == true, child:
-                    Padding(padding: EdgeInsets.only(left: 8), child:
-                      Styles().images.getImage(_expanded ? 'chevron-up' : 'chevron-down') ?? Container()),)
-                ],),
-                ),
-              )
-          ),
-          Visibility(visible: _expanded, child:
-          Container(decoration: BoxDecoration(border: Border(top: BorderSide(color: Styles().colors.mediumGray2, width: 1))),
-            child: Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16), child:
-            Container(child: buildBody() ??
-                Container())
-            ),
-          ),
-          ),
-        ],),
-      ),
-    ]),
+        Expanded(child: _buildDropdown())
+      ],
     );
   }
 
-  Widget? buildBody() => Column(children: [
+  Widget _buildDropdownViewWithCheckbox() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+              value: _isChecked,
+              onChanged: (bool? value) {
+                setState(() {
+                  _isChecked = value ?? false;
+                });
+              },
+            ),
+            Text(
+              "Schedule Post",
+              style: Styles().textStyles.getTextStyle("widget.detail.light.regular"),
+            ),
+          ],
+        ),
+        if (_isChecked) _buildDropdownView(),
+      ],
+    );
+  }
+
+  Widget _buildDropdownView() {
+    return Container(
+      width: 300,
+      decoration: BoxDecoration(
+        color: Styles().colors.surface,
+        border: Border.all(
+          color: Styles().colors.surfaceAccent,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6.0),
+              child: Row(
+                children: [
+                  Text(
+                    Localization().getStringEx("", "DATE"),
+                    style: Styles().textStyles.getTextStyle("widget.title.dark.regular"),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: _buildDropdownButton(
+                      label: (_date != null)
+                          ? DateFormat("EEE, MMM dd, yyyy").format(_date!)
+                          : "-",
+                      onTap: _onDate,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6.0),
+              child: Row(
+                children: [
+                  Text(
+                    Localization().getStringEx("", "TIME"),
+                    style: Styles().textStyles.getTextStyle("widget.title.dark.regular"),
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: _buildDropdownButton(
+                      label: (_time != null)
+                          ? DateFormat("h:mma").format(_dateWithTimeOfDay(_time!))
+                          : "-",
+                      onTap: _onTime,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown() {
+    DateTime? selectedTime = _dateTime?.toLocal();
+    String title = selectedTime != null
+        ? DateFormat("EEE, MMM dd, h:mma").format(selectedTime)
+        : "";
+
+    return Padding(
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: widget.enabled == true ? Styles().colors.surface : null,
+              border: Border.all(
+                color: Styles().colors.surfaceAccent,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: Column(
+              children: <Widget>[
+                Semantics(
+                  button: true,
+                  label: title,
+                  child: InkWell(
+                    onTap: () {
+                      if (widget.enabled == true) {
+                        setStateIfMounted(() {
+                          _expanded = !_expanded;
+                        });
+                      }
+                    },
+                    child: Padding(
+                      padding: sectionHeadingContentPadding,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Semantics(
+                              label: title,
+                              child: RichText(
+                                text: TextSpan(
+                                  text: title,
+                                  style: Styles().textStyles.getTextStyle(
+                                      "widget.title.dark.medium.fat"),
+                                  children: required
+                                      ? <InlineSpan>[
+                                    TextSpan(
+                                      text: ' *',
+                                      style: Styles()
+                                          .textStyles
+                                          .getTextStyle(
+                                          'widget.button.disabled.title.small.fat'),
+                                    ),
+                                  ]
+                                      : null,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: widget.enabled == true,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 8),
+                              child: Styles().images.getImage(
+                                  _expanded ? 'chevron-up' : 'chevron-down') ??
+                                  Container(),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: _expanded,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: Styles().colors.mediumGray2,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      child: buildBody() ?? Container(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget? buildBody() => Column(
+    children: [
       _buildTimeZoneDropdown(),
       Padding(padding: EdgeInsets.only(bottom: 12)),
       Row(
         children: [
-          Expanded(flex: 3, child:buildSectionTitleWidget(Localization().getStringEx("", "DATE"),)),
-          Expanded(flex: 7, child: _buildDropdownButton(label: (_date != null) ? DateFormat("EEE, MMM dd, yyyy").format(_date!) : "-", onTap: _onDate))
-        ],),
+          Expanded(
+            flex: 3,
+            child: buildSectionTitleWidget(
+              Localization().getStringEx("", "DATE"),
+            ),
+          ),
+          Expanded(
+            flex: 7,
+            child: _buildDropdownButton(
+              label: (_date != null)
+                  ? DateFormat("EEE, MMM dd, yyyy").format(_date!)
+                  : "-",
+              onTap: _onDate,
+            ),
+          )
+        ],
+      ),
       Padding(padding: EdgeInsets.only(bottom: 12)),
       Row(
         children: [
-          Expanded(flex: 3, child:buildSectionTitleWidget(Localization().getStringEx("", "TIME"),)),
-          Expanded(flex: 7, child: _buildDropdownButton(label: (_time != null) ? DateFormat("h:mma").format(_dateWithTimeOfDay(_time!)) : "-", onTap: _onTime))
-      ],)
-    ]);
+          Expanded(
+            flex: 3,
+            child: buildSectionTitleWidget(
+              Localization().getStringEx("", "TIME"),
+            ),
+          ),
+          Expanded(
+            flex: 7,
+            child: _buildDropdownButton(
+              label: (_time != null)
+                  ? DateFormat("h:mma").format(_dateWithTimeOfDay(_time!))
+                  : "-",
+              onTap: _onTime,
+            ),
+          )
+        ],
+      ),
+    ],
+  );
 
   Widget _buildDropdownButton({String? label, GestureTapCallback? onTap}) {
-    return InkWell(onTap: onTap, child:
-      Container(decoration: dropdownButtonDecoration, padding: dropdownButtonContentPadding, child:
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-          Text(label ??  '-', style: Styles().textStyles.getTextStyle("widget.title.regular"),),
-          Styles().images.getImage('chevron-down') ?? Container()
-        ],),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: dropdownButtonDecoration,
+        padding: dropdownButtonContentPadding,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              label ?? '-',
+              style: Styles().textStyles.getTextStyle("widget.title.dark.regular"),
+            ),
+            Styles().images.getImage('chevron-down') ?? Container()
+          ],
+        ),
       ),
     );
   }
@@ -3028,8 +3194,12 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
     DateTime now = DateUtils.dateOnly(DateTime.now());
     DateTime minDate = now;
     DateTime maxDate = now.add(Duration(days: 366));
-    DateTime selectedDate = (_date != null) ? DateTimeUtils.min(DateTimeUtils.max(_date!, minDate), maxDate) : minDate;
-    showDatePicker(context: context,
+    DateTime selectedDate = (_date != null)
+        ? DateTimeUtils.min(
+        DateTimeUtils.max(_date!, minDate), maxDate)
+        : minDate;
+    showDatePicker(
+      context: context,
       initialDate: selectedDate,
       firstDate: minDate,
       lastDate: maxDate,
@@ -3040,7 +3210,6 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
           TZDateTime zoneTime = TZDateTime.from(result, _timeZone);
           _date = DateUtils.dateOnly(zoneTime);
           widget.onDateChanged?.call(_dateTimeUtc);
-          // _errorMap = _buildErrorMap(); //TBD handle error
         });
       }
     });
@@ -3049,44 +3218,66 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
   void _onTime() {
     Analytics().logSelect(target: "Time");
     hideKeyboard(context);
-    showTimePicker(context: context, initialTime: _time ?? TimeOfDay(hour: 0, minute: 0)).then((TimeOfDay? result) {
+    showTimePicker(
+      context: context,
+      initialTime: _time ?? TimeOfDay(hour: 0, minute: 0),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            timePickerTheme: TimePickerThemeData(
+              dayPeriodColor: Styles().colors.fillColorSecondary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    ).then((TimeOfDay? result) {
       if ((result != null) && mounted) {
         setState(() {
           _time = result;
           widget.onDateChanged?.call(_dateTimeUtc);
-          // _errorMap = _buildErrorMap(); //TBD handle error
         });
       }
     });
   }
 
-  //TIMEZONE
-  Widget _buildTimeZoneDropdown(){
-    return Visibility(visible: widget.enableTimeZone, child:
-      Semantics(container: true, child:
-        Row(children: <Widget>[
-          Expanded(flex: 4, child:
-            buildSectionTitleWidget(Localization().getStringEx("", "TIME ZONE")),
-          ),
-          Container(width: 16,),
-          Expanded(flex: 6, child:
-            Container(decoration: dropdownButtonDecoration, child:
-              Padding(padding: EdgeInsets.only(left: 12, right: 8), child:
-                DropdownButtonHideUnderline(child:
-                  DropdownButton<Location>(
+  Widget _buildTimeZoneDropdown() {
+    return Visibility(
+      visible: widget.enableTimeZone,
+      child: Semantics(
+        container: true,
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 4,
+              child: buildSectionTitleWidget(
+                Localization().getStringEx("", "TIME ZONE"),
+              ),
+            ),
+            Container(width: 16),
+            Expanded(
+              flex: 6,
+              child: Container(
+                decoration: dropdownButtonDecoration,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 12, right: 8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<Location>(
                       icon: Styles().images.getImage('chevron-down'),
                       isExpanded: true,
-                      style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
-                      hint: Text(_timeZone.name,),
+                      style: Styles().textStyles.getTextStyle(
+                          "panel.create_event.dropdown_button.title.regular"),
+                      hint: Text(_timeZone.name),
                       items: _buildTimeZoneDropDownItems(),
-                      onChanged: _onTimeZoneChanged
+                      onChanged: _onTimeZoneChanged,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ])
-      )
+          ],
+        ),
+      ),
     );
   }
 
@@ -3096,7 +3287,12 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
       if (name.startsWith('US/')) {
         menuItems.add(DropdownMenuItem<Location>(
           value: location,
-          child: Semantics(label: name, excludeSemantics: true, container:true, child: Text(name, style: headingTextStype)),
+          child: Semantics(
+            label: name,
+            excludeSemantics: true,
+            container: true,
+            child: Text(name, style: headingTextStype),
+          ),
         ));
       }
     });
@@ -3118,38 +3314,78 @@ class _GroupScheduleTimeState extends State<GroupScheduleTimeWidget>{
   DateTime _dateWithTimeOfDay(TimeOfDay time) =>
       _dateTimeWithDateAndTimeOfDay(DateTime.now(), time);
 
-  TZDateTime _dateTimeWithDateAndTimeOfDay(DateTime date, TimeOfDay? time, { bool inclusive = false}) =>
-      TZDateTime(_timeZone, date.year, date.month, date.day, time?.hour ?? (inclusive ? 23 : 0), time?.minute ?? (inclusive ? 59 : 0));
+  TZDateTime _dateTimeWithDateAndTimeOfDay(
+      DateTime date,
+      TimeOfDay? time, {
+        bool inclusive = false,
+      }) =>
+      TZDateTime(
+        _timeZone,
+        date.year,
+        date.month,
+        date.day,
+        time?.hour ?? (inclusive ? 23 : 0),
+        time?.minute ?? (inclusive ? 59 : 0),
+      );
 
-  //Common
-  static Widget buildSectionTitleWidget(String title, { bool required = false, TextStyle? textStyle, TextStyle? requiredTextStyle,  }) =>
-      Semantics ( label: title, child:
-        RichText(textScaler: textScaler, text:
-          TextSpan(text: title, style: textStyle ?? headingTextStype, semanticsLabel: "", children: required ? <InlineSpan>[
-            TextSpan(text: ' *', style: requiredTextStyle ?? Styles().textStyles.getTextStyle('widget.label.small.fat'), semanticsLabel: ""),
-          ] : null),
-      ));
+  static Widget buildSectionTitleWidget(
+      String title, {
+        bool required = false,
+        TextStyle? textStyle,
+        TextStyle? requiredTextStyle,
+      }) =>
+      Semantics(
+        label: title,
+        child: RichText(
+          textScaler: textScaler,
+          text: TextSpan(
+            text: title,
+            style: textStyle ?? headingTextStype,
+            children: required
+                ? <InlineSpan>[
+              TextSpan(
+                text: ' *',
+                style: requiredTextStyle ??
+                    Styles()
+                        .textStyles
+                        .getTextStyle('widget.label.small.fat'),
+              ),
+            ]
+                : null,
+          ),
+        ),
+      );
 
-  static TextStyle? get headingTextStype => Styles().textStyles.getTextStyle("widget.title.dark.small.fat.spaced");
+  static TextStyle? get headingTextStype =>
+      Styles().textStyles.getTextStyle("widget.title.dark.small.fat.spaced");
 
-  static const EdgeInsetsGeometry dropdownButtonContentPadding = const EdgeInsets.symmetric(horizontal: 16, vertical: 16);
-  static const EdgeInsetsGeometry sectionHeadingContentPadding = const EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+  static const EdgeInsetsGeometry dropdownButtonContentPadding =
+  const EdgeInsets.symmetric(horizontal: 12, vertical: 12); // Adjusted padding
+  static const EdgeInsetsGeometry sectionHeadingContentPadding =
+  const EdgeInsets.symmetric(horizontal: 12, vertical: 8); // Adjusted padding
 
   static BoxDecoration get dropdownButtonDecoration => BoxDecoration(
-      color: Styles().colors.surface,
-      border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
-      borderRadius: BorderRadius.all(Radius.circular(4))
+    color: Styles().colors.surface,
+    border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
+    borderRadius: BorderRadius.all(Radius.circular(4)),
   );
 
   static TextScaler get textScaler {
     BuildContext? context = App.instance?.currentContext;
-    return (context != null) ? MediaQuery.of(context).textScaler : TextScaler.noScaling;
+    return (context != null)
+        ? MediaQuery.of(context).textScaler
+        : TextScaler.noScaling;
   }
 
   static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).unfocus();
   }
 }
+
+
+
+
+
 
 typedef EmojiSelector = void Function(emoji.Emoji);
 class ReactionKeyboard {
@@ -3180,3 +3416,106 @@ class ReactionKeyboard {
     );
   }
 }
+
+class GroupReactionsLayout extends StatefulWidget {
+  final Group? group;
+  final List<Reaction> reactions;
+  final Future<bool> Function(Reaction)? onSendReaction;
+  final Future<bool> Function(Reaction)? onDeleteReaction;
+  final bool? enabled;
+
+  const GroupReactionsLayout({super.key, required this.reactions, this.group, this.onSendReaction, this.onDeleteReaction, this.enabled = true,});
+
+  @override
+  State<StatefulWidget> createState() => _GroupReactionsState();
+}
+
+class _GroupReactionsState extends State<GroupReactionsLayout> {
+  @override
+  Widget build(BuildContext context)
+    => _buildReactionsLayoutWidget;
+
+  Widget get _buildReactionsLayoutWidget {
+    Map<String, List<Reaction>> sameEmojiReactions = ReactionExt.extractSameEmojiReactions(widget.reactions) ?? {};
+    return Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          ...sameEmojiReactions.keys.map((String emoji) =>
+              _buildReactionWidget(
+                  occurrences: sameEmojiReactions[emoji]?.length,
+                  reaction: sameEmojiReactions[emoji]?.
+                  firstWhere(
+                          (Reaction reaction) => reaction.isCurrentUserReacted,
+                      orElse: () => (CollectionUtils.isNotEmpty(sameEmojiReactions[emoji]) ? sameEmojiReactions[emoji]?.first : null)
+                          ?? Reaction()))
+          ).toList(),
+          Visibility(visible: widget.enabled == true,
+            child: Container(
+              padding: EdgeInsets.only(right: 6),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Styles().colors.background,
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  border: Border.all(color: Styles().colors.surfaceAccent)),
+                child: InkWell(
+                    onTap: () => ReactionKeyboard.showEmojiBottomSheet(context: context, onSelect: _reactWithEmoji),
+                    child: Padding(padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        child:Styles().images.getImage('add_emoji', excludeFromSemantics: true, size: 18, color: Styles().colors.mediumGray2))
+                )))),
+        ]
+    );
+  }
+
+  Widget _buildReactionWidget({Reaction? reaction, int? occurrences}){
+    return Padding( padding: EdgeInsets.all(4),
+        child: InkWell(
+            onTap: () => _deleteReaction(reaction), //TBD call BB to remove reaction
+            child: Container(
+                padding: EdgeInsets.symmetric(vertical: 1, horizontal: 6),
+                decoration: BoxDecoration(
+                    color: Styles().colors.background,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(color: Styles().colors.surfaceAccent,)),
+                child: Row(mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(reaction?.data ?? "", style: TextStyle(fontSize: 18)),
+                      Visibility(visible: (occurrences ?? 0 ) > 1,
+                          child: Text(occurrences?.toString() ?? "", style: TextStyle(fontSize: 16),)
+                      )
+                    ])
+            )
+        )
+    );
+  }
+
+  void _reactWithEmoji(emoji.Emoji emoji){
+    _sendReaction(
+        Reaction(
+          data: emoji.emoji,
+          type: ReactionType.emoji,
+          dateCreatedUtc: DateTime.now().toUtc(),
+          engager: Creator(accountId: widget.group?.currentMember?.userId, name: widget.group?.currentMember?.name),
+        )
+    );
+  }
+
+  void _sendReaction(Reaction? reaction){ //TBD hook to BB
+    if(widget.enabled == true && reaction != null) {
+      setStateIfMounted(() =>
+          widget.reactions.add(reaction)
+      );
+      widget.onSendReaction?.call(reaction);
+    }
+  }
+
+  void _deleteReaction(Reaction? reaction){ //TBD remove
+    if(widget.enabled == true && reaction != null) {
+      setStateIfMounted(() =>
+          widget.reactions.remove(reaction)
+      );
+      widget.onDeleteReaction?.call(reaction);
+    }
+  }
+}
+
+

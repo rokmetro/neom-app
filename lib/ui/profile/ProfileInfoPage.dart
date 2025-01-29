@@ -31,10 +31,10 @@ class ProfileInfoPage extends StatefulWidget {
 
   final ProfileInfo contentType;
   final Map<String, dynamic>? params;
-  final bool showAccountCommands;
+  final bool onboarding;
   final void Function()? onStateChanged;
 
-  ProfileInfoPage({super.key, required this.contentType, this.params, this.showAccountCommands = false, this.onStateChanged});
+  ProfileInfoPage({super.key, required this.contentType, this.params, this.onboarding = false, this.onStateChanged});
 
   @override
   State<StatefulWidget> createState() => ProfileInfoPageState();
@@ -46,6 +46,9 @@ class ProfileInfoPage extends StatefulWidget {
 }
 
 class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileInfoPage> implements NotificationsListener {
+
+  final GlobalKey<ProfileInfoPreviewPageState> _profileInfoPreviewKey = GlobalKey<ProfileInfoPreviewPageState>();
+  final GlobalKey<ProfileInfoEditPageState> _profileInfoEditKey = GlobalKey<ProfileInfoEditPageState>();
 
   Auth2UserProfile? _profile;
   Auth2UserPrivacy? _privacy;
@@ -59,15 +62,31 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
   bool _updatingDirectoryVisibility = false;
   bool _preparingDeleteAccount = false;
 
-  bool get previewMode => (!_loading && !_editing);
-  bool get _directoryVisibility => (_privacy?.public == true);
+  bool get _showProfileCommands => (widget.onboarding == false);
+  bool get _showAccountCommands => (widget.onboarding == false);
+
+  bool get isLoading => _loading;
+  bool get isEditing => _editing;
+  bool get directoryVisibility => (_privacy?.public == true);
+
+  void setEditing(bool value) {
+    if (mounted && (_editing != value)) {
+      setState(() {
+        _editing = value;
+        widget.onStateChanged?.call();
+      });
+    }
+  }
+
+  Future<bool> saveEdit() =>
+    _profileInfoEditKey.currentState?.saveEdit() ?? Future.value(false);
 
   @override
   void initState() {
     NotificationService().subscribe(this, [
       DirectoryAccountsPage.notifyEditInfo,
     ]);
-    _editing = widget.editParam ?? false;
+    _editing = (widget.editParam == true);
     _identifiers = Auth2().account?.identifiers;
     _loadInitialContent();
     super.initState();
@@ -98,16 +117,19 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
       return Column(children: [
         _directoryVisibilityControl,
 
-        if (_directoryVisibility == true)
+        // if (directoryVisibility == true)
           Column(children: [
-            Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
-              Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.detail.small'), textAlign: TextAlign.center,),
-            ),
+            if (widget.onboarding == false)
+              Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
+                Text(_desriptionText, style: Styles().textStyles.getTextStyle('widget.info.tiny'), textAlign: TextAlign.center,),
+              ),
 
-            _editing ? _editContent : _previewContent,
+            Padding(padding: EdgeInsets.only(top: 16), child:
+              _editing ? _editContent : _previewContent,
+            )
           ]),
 
-        if (widget.showAccountCommands && !_editing)
+        if (_showAccountCommands && !_editing)
           _accountCommands,
       ],);
     }
@@ -117,26 +139,31 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
     Padding(padding: EdgeInsets.symmetric(horizontal: 16), child:
       Column(children: [
         ProfileInfoPreviewPage(
+          key: _profileInfoPreviewKey,
           contentType: widget.contentType,
           profile: _profile,
           privacy: _privacy,
           identifiers: _identifiers,
+          onboarding: widget.onboarding,
           pronunciationAudioData: _pronunciationAudioData,
           photoImageData: _photoImageData,
           photoImageToken: _photoImageToken,
         ),
-        Padding(padding: EdgeInsets.only(top: 24), child:
-          _previewCommandBar,
-        ),
+        if (_showProfileCommands)
+          Padding(padding: EdgeInsets.only(top: 24), child:
+            _previewCommandBar,
+          ),
       ]),
     );
 
   Widget get _editContent =>
     ProfileInfoEditPage(
+      key: _profileInfoEditKey,
       contentType: widget.contentType,
       profile: _profile,
       privacy: _privacy,
       identifiers: _identifiers,
+      onboarding: widget.onboarding,
       pronunciationAudioData: _pronunciationAudioData,
       photoImageData: _photoImageData,
       photoImageToken: _photoImageToken,
@@ -149,7 +176,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
         Row(children: [
           Expanded(child:
             Padding(padding: EdgeInsets.only(left: 16, top: 12), child:
-              Text(Localization().getStringEx('panel.profile.info.directory_visibility.command.toggle.title', 'Directory Visibility'), style: Styles().textStyles.getTextStyle('widget.detail.dark.regular.fat'),)
+              Text(Localization().getStringEx('panel.profile.info.directory_visibility.command.toggle.title', 'Directory Visibility'), style: Styles().textStyles.getTextStyle('widget.detail.regular.fat'),)
             ),
           ),
           _updatingDirectoryVisibility ? _directoryVisibilityProgress : _directoryVisibilityToggleButton,
@@ -167,7 +194,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
   Widget get _directoryVisibilityToggleButton =>
     InkWell(onTap: _onToggleDirectoryVisibility, child:
       Padding(padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 12), child:
-        Styles().images.getImage(_directoryVisibility ? 'toggle-on' : 'toggle-off')
+        Styles().images.getImage(directoryVisibility ? 'toggle-on' : 'toggle-off')
       )
     );
 
@@ -183,35 +210,39 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
   Widget get _directoryVisibilityDescription {
     final String visibilityMacro = "{{visibility}}";
 
-    final String visibilityValue = _directoryVisibility ?
+    final String visibilityValue = directoryVisibility ?
       Localization().getStringEx('panel.profile.info.directory_visibility.public.text', 'Public') :
       Localization().getStringEx('panel.profile.info.directory_visibility.private.text', 'Private');
 
-    final String messageTemplate = _directoryVisibility ?
-      Localization().getStringEx('panel.profile.info.directory_visibility.public.description', 'Your directory visibility is set to $visibilityMacro. Anyone on or off the User Directory can view your account.') :
-      Localization().getStringEx('panel.profile.info.directory_visibility.private.description', 'Your directory visibility is set to $visibilityMacro. Your account is available only to you.');
+    final String messageTemplate = widget.onboarding ?
+      (directoryVisibility ?
+        AppTextUtils.appTitleString('panel.profile.info.directory_visibility.onboarding.public.description', 'Your directory visibility is set to $visibilityMacro. The information below will be visible to the users of the ${AppTextUtils.appTitleMacro} App.') :
+        AppTextUtils.appTitleString('panel.profile.info.directory_visibility.onboarding.private.description', 'Your directory visibility is set to $visibilityMacro. Your profile is visible only to you.')) :
+      (directoryVisibility ?
+        AppTextUtils.appTitleString('panel.profile.info.directory_visibility.normal.public.description', 'Your directory visibility is set to $visibilityMacro. Anyone on or off the User Directory can view your account.') :
+        AppTextUtils.appTitleString('panel.profile.info.directory_visibility.normal.private.description', 'Your directory visibility is set to $visibilityMacro. Your account is available only to you.'));
 
     final List<String> messages = messageTemplate.split(visibilityMacro);
     List<InlineSpan> spanList = <InlineSpan>[];
     if (0 < messages.length)
       spanList.add(TextSpan(text: messages.first));
     for (int index = 1; index < messages.length; index++) {
-      spanList.add(TextSpan(text: visibilityValue, style : Styles().textStyles.getTextStyle("widget.detail.dark.small.fat"),));
+      spanList.add(TextSpan(text: visibilityValue, style : Styles().textStyles.getTextStyle("widget.detail.small.fat"),));
       spanList.add(TextSpan(text: messages[index]));
     }
 
     return RichText(textAlign: TextAlign.left, text:
-      TextSpan(style: Styles().textStyles.getTextStyle("widget.detail.dark.small"), children: spanList)
+      TextSpan(style: Styles().textStyles.getTextStyle("widget.detail.small"), children: spanList)
     );
   }
 
   void _onToggleDirectoryVisibility() {
-    Analytics().logSelect(target: "Directory Visibility: ${_directoryVisibility ? 'OFF' : 'ON'}");
+    Analytics().logSelect(target: "Directory Visibility: ${directoryVisibility ? 'OFF' : 'ON'}");
     setState(() {
       _updatingDirectoryVisibility = true;
     });
     Auth2UserPrivacy privacy = Auth2UserPrivacy.fromOther(_privacy,
-      public: !_directoryVisibility,
+      public: !directoryVisibility,
     );
     Auth2().saveUserPrivacy(privacy).then((bool result){
       if (mounted) {
@@ -267,7 +298,7 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
     Expanded(child: _editInfoButton,),
     Container(width: 8),
     Expanded(child: _swapInfoButton,),
-  ],);
+  ]);
 
   Widget get _myDirectoryInfoPreviewCommandBar => Row(children: [
     Expanded(flex: 1, child: Container(),),
@@ -277,13 +308,15 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
 
   Widget get _editInfoButton => RoundedButton(
     label: _editInfoButtonTitle,
-    fontFamily: Styles().fontFamilies.bold, fontSize: 16,
+    textStyle: Styles().textStyles.getTextStyle('widget.button.light.title.medium'),
+    backgroundColor: Styles().colors.background,
+    borderColor: Styles().colors.fillColorSecondary,
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     onTap: _onEditInfo,
   );
 
   String get _editInfoButtonTitle =>
-    Localization().getStringEx('panel.profile.info.command.button.edit.text', 'Edit My Info');
+    Localization().getStringEx('panel.profile.info.command.button.edit.text', 'Edit my info');
 
   Widget get _swapInfoButton => RoundedButton(
     label: Localization().getStringEx('panel.profile.info.command.button.swap.text', 'Swap Info'),
@@ -492,7 +525,9 @@ class ProfileInfoPageState extends ProfileDirectoryMyInfoBasePageState<ProfileIn
         _pronunciationAudioData = pronunciationAudioData;
       }
 
-      _editing = false;
+      if (_showProfileCommands) {
+        _editing = false;
+      }
       widget.onStateChanged?.call();
     });
   }
@@ -506,7 +541,7 @@ class ProfileDirectoryMyInfoBasePageState<T extends StatefulWidget> extends Stat
   // Name Text Style
 
   TextStyle? get nameTextStyle =>
-    Styles().textStyles.getTextStyleEx('widget.message.medium_large.fat', fontHeight: 0.85, textOverflow: TextOverflow.ellipsis);
+    Styles().textStyles.getTextStyleEx('widget.title.medium_large.fat', fontHeight: 0.85, textOverflow: TextOverflow.ellipsis);
 
   // Positive and Permitted visibility
 

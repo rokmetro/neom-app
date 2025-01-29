@@ -19,7 +19,6 @@ import 'dart:typed_data';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/FlexUI.dart';
@@ -359,8 +358,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           ),
         ];
       },
-      body: _isMemberOrAdmin ? _buildViewPager() : SingleChildScrollView(scrollDirection: Axis.vertical, child:
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: _buildNonMemberContent(),),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: _isMemberOrAdmin ? _buildViewPager() : Column(crossAxisAlignment: CrossAxisAlignment.start, children: _buildNonMemberContent(),),
       ),
     );
   }
@@ -597,7 +597,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
           child: _buildImageHeader(),
         ),
         Padding(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: _hasGroupImage ? 72.0 : 24.0, top: _hasGroupImage ? 152.0 : 24.0),
+          padding: EdgeInsets.only(left: 24.0, right: 24.0, bottom: 56.0, top: _hasGroupImage ? 152.0 : 24.0),
           child: _buildGroupDetailsHeader(),
         )
       ]),
@@ -617,7 +617,6 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   Widget _buildGroupDetailsHeader() {
     return Container(
       color: Styles().colors.surface,
-      // height: _groupDetailsHeight,
       child: Column(
         children: [
           _buildGroupInfo(),
@@ -1020,9 +1019,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       children: [
         Expanded(
           child: RichText(textScaler: MediaQuery.of(context).textScaler,
-            text: TextSpan(text: Localization().getStringEx("","Your activity in the app is private. Please review the "), style:  Styles().textStyles.getTextStyle("widget.title.tiny"),
+            text: TextSpan(text: Localization().getStringEx("","Your activity in the app is private. Please review the "), style:  Styles().textStyles.getTextStyle("widget.title.dark.tiny"),
             children: [
-              TextSpan(text: Localization().getStringEx("", "Student Code."), style: Styles().textStyles.getTextStyle("widget.title.tiny")),  //recognizer: TapGestureRecognizer()..onTap = () => _onPrivacy()),
+              TextSpan(text: Localization().getStringEx("", "Student Code."), style: Styles().textStyles.getTextStyle("widget.title.dark.tiny")),  //recognizer: TapGestureRecognizer()..onTap = () => _onPrivacy()),
               // WidgetSpan(
               //     child: Padding(padding: EdgeInsets.symmetric(horizontal: 2), child: Styles().images.getImage('external-link', excludeFromSemantics: true)),
               // )
@@ -1218,7 +1217,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     int leftAreaFlex = 0,
   }) {
     return Dialog(
-        backgroundColor: Styles().colors.fillColorPrimary,
+        backgroundColor: Styles().colors.background,
         child: StatefulBuilder(builder: (context, setStateEx) {
           return Padding(
               padding: EdgeInsets.all(16),
@@ -1231,9 +1230,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                   Expanded(flex: leftAreaFlex, child: Container()),
                   Expanded(flex: negativeButtonFlex, child: RoundedButton(
                       label: StringUtils.ensureNotEmpty(negativeButtonLabel, defaultValue: Localization().getStringEx("panel.group_detail.button.back.title", "Back")),
-                      textStyle: Styles().textStyles.getTextStyle("widget.button.title.large"),
-                      borderColor: Styles().colors.surface,
-                      backgroundColor: Styles().colors.surface,
+                      textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                      borderColor: Styles().colors.fillColorSecondary,
+                      backgroundColor: Styles().colors.background,
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       onTap: () {
                         Analytics().logAlert(text: confirmationTextMsg, selection: negativeButtonLabel);
@@ -1242,9 +1241,9 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                   Container(width: 16),
                   Expanded(flex: positiveButtonFlex, child: RoundedButton(
                     label: positiveButtonLabel ?? '',
-                    textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                    borderColor: Styles().colors.surface,
-                    backgroundColor: Styles().colors.surface,
+                    textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                    borderColor: Styles().colors.fillColorSecondary,
+                    backgroundColor: Styles().colors.background,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     progress: _confirmationLoading,
                     onTap: () {
@@ -1286,7 +1285,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                         label: Localization().getStringEx("panel.group_detail.button.group.about.title", "About this group"),//TBD localize
                         onTap: () {
                           Navigator.pop(context);
-                          setStateIfMounted(()=> _currentTab = _DetailTab.About);
+                          _onTab(_DetailTab.About);
                         })),
                 Visibility(
                     visible: _canEditGroup,
@@ -1354,7 +1353,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                         })),
                 Visibility(visible: _canReportAbuse, child: RibbonButton(
                   leftIconKey: "report",
-                  label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.labe", "Report to Dean of Students"),
+                  label: Localization().getStringEx("panel.group.detail.post.button.report.students_dean.label", "Report to Dean of Students"),
                   onTap: () => _onTapReportAbuse(options: GroupPostReportAbuseOptions(reportToDeanOfStudents : true)   ),
                 )),
               ]));
@@ -1393,7 +1392,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                         label: Localization().getStringEx("panel.group_detail.button.create_message.title", "Message"),//localize tbd
                         onTap: () {
                           Navigator.of(context).pop();
-                          _onTapCreatePost();
+                          _onTapCreatePost(type: PostType.direct_message);
                         })),
                 Visibility(
                     visible: _canAddEvent,
@@ -1472,7 +1471,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
       padding: EdgeInsets.only(left: 24, right: 24, top: 28, bottom: 24),
       border: Border.all(color: Styles().colors.textDark, width: 1),
       alignment: Alignment.center,
-      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.univerity_name', 'University of Illinois')),
+      infoText: Localization().getStringEx('panel.group.detail.policy.text', 'The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.').replaceAll('{{app_university}}', Localization().getStringEx('app.university_name', 'University of Illinois')),
       infoTextStyle: Styles().textStyles.getTextStyle('widget.description.regular.thin'),
       closeIcon: Styles().images.getImage('close-circle', excludeFromSemantics: true),
     ),);
@@ -1529,7 +1528,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
 
   void _onTapSettings(){
     Analytics().logSelect(target: "Group Settings", attributes: _group?.analyticsAttributes);
-    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupSettingsPanel(group: _group,))).then((exit){
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupSettingsPanel(group: _group, groupStats: _groupStats,))).then((exit){
       if(exit == true){
         Navigator.of(context).pop();
       }
@@ -1629,10 +1628,10 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
     }
   }
 
-  void _onTapCreatePost() {
+  void _onTapCreatePost({PostType type =  PostType.post}) {
     Analytics().logSelect(target: "Create Post", attributes: _group?.analyticsAttributes);
     if (_group != null) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: _group!))).then((result) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostCreatePanel(group: _group!, type: type))).then((result) {
         if (result is Post) {
           if(result.isScheduled){
             _updateController.add(_GroupScheduledPostsContent.notifyPostsRefreshWithScrollToLast);
@@ -1956,6 +1955,7 @@ class _GroupPostsContent extends StatefulWidget{
 class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAliveClientMixin<_GroupPostsContent>
     implements NotificationsListener {
   List<Post>         _posts = <Post>[];
+  List<Post>         _pinedPosts = <Post>[];
   GlobalKey          _lastPostKey = GlobalKey();
   bool?              _refreshingPosts;
   bool?              _loadingPostsPage;
@@ -1976,6 +1976,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
     ]);
 
     _loadInitialPosts();
+    _loadPinnedPosts();
     super.initState();
   }
 
@@ -1994,20 +1995,10 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
   }
 
   Widget _buildPosts() {
-    List<Widget> postsContent = [];
-
-    for (int i = 0; i <_posts.length ; i++) {
-      Post? post = _posts[i];
-      if (i > 0) {
-        postsContent.add(Container(height: 16));
-      }
-
-      postsContent.add(GroupPostCard(
-        key: (i == 0) ? _lastPostKey : null,
-        post: post,
-        group: _group!,
-        isAdmin: widget.groupAdmins?.map((Member admin) => admin.userId == post.creatorId).isNotEmpty,
-      ));
+    List<Widget> postsContent = _buildPostCardsContent(posts: _posts, lastPostKey: _lastPostKey);
+    List<Widget> pinnedPostsContent =_buildPostCardsContent(posts: _pinedPosts);
+    if(CollectionUtils.isNotEmpty(_pinedPosts)){
+      pinnedPostsContent.add(Container(height: 24,));
     }
 
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_hasMorePosts != false) && (0 < _posts.length)) {
@@ -2032,6 +2023,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       Column(children: <Widget>[
         Visibility(visible: CollectionUtils.isEmpty(_posts) && _loadingPostsPage == false,
             child: _buildEmptyContent()),
+        ...pinnedPostsContent,
         ...postsContent])),
       _loadingPostsPage == true
         ? Center(
@@ -2040,6 +2032,25 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
             child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary))))
         : Container()
     ]);
+  }
+
+  List<Widget> _buildPostCardsContent({required List<Post> posts, GlobalKey? lastPostKey}){
+    List<Widget> content = [];
+    for (int i = 0; i <posts.length ; i++) {
+      Post? post = posts[i];
+      if (i > 0) {
+        content.add(Container(height: 16));
+      }
+
+      content.add(GroupPostCard(
+        key: (i == 0) ? lastPostKey : null,
+        post: post,
+        group: _group!,
+        isAdmin: widget.groupAdmins?.map((Member admin) => admin.userId == post.creatorId).isNotEmpty,
+      ));
+    }
+
+    return content;
   }
 
   Widget _buildEmptyContent() => Container(height: 100,
@@ -2068,7 +2079,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_refreshingPosts != true)) {
       int limit = _posts.length + (delta ?? 0);
       _refreshingPosts = true;
-      Social().loadPosts(groupId: _groupId, type: PostType.post, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? posts) {
+      Social().loadPosts(groupId: _groupId, type: PostType.post, showCommentsCount: true, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? posts) {
         _refreshingPosts = false;
         if (mounted && (posts != null)) {
           setState(() {
@@ -2106,6 +2117,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
         groupId: _groupId,
         type: PostType.post,
         status: PostStatus.active,
+        showCommentsCount: true,
         offset: _posts.length,
         limit: _GroupDetailPanelState._postsPageSize,
         sortBy: SocialSortBy.date_created);
@@ -2116,6 +2128,18 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       }
     }
   }
+
+  Future<void> _loadPinnedPosts() async =>
+      Social().loadPosts(
+          groupId: _groupId,
+          type: PostType.post,
+          status: PostStatus.active,
+          sortBy: SocialSortBy.date_created).
+            then((List<Post>? posts) =>
+                setStateIfMounted(() =>
+                  _pinedPosts = posts?.where(
+                          (post) => post.isPinned == true
+                  ).toList() ?? []));
 
   // Member?  _getPostCreatorAsMember(Post? post) {
   //   Iterable<Member>? creatorProfiles = widget.groupMembers?.where((member) => member.userId == post?.creatorId);
@@ -2146,6 +2170,7 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
   void _initUpdateListener() => widget.updateController?.stream.listen((command) {
     if (command is String && command == GroupDetailPanel.notifyRefresh) {
       _refreshCurrentPosts();
+      _loadPinnedPosts();
     // } else if(command is String && command == _GroupDetailPostsContent.notifyPostRefresh) {
     //   _refreshCurrentPosts();
     }  else if(command is String && command == _GroupPostsContent.notifyPostRefreshWithScrollToLast) {
@@ -2167,18 +2192,23 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
       Post? post = param is Post ? param : null;
       if(post?.isPost == true){
         _refreshCurrentPosts(delta: 1);
+        if(post?.isPinned == true)
+          _loadPinnedPosts();
       }
     }
     else if (name == Social.notifyPostUpdated) {
       Post? post = param is Post ? param : null;
       if(post?.isPost == true){
         _refreshCurrentPosts();
+        _loadPinnedPosts();
       }
     }
     else if (name == Social.notifyPostDeleted) {
       Post? post = param is Post ? param : null;
       if(post?.isPost == true) {
         _refreshCurrentPosts(delta: -1);
+        if(post?.isPinned == true)
+          _loadPinnedPosts();
       }
     }
   }
@@ -2498,7 +2528,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
   }
 
   Future<void> _loadMessagesPage() async {
-    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message , offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
+    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
     if (messagesPage != null) {
       _messages.addAll(messagesPage);
       if (messagesPage.length < _GroupDetailPanelState._postsPageSize) {
@@ -2706,6 +2736,7 @@ class _GroupScheduledPostsState extends State<_GroupScheduledPostsContent> with 
       _refreshingScheduledPosts = true;
       Social().loadPosts(groupId: _group?.id,
           type: PostType.post,
+          showCommentsCount: true,
           offset: 0,
           limit: limit,
           order: SocialSortOrder.desc,
@@ -2750,6 +2781,7 @@ class _GroupScheduledPostsState extends State<_GroupScheduledPostsContent> with 
         offset: _scheduledPosts.length,
         limit: _GroupDetailPanelState._postsPageSize,
         status: PostStatus.draft,
+        showCommentsCount: true,
         sortBy: SocialSortBy.activation_date);
     if (scheduledPostsPage != null) {
       _scheduledPosts.addAll(scheduledPostsPage);

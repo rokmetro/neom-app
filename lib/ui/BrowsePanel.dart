@@ -454,8 +454,8 @@ class _BrowseSection extends StatelessWidget {
 
       case "directory":           _onTapUserDirectory(context); break;
 
-      case "feeds.twitter":       _onTapTwitter(context); break;
-      case "feeds.daily_illini":  _onTapDailyIllini(context); break;
+      case "music_and_news.twitter":       _onTapTwitter(context); break;
+      case "music_and_news.daily_illini":  _onTapDailyIllini(context); break;
 
       case "groups":              _onTapGroups(context); break;
 

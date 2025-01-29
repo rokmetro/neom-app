@@ -20,7 +20,6 @@ import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/FirebaseMessaging.dart';
 import 'package:neom/ui/notifications/NotificationsInboxPage.dart';
 import 'package:neom/ui/settings/SettingsHomeContentPanel.dart';
-import 'package:neom/ui/widgets/TextTabBar.dart';
 import 'package:neom/utils/AppUtils.dart';
 import 'package:neom/ext/InboxMessage.dart';
 import 'package:rokwire_plugin/model/inbox.dart';
@@ -41,35 +40,26 @@ class NotificationsHomePanel extends StatefulWidget {
 
   static void present(BuildContext context, {NotificationsContent? content}) {
     if (Connectivity().isOffline) {
-      AppAlert.showOfflineMessage(context, Localization().getStringEx('panel.browse.label.offline.inbox', 'Notifications are not available while offline.'));
-    }
-    else if (!Auth2().isLoggedIn) {
+      AppAlert.showOfflineMessage(
+          context, Localization().getStringEx('panel.browse.label.offline.inbox', 'Notifications are not available while offline.'));
+    } else if (!Auth2().isLoggedIn) {
       AppAlert.showLoggedOutFeatureNAMessage(context, Localization().getStringEx('generic.app.feature.notifications', 'Notifications'));
-    }
-    else if (ModalRoute.of(context)?.settings.name != routeName) {
+    } else if (ModalRoute.of(context)?.settings.name != routeName) {
       MediaQueryData mediaQuery = MediaQueryData.fromView(View.of(context));
       double height = mediaQuery.size.height - mediaQuery.viewPadding.top - mediaQuery.viewInsets.top - 16;
       showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        isDismissible: true,
-        useRootNavigator: true,
-        routeSettings: RouteSettings(name: routeName),
-        clipBehavior: Clip.antiAlias,
-        backgroundColor: Styles().colors.background,
-        constraints: BoxConstraints(maxHeight: height, minHeight: height),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-        builder: (context) {
-          return NotificationsHomePanel._(content: content);
-        }
-      );
-
-      /*Navigator.push(context, PageRouteBuilder(
-        settings: RouteSettings(name: routeName),
-        pageBuilder: (context, animation1, animation2) => SettingsNotificationsContentPanel._(content: content),
-        transitionDuration: Duration.zero,
-        reverseTransitionDuration: Duration.zero
-      ));*/
+          context: context,
+          isScrollControlled: true,
+          isDismissible: true,
+          useRootNavigator: true,
+          routeSettings: RouteSettings(name: routeName),
+          clipBehavior: Clip.antiAlias,
+          backgroundColor: Styles().colors.background,
+          constraints: BoxConstraints(maxHeight: height, minHeight: height),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+          builder: (context) {
+            return NotificationsHomePanel._(content: content);
+          });
     }
   }
 
@@ -124,7 +114,7 @@ class NotificationsHomePanel extends StatefulWidget {
       FirebaseMessaging.payloadTypeProfileMy,
       FirebaseMessaging.payloadTypeProfileWhoAreYou,
       FirebaseMessaging.payloadTypeProfileLogin,
-      FirebaseMessaging.payloadTypeSettingsSections,  //TBD deprecate. Use payloadTypeProfileLogin instead
+      FirebaseMessaging.payloadTypeSettingsSections, //TBD deprecate. Use payloadTypeProfileLogin instead
       FirebaseMessaging.payloadTypeSettingsFoodFilters,
       FirebaseMessaging.payloadTypeSettingsSports,
       FirebaseMessaging.payloadTypeSettingsFavorites,
@@ -140,49 +130,15 @@ class NotificationsHomePanel extends StatefulWidget {
 }
 
 class _NotificationsHomePanelState extends State<NotificationsHomePanel> with TickerProviderStateMixin implements NotificationsListener {
-  late NotificationsContent? _selectedContent;
-  static NotificationsContent? _lastSelectedContent;
-
-  final GlobalKey _allContentKey = GlobalKey();
-  final GlobalKey _unreadContentKey = GlobalKey();
-  final GlobalKey _sheetHeaderKey = GlobalKey();
-
-  late TabController _tabController;
-  int _selectedTab = 0;
-
-  final List<String> _tabNames = [
-    Localization().getStringEx('panel.settings.notifications.content.notifications.all.label', 'All Notifications'),
-    Localization().getStringEx('panel.settings.notifications.content.notifications.unread.label', 'Unread Notifications'),
-  ];
 
   @override
   void initState() {
     NotificationService().subscribe(this, [Auth2.notifyLoginChanged]);
-    
-    if (_isContentItemEnabled(widget.content)) {
-      _selectedContent = _lastSelectedContent = widget.content;
-    }
-    else if (_isContentItemEnabled(_lastSelectedContent)) {
-      _selectedContent = _lastSelectedContent;
-    }
-    else  {
-      _selectedContent = _initialSelectedContent;
-    }
-
-    _tabController = TabController(length: 2, initialIndex: _selectedTab, vsync: this);
-    _tabController.addListener(_onTabChanged);
-    if (_selectedContent == NotificationsContent.unread) {
-      _selectedTab = 1;
-    }
-
     super.initState();
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
-    _tabController.dispose();
-
     NotificationService().unsubscribe(this);
     super.dispose();
   }
@@ -191,31 +147,18 @@ class _NotificationsHomePanelState extends State<NotificationsHomePanel> with Ti
 
   @override
   void onNotification(String name, param) {
-    if (name == Auth2.notifyLoginChanged) {
-      _updateContentItemIfNeeded();
-    }
+    if (name == Auth2.notifyLoginChanged) {}
   }
 
   @override
   Widget build(BuildContext context) {
-    //return _buildScaffold();
     return _buildSheet(context);
   }
 
-  /*Widget _buildScaffold() {
-    return Scaffold(
-      appBar: RootHeaderBar(key: _headerBarKey, title: Localization().getStringEx('panel.settings.notifications.header.inbox.label', 'Notifications')),
-      body: _buildPage(),
-      backgroundColor: Styles().colors.background,
-      bottomNavigationBar: uiuc.TabBar(key: _tabBarKey)
-    );
-  }*/
-
   Widget _buildSheet(BuildContext context) {
-    // MediaQuery(data: MediaQueryData.fromWindow(WidgetsBinding.instance.window), child: SafeArea(bottom: false, child: ))
     return Column(children: [
       Container(color: Styles().colors.backgroundAccent, child:
-        Row(key: _sheetHeaderKey, children: [
+        Row(children: [
           Expanded(child:
             Padding(padding: EdgeInsets.only(left: 16), child:
               Semantics(container: true, header: true, child: Text(Localization().getStringEx('panel.settings.notifications.header.inbox.label', 'NOTIFICATIONS'), style:  Styles().textStyles.getTextStyle("widget.title.light.large.fat"),))
@@ -230,34 +173,8 @@ class _NotificationsHomePanelState extends State<NotificationsHomePanel> with Ti
           ),
         ],),
       ),
-      Expanded(child:
-        _buildPage(context),
+      Expanded(child: NotificationsInboxPage(onTapBanner: _onTapPausedBanner,),
       )
-    ],);
-  }
-
-  Widget _buildPage(BuildContext context) {
-    // return Column(children: <Widget>[
-    //   Expanded(child:
-    //     SingleChildScrollView(physics: (_contentValuesVisible ? NeverScrollableScrollPhysics() : null), child:
-    //       _buildContent()
-    //     )
-    //   )
-    // ]);
-
-    List<Widget> tabs = _tabNames.map((e) => TextTabButton(title: e)).toList();
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      TextTabBar(tabs: tabs, controller: _tabController, isScrollable: false, onTap: (index){_onTabChanged();}),
-      Expanded(
-        child: TabBarView(
-          controller: _tabController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            NotificationsInboxPage(key: _allContentKey, onTapBanner: _onTapPausedBanner,),
-            NotificationsInboxPage(unread: true, key: _unreadContentKey, onTapBanner: _onTapPausedBanner),
-          ],
-        ),
-      ),
     ],);
   }
 
@@ -270,45 +187,6 @@ class _NotificationsHomePanelState extends State<NotificationsHomePanel> with Ti
     Analytics().logSelect(target: 'Notifications Paused', source: widget.runtimeType.toString());
     if (mounted) {
       SettingsHomeContentPanel.present(context, content: SettingsContent.notifications);
-    }
-  }
-
-  void _onTabChanged({bool manual = true}) {
-    if (!_tabController.indexIsChanging && _selectedTab != _tabController.index) {
-      setState(() {
-        _selectedTab = _tabController.index;
-        _selectedContent = (_selectedTab == 0) ? NotificationsContent.all : NotificationsContent.unread;
-      });
-    }
-  }
-
-  // Utilities
-
-  bool _isContentItemEnabled(NotificationsContent? contentItem) {
-    switch (contentItem) {
-      case NotificationsContent.all: return Auth2().isLoggedIn;
-      case NotificationsContent.unread: return Auth2().isLoggedIn;
-      default: return false;
-    }
-  }
-
-  NotificationsContent? get _initialSelectedContent {
-    for (NotificationsContent contentItem in NotificationsContent.values) {
-      if (_isContentItemEnabled(contentItem)) {
-        return contentItem;
-      }
-    }
-    return null;
-  }
-
-  void _updateContentItemIfNeeded() {
-    if ((_selectedContent == null) || !_isContentItemEnabled(_selectedContent)) {
-      NotificationsContent? selectedContent = _isContentItemEnabled(_lastSelectedContent) ? _lastSelectedContent : _initialSelectedContent;
-      if ((selectedContent != null) && (selectedContent != _selectedContent) && mounted) {
-        setState(() {
-          _selectedContent = selectedContent;
-        });
-      }
     }
   }
 }

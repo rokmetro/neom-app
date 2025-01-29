@@ -301,7 +301,8 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                       excludeSemantics: true,
                       child: RoundedButton(
                           label: buttonLabel,
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                          backgroundColor: Styles().colors.background,
                           onTap: _onTapAddImage,
                           contentWeight: 0.8,
                     ))))
@@ -587,8 +588,8 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
             RoundedButton(
               label: Localization().getStringEx("panel.groups_create.button.attributes.title", "Edit"),
               hint: Localization().getStringEx("panel.groups_create.button.attributes.hint", ""),
-              textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-              backgroundColor: Styles().colors.surface,
+              textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+              backgroundColor: Styles().colors.background,
               borderColor: Styles().colors.fillColorSecondary,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               onTap: _onTapAttributes,
@@ -951,11 +952,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
           borderRadius: BorderRadius.circular(4),
           onTap: (){
             Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupAdvancedSettingsPanel(group: _group,))).then((_){
-                if(mounted){
-                  setState(() {
-
-                  });
-                }
+              setStateIfMounted(() {});
             });
           }),
     );
@@ -990,9 +987,9 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
               label: (_group?.researchProject == true) ?
                 Localization().getStringEx("panel.groups_create.button.create.project.title", "Create Project") :
                 Localization().getStringEx("panel.groups_create.button.create.title", "Create Group"),
-              textStyle: _canSave ? Styles().textStyles.getTextStyle("widget.button.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat"),
-              backgroundColor: Styles().colors.surface,
-              borderColor: _canSave ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
+              textStyle: _canSave ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat.variant_two"),
+              backgroundColor: Styles().colors.background,
+              borderColor: Styles().colors.fillColorSecondary,
               enabled: _canSave,
               progress:  _creating,
               onTap: _onTapCreate,
@@ -1019,7 +1016,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
   }
 
   Future<bool?> _showCreateGroupPrompt() {
-    String prompt = Localization().getStringEx("panel.groups_create.prompt.msg.title", "The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.").replaceAll('{{app_university}}', Localization().getStringEx('app.univerity_name', 'University of Illinois'));
+    String prompt = Localization().getStringEx("panel.groups_create.prompt.msg.title", "The {{app_university}} takes pride in its efforts to support free speech and to foster inclusion and mutual respect. Users may submit a report to group administrators about obscene, threatening, or harassing content. Users may also choose to report content in violation of Student Code to the Office of the Dean of Students.").replaceAll('{{app_university}}', Localization().getStringEx('app.university_name', 'University of Illinois'));
     return AppAlert.showCustomDialog(context: context,
       contentWidget: Text(prompt, style: Styles().textStyles.getTextStyle('widget.description.regular.light')),
       actions: <Widget>[
