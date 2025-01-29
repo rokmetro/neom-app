@@ -176,7 +176,7 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
         HomeSlantWidget(
           // title: Localization().getStringEx('panel.browse.label.sections.title', 'App Sections'),
           // titleIconKey: 'browse',
-          slantHeight: 40,
+          slantHeight: 40, // TODO: update background slant header
           flatHeight: 0,
           slantHorzDir: TriangleHorzDirection.leftToRight,
           childPadding: HomeSlantWidget.defaultChildPadding,
