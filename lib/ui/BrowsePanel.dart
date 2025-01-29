@@ -310,7 +310,10 @@ class _BrowseSection extends StatelessWidget {
                         border: Border.all(color: Styles().colors.fillColorSecondaryVariant),
                         borderRadius: BorderRadius.circular(24.0)
                     ),
-                    child: FavoriteStarIcon(selected: _isSectionFavorite, style: FavoriteIconStyle.Button, color: Styles().colors.fillColorSecondaryVariant,)
+                    child: FavoriteStarIcon(selected: _isSectionFavorite,
+                      // TODO: update icon size
+                      style: FavoriteIconStyle.Button,
+                      color: Styles().colors.fillColorSecondaryVariant,)
                   ),
                 ),
               ),
