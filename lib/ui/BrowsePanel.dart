@@ -120,6 +120,7 @@ class BrowseContentWidget extends StatefulWidget with AnalyticsInfo {
 class _BrowseContentWidgetState extends State<BrowseContentWidget> implements NotificationsListener {
 
   List<String>? _contentCodes;
+  List<String>? _browseListContentCodes;
 
   @override
   void initState() {
@@ -131,6 +132,7 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
     ]);
 
     _contentCodes = buildContentCodes();
+    _browseListContentCodes = buildBrowseListContentCodes();
 
     super.initState();
   }
@@ -183,6 +185,8 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
       );
     }
 
+    contentList.add(_BrowseSection.buildBrowseList(codes: _browseListContentCodes!));
+
     return Column(children: contentList,);
   }
 
@@ -202,6 +206,10 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 
   static List<String>? buildContentCodes() {
     return JsonUtils.listStringsValue(FlexUI()['browse']);
+  }
+
+  static List<String>? buildBrowseListContentCodes() {
+    return JsonUtils.listStringsValue(FlexUI()['browse.list']);
   }
 }
 
@@ -575,6 +583,25 @@ class _BrowseSection extends StatelessWidget {
       gridColumns.add(Expanded(child: Column(children: column,),));
     }
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: gridColumns,);
+  }
+
+  static Widget buildBrowseList({required List<String> codes}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 48),
+      child: Column(
+        children: List.generate(codes.length, (index) =>
+          Column(
+            children: [
+              Divider(height: 1, color: Styles().colors.iconPrimary,),
+              _BrowseSection(sectionId: codes[index],
+                layout: _BrowseSectionLayout.listItem,),
+              if (index == codes.length - 1)
+                Divider(height: 1, color: Styles().colors.iconPrimary,),
+            ],
+          )
+        ),
+      ),
+    );
   }
 }
 
