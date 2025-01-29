@@ -5,7 +5,8 @@
 			"tabbar.default": "favorites",
 
 			"home": [
-				"all_groups", "my_groups", "event_feed", "my_events", "public_surveys", "recent_polls"
+				"all_groups", "my_groups", "event_feed", "my_events", "public_surveys",
+				"recent_polls", "messages"
 			],
 			"home.system": ["tout", "connect"],
 			"home.connect": ["phone_or_email"],
@@ -211,7 +212,8 @@
 	"defaults": {
 		"favorites": {
 			"content": {
-				"home": ["all_groups", "my_groups", "event_feed", "my_events", "public_surveys", "recent_polls"]
+				"home": ["all_groups", "my_groups", "event_feed", "my_events",
+					"public_surveys", "recent_polls", "messages"]
 			},
 			"rules": {
 			}
