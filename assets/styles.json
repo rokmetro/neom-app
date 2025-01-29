@@ -1204,6 +1204,8 @@
     "browse-crisis": {"src": "images/icon-browse-crisis-help.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
     "browse-saved": {"src": "images/icon-browse-saved.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
     "browse-guide": {"src": "images/icon-browse-campus-guide.png", "type": "flutter.asset", "color": "fillColorSecondary", "todo": "size"},
+    "browse-poll": {"src": "images/icon-browse-poll-chart.png", "type": "flutter.asset"},
+    "browse-survey": {"src": "images/icon-browse-survey-list.png", "type": "flutter.asset"},
 
     "more-groups": {"src": "images/more-groups.png", "type": "flutter.asset", "size": 176},
     "more-directory": {"src": "images/more-surveys.png", "type": "flutter.asset", "size": 176, "todo": "src"},
