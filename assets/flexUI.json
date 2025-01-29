@@ -25,7 +25,7 @@
 			"home.unread_notifications": ["inbox"],
 			"home.recent_polls": ["polls"],
 
-			"browse": ["directory", "groups", "messages", "events"],
+			"browse": ["groups", "messages", "events", "directory"],
             "browse.directory": ["user_directory"],
             "browse.events": ["event_feed", "my_events"],
 			"browse.groups": ["all_groups", "my_groups"],
@@ -33,7 +33,7 @@
 			"browse.polls": ["recent_polls"],
             "browse.messages": ["messages"],
 
-			"browse.list": ["surveys", "polls"],
+			"browse.list": ["polls", "surveys"],
 
 			"assistant": ["uiuc_assistant", "google_assistant", "azure_assistant", "grok_assistant", "all_assistants", "uiuc_faqs"],
 
