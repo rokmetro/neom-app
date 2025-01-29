@@ -208,12 +208,16 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 ///////////////////////////
 // BrowseSection
 
+enum _BrowseSectionLayout { circular, listItem }
+
 class _BrowseSection extends StatelessWidget {
 
   final String sectionId;
   final Set<String>? _homeRootEntriesCodes;
+  final _BrowseSectionLayout layout;
 
-  _BrowseSection({Key? key, required this.sectionId}) :
+  _BrowseSection({Key? key, required this.sectionId,
+    this.layout = _BrowseSectionLayout.circular}) :
     _homeRootEntriesCodes = JsonUtils.setStringsValue(FlexUI()['home']),
     super(key: key);
 
@@ -226,6 +230,47 @@ class _BrowseSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _getLayout(context);
+  }
+
+  Widget _getLayout(BuildContext context) {
+    switch (layout) {
+      case _BrowseSectionLayout.circular:
+        return _circularLayout(context);
+      case _BrowseSectionLayout.listItem:
+        return _listItemLayout(context);
+    }
+  }
+
+  Widget _listItemLayout(BuildContext context) {
+    Widget? icon = _listItemIcon();
+    return GestureDetector(
+      onTap: () => _onTap(context),
+      child: Row(
+        children: <Widget>[
+          if (icon != null)
+            icon,
+          Expanded(
+            child: Text(_title,
+                textAlign: TextAlign.center,
+                style: Styles().textStyles.getTextStyle("widget.title.regular.fat")),
+          ),
+          Visibility(visible: _hasFavoriteContent, child:
+            Semantics(label: 'Favorite' /* TBD: Localization */, button: true, child:
+              GestureDetector(onTap: () => _onTapSectionFavorite(context), child:
+              FavoriteStarIcon(selected: _isSectionFavorite,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                style: FavoriteIconStyle.Button,
+                color: Styles().colors.fillColorSecondaryVariant,)
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _circularLayout(BuildContext context) {
     List<Widget> contentList = <Widget>[];
     contentList.add(_buildHeading(context));
     return Column(children: contentList,);
@@ -266,6 +311,19 @@ class _BrowseSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget? _listItemIcon({bool excludeFromSemantics = true, double size = 21}) {
+    switch(sectionId) {
+      case 'polls':
+        return Styles().images.getImage('browse-poll',
+            excludeFromSemantics: excludeFromSemantics, size: size);
+      case 'surveys':
+        return Styles().images.getImage('browse-survey',
+            excludeFromSemantics: excludeFromSemantics, size: size);
+      default:
+        return null;
+    }
   }
 
   String get _title => title(sectionId: sectionId);
