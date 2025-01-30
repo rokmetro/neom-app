@@ -21,7 +21,6 @@ import 'package:neom/ui/groups/GroupsHomePanel.dart';
 import 'package:neom/ui/home/HomePanel.dart';
 import 'package:neom/ui/home/HomeRecentItemsWidget.dart';
 import 'package:neom/ui/home/HomeTwitterWidget.dart';
-import 'package:neom/ui/home/HomeWidgets.dart';
 import 'package:neom/ui/messages/MessagesHomePanel.dart';
 import 'package:neom/ui/polls/PollsHomePanel.dart';
 import 'package:neom/ui/surveys/PublicSurveysPanel.dart';
@@ -173,13 +172,8 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 
     if (sectionsGrid != null) {
       contentList.add(
-        HomeSlantWidget(
-          // title: Localization().getStringEx('panel.browse.label.sections.title', 'App Sections'),
-          // titleIconKey: 'browse',
-          slantHeight: 40, // TODO: update background slant header
-          flatHeight: 0,
-          slantHorzDir: TriangleHorzDirection.leftToRight,
-          childPadding: HomeSlantWidget.defaultChildPadding,
+        Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16, top: 32),
           child: sectionsGrid,
         )
       );
