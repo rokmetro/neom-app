@@ -213,7 +213,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
             children: [
               Expanded(child:
                 Text(
-                  "Conversation Paused",
+                  "Conversations Paused",
                   textAlign: TextAlign.center,
                   style: Styles().textStyles.getTextStyle("widget.detail.regular")
                 ),
@@ -469,7 +469,7 @@ class _MessagesInboxPageState extends State<MessagesInboxPage> implements Notifi
   Widget _buildOptions(BuildContext context) {
     String headingText = (_selectedMessageIds.length == 1) ?
       '1 Conversation Selected' :
-      '${_selectedMessageIds.length} Conversation Selected';
+      '${_selectedMessageIds.length} Conversations Selected';
 
     return Container(padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16), child:
       Column(mainAxisSize: MainAxisSize.min, children: <Widget>[

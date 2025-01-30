@@ -108,7 +108,7 @@ class _HomeMessagesSectionWidgetState extends State<HomeMessagesSectionWidget> {
   Widget _buildEmptyContent() {
     return Center(
       child: Text(
-        Localization().getStringEx('widget.home.messages.text.empty', 'No recent messages'),
+        Localization().getStringEx('widget.home.messages.text.empty', 'No recent conversations'),
         style: Styles().textStyles.getTextStyle('widget.description.regular'),
       ),
     );
