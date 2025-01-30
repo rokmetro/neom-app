@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased - NEOM U
+### Added
+- Add Messages section to Favorites [#37](https://github.com/rokmetro/neom-app/issues/37)
 ### Changed
 - Redesign More panel [#31](https://github.com/rokmetro/neom-app/issues/31)
 
