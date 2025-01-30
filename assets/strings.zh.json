@@ -3808,7 +3808,9 @@
 	"widget.home.campus_guide_highlights.button.all.title": "查看全部",
 	"widget.home.campus_guide_highlights.button.all.hint": "點擊查看所有亮點",
 
-	"widget.home.messages.label.header.title": "MESSAGES",
+	"widget.home.messages.label.header.title": "對話",
+	"widget.home.messages.button.all.title":"查看全部",
+	"widget.home.messages.button.all.hint":"點擊查看所有對話",
 
 	"widget.home.safety.safewalk_request.title": "SafeWalks",
 	"widget.home.safety.safewalk_request.info": "To request a student patrol officer to walk with you between {{safewalk_start_time}} and {{safewalk_end_time}}, call <a href='tel:{{safewalk_phone_number}}'>{{safewalk_phone_number}}</a> or enter your information below.",

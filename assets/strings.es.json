@@ -3823,7 +3823,9 @@
     "widget.home.campus_guide_highlights.button.all.title": "Ver todo",
     "widget.home.campus_guide_highlights.button.all.hint": "Toca para ver todos los momentos destacados",
 
-    "widget.home.messages.label.header.title": "MESSAGES",
+    "widget.home.messages.label.header.title": "CONVERSACIONES",
+    "widget.home.messages.button.all.title":"Ver todo",
+    "widget.home.messages.button.all.hint":"Toca para ver todas las conversaciones",
 
     "widget.home.safety.safewalk_request.title": "SafeWalks",
     "widget.home.safety.safewalk_request.info": "To request a student patrol officer to walk with you between {{safewalk_start_time}} and {{safewalk_end_time}}, call <a href='tel:{{safewalk_phone_number}}'>{{safewalk_phone_number}}</a> or enter your information below.",
