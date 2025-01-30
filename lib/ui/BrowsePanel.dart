@@ -216,7 +216,7 @@ class _BrowseContentWidgetState extends State<BrowseContentWidget> implements No
 ///////////////////////////
 // BrowseSection
 
-enum _BrowseSectionLayout { circular, listItem }
+enum _BrowseSectionLayout { grid, list }
 
 class _BrowseSection extends StatelessWidget {
 
@@ -225,7 +225,7 @@ class _BrowseSection extends StatelessWidget {
   final _BrowseSectionLayout layout;
 
   _BrowseSection({Key? key, required this.sectionId,
-    this.layout = _BrowseSectionLayout.circular}) :
+    this.layout = _BrowseSectionLayout.grid}) :
     _homeRootEntriesCodes = JsonUtils.setStringsValue(FlexUI()['home']),
     super(key: key);
 
@@ -243,9 +243,9 @@ class _BrowseSection extends StatelessWidget {
 
   Widget _getLayout(BuildContext context) {
     switch (layout) {
-      case _BrowseSectionLayout.circular:
+      case _BrowseSectionLayout.grid:
         return _circularLayout(context);
-      case _BrowseSectionLayout.listItem:
+      case _BrowseSectionLayout.list:
         return _listItemLayout(context);
     }
   }
@@ -597,7 +597,7 @@ class _BrowseSection extends StatelessWidget {
             children: [
               Divider(height: 1, color: Styles().colors.iconPrimary,),
               _BrowseSection(sectionId: codes[index],
-                layout: _BrowseSectionLayout.listItem,),
+                layout: _BrowseSectionLayout.list,),
               if (index == codes.length - 1)
                 Divider(height: 1, color: Styles().colors.iconPrimary,),
             ],
