@@ -1210,9 +1210,8 @@
     "browse-survey": {"src": "images/icon-browse-survey-list.png", "type": "flutter.asset"},
 
     "more-groups": {"src": "images/more-groups.png", "type": "flutter.asset", "size": 176},
-    "more-directory": {"src": "images/more-surveys.png", "type": "flutter.asset", "size": 176, "todo": "src"},
+    "more-directory": {"src": "images/more-directory.png", "type": "flutter.asset", "size": 176},
     "more-messages": {"src": "images/more-messages.png", "type": "flutter.asset", "size": 176},
-    "more-surveys": {"src": "images/more-surveys.png", "type": "flutter.asset", "size": 176},
     "more-events": {"src": "images/more-events.png", "type": "flutter.asset", "size": 176},
     "more-inbox": {"src": "images/more-inbox.png", "type": "flutter.asset", "size": 176},
     "more-polls": {"src": "images/more-polls.png", "type": "flutter.asset", "size": 176},
