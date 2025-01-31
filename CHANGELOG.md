@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Redesign More panel [#31](https://github.com/rokmetro/neom-app/issues/31)
 ### Fixed
-- UI testing QA report [#44](https://github.com/rokmetro/neom-app/issues/44)
+- UI testing QA report (progress) [#44](https://github.com/rokmetro/neom-app/issues/44)
 
 ## [0.5.2] = 2025-01-17
 ### Fixed
