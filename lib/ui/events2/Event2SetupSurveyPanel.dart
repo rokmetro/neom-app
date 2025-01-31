@@ -231,9 +231,9 @@ class _Event2SetupSurveyPanelState extends State<Event2SetupSurveyPanel>  {
 
   List<DropdownMenuItem<Survey?>>? _buildSurveyDropDownItems() {
     List<DropdownMenuItem<Survey?>> items = <DropdownMenuItem<Survey?>>[];
-    // items.add(DropdownMenuItem<Survey?>(value: null, child:
-    //   Text(nullSurveyTitle),
-    // ));
+    items.add(DropdownMenuItem<Survey?>(value: null, child:
+      Text(nullSurveyTitle),
+    ));
     if (_surveys != null) {
       for (Survey survey in _surveys!) {
         items.add(DropdownMenuItem<Survey?>(value: survey, child:
