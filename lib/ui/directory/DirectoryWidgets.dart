@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:neom/service/DeepLink.dart';
@@ -514,13 +515,19 @@ class DirectoryProfileDetails extends StatelessWidget {
 
 void _launchUrl(String? url) {
   if (StringUtils.isNotEmpty(url)) {
-    if (DeepLink().isAppUrl(url)) {
+    if (!kIsWeb && DeepLink().isAppUrl(url)) {
       DeepLink().launchUrl(url);
-    }
-    else {
+    } else {
       Uri? uri = Uri.tryParse(url!);
       if (uri != null) {
-        launchUrl(uri, mode: (Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault));
+        if (kIsWeb) {
+          launchUrl(uri);
+        } else {
+          launchUrl(
+            uri,
+            mode: (Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault),
+          );
+        }
       }
     }
   }

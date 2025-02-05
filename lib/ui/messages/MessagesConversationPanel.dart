@@ -643,6 +643,11 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           _shouldScrollToTarget = widget._hasTargetMessage ? _ScrollTarget.targetMessage : _ScrollTarget.bottom;
         }
       });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
+      });
     }
   }
 
