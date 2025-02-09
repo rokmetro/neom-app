@@ -322,7 +322,7 @@ class _DirectoryAccountContactCardState extends State<DirectoryAccountContactCar
     );
 
   Decoration get _cardDecoration => BoxDecoration(
-    color: Styles().colors.surface,
+    color: Styles().colors.background,
     border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
     borderRadius: _cardBorderRadiusGeometry,
     boxShadow: [BoxShadow(color: Styles().colors.blackTransparent018, spreadRadius: 1.0, blurRadius: 3.0, offset: Offset(1, 1))]
@@ -515,19 +515,15 @@ class DirectoryProfileDetails extends StatelessWidget {
 
 void _launchUrl(String? url) {
   if (StringUtils.isNotEmpty(url)) {
-    if (!kIsWeb && DeepLink().isAppUrl(url)) {
+    if (DeepLink().isAppUrl(url)) {
       DeepLink().launchUrl(url);
     } else {
       Uri? uri = Uri.tryParse(url!);
       if (uri != null) {
-        if (kIsWeb) {
-          launchUrl(uri);
-        } else {
-          launchUrl(
-            uri,
-            mode: (Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault),
-          );
-        }
+        launchUrl(
+          uri,
+          mode: (!kIsWeb && Platform.isAndroid ? LaunchMode.externalApplication : LaunchMode.platformDefault),
+        );
       }
     }
   }

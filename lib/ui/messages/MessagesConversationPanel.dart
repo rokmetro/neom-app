@@ -164,7 +164,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
               children: [
                 CustomScrollView(
                   controller: _scrollController,
-                  // reverse: true,
+                  reverse: true,
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverPadding(
@@ -218,7 +218,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
 
     contentList.add(Container(key: _lastContentItemKey, height: 0));
-    return contentList;
+    return contentList.reversed.toList();
   }
 
   Widget _buildLoadingMoreIndicator() {
@@ -528,7 +528,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           }
         },
       ),
-      title: Text(userName, style: Styles().textStyles.getTextStyle('widget.card.title.regular.fat')),
+      title: Text(userName, style: Styles().textStyles.getTextStyle('widget.title.regular.fat')),
       onTap: () => _onTapMembersPopupMember(context, accountId),
     );
   }
@@ -760,11 +760,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           _messagesLength = messages.length;
           _hasMoreMessages = (_messagesPageSize <= messages.length);
           _shouldScrollToTarget = widget._hasTargetMessage ? _ScrollTarget.targetMessage : _ScrollTarget.bottom;
-        }
-      });
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
         }
       });
     }
