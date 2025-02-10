@@ -158,7 +158,7 @@ class _DirectoryAccountListCardState extends State<DirectoryAccountListCard> {
     ],);
 
   Widget  get _messageButton => Visibility(visible: FlexUI().isMessagesAvailable, child: _iconButton(icon: _messageIcon, onTap: _onMessage, progress: _messageProgress));
-  Widget? get _messageIcon => Styles().images.getImage('message', size: 20, color: Styles().colors.fillColorPrimary);
+  Widget? get _messageIcon => Styles().images.getImage('message', size: 20, color: Styles().colors.iconLight);
 
   void _onMessage() async {
     Analytics().logSelect(target: 'Message User');
