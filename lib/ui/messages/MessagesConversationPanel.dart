@@ -16,6 +16,7 @@ import 'package:neom/utils/AppUtils.dart';
 import 'package:neom/ui/widgets/CustomLinkText.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/social.dart';
+import 'package:rokwire_plugin/rokwire_plugin.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
@@ -23,8 +24,8 @@ import 'package:rokwire_plugin/service/social.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class MessagesConversationPanel extends StatefulWidget {
   final Conversation? conversation;
@@ -1123,17 +1124,27 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Future<void> _onTapDownloadFile(FileAttachment file, String messageId) async {
+    //TODO: implement opening files based on type
     if (StringUtils.isNotEmpty(file.name)) {
       Map<String, Uint8List> files = await Content().getFileContentItems([file.name!], Content.conversationsContentCategory, entityId: '$_conversationId/$messageId');
-      if (files.isNotEmpty) {
-        //TODO: returns directory path, should it be used?
-        FileSaver.instance.saveFile(
-          name: file.name!,
-          bytes: files[file.name!],
-          ext: file.extension ?? '',
-        );
+      if (await _requestStoragePermissions() && files.isNotEmpty) {
+        Uint8List? data = files[file.name];
+        if (CollectionUtils.isNotEmpty(data)) {
+          bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
+          String message = success ? Localization().getStringEx('', 'File saved') : Localization().getStringEx('', 'Failed to save file');
+          AppToast.showMessage(message);
+        }
       }
     }
+  }
+
+  Future<bool> _requestStoragePermissions() async {
+    PermissionStatus status = await Permission.manageExternalStorage.status;
+    if (!status.isGranted) {
+      status = await Permission.manageExternalStorage.request();
+    }
+
+    return status == PermissionStatus.granted;
   }
 
   @override
