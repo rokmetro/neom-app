@@ -965,13 +965,15 @@ class _DirectoryFilterBarState extends State<DirectoryFilterBar> {
         ) : null;
     }
 
-    void _onTapClear() {
-      Analytics().logSelect(target: 'Search Clear');
-      if (widget.searchText?.isNotEmpty == true) {
-        _searchFocusNode.unfocus();
-        widget.onSearchText?.call('');
-      }
+
+  void _onTapClear() {
+    Analytics().logSelect(target: 'Search Clear');
+    if(_searchTextController.text.isNotEmpty) {
+      widget.onSearchText?.call('');
     }
+    _searchTextController.clear();
+    _searchFocusNode.unfocus();
+  }
 
     void _onTapSearch() {
       Analytics().logSelect(target: 'Search Text');
