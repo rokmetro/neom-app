@@ -6,7 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - NEOM U
 ### Fixed
-- v0.5.4 Bug Report [#47](https://github.com/rokmetro/neom-app/issues/47)
+- v0.5.4 Bug Report (progress) [#47](https://github.com/rokmetro/neom-app/issues/47)
+- UI testing QA report (progress) [#44](https://github.com/rokmetro/neom-app/issues/44)
+
+## [0.5.5] = 2025-02-11
+### Added
+- File attachments for conversation messages [#50](https://github.com/rokmetro/neom-app/issues/50)
+### Fixed
+- Removed requirement on web to select debug role to see all features
+
 ## [0.5.4] = 2025-02-10
 ### Fixed
 - UI testing QA report (progress) [#44](https://github.com/rokmetro/neom-app/issues/44)
@@ -112,6 +120,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pre-demo issues [#2](https://github.com/rokmetro/neom-app/issues/2)
 
 ## Unreleased - Illinois
+
+## [6.1.58] - 2025-02-12
+### Changed
+- Acknowledge Social: pinPost API [4629](https://github.com/rokwire/illinois-app/issues/4629).
+- Cleaned up delete user APIs [#4766](https://github.com/rokwire/illinois-app/issues/4766).
+
+## [6.1.57] - 2025-02-11
+### Added
+- Customization options to choose group modules: Polls, Direct Messaging, Posts, Events [#4697](https://github.com/rokwire/illinois-app/issues/4697).
+### Fixed
+- Fixed empty recurrent events list message in Event detail panel.
+### Changed
+- Improve UX for sections that require a NetID sign-in to view [#4699](https://github.com/rokwire/illinois-app/issues/4699).
 
 ## [6.1.56] - 2025-02-07
 ### Added 

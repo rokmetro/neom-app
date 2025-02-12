@@ -275,6 +275,7 @@
     "widget.title.dark.regular.medium_fat": {"font_family": "medium", "size": 16.0, "color": "textDark"},
     "widget.title.dark.regular": {"font_family": "regular", "size": 16.0, "color": "textDark"},
     "widget.title.dark.small": {"font_family": "regular", "size": 14.0, "color": "textDark"},
+    "widget.title.dark.small.underline": {"extends": "widget.title.small.underline", "color": "textDark"},
     "widget.title.dark.small.semi_fat": {"font_family": "medium", "size": 14.0, "color": "textDark"},
     "widget.title.dark.small.fat": {"font_family": "bold", "size": 14.0, "color": "textDark"},
     "widget.title.dark.small.fat.spaced": {"extends": "widget.title.dark.small.fat", "letter_spacing": 1.0},
@@ -706,6 +707,7 @@
     "panel.wellness.resource.button.title.regular": {"extends": "widget.button.title.medium.fat"},
 
     "panel.wellness.sections.health_screener.description": {"font_family": "regular", "size": 16.0, "color": "surface"},
+    "panel.wellness.sections.health_screener.link": {"extends": "panel.wellness.sections.health_screener.description", "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "surface" },
 
     "panel.athletics.home.heading.regular": {"font_family": "regular", "size": 16.0, "color": "white",  "weight" :  "w900", "letter_spacing" :  1.0},
     "panel.athletics.home.title.large": {"font_family": "regular", "size": 20.0, "color": "textPrimary",  "weight" :  "w900"},
@@ -1002,6 +1004,7 @@
     "shield-halved": {"src": "0xf3ed", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 32},
     "download": {"src": "0xf019", "type": "fa.icon", "weight": "solid", "color": "fillColorSecondary", "size": 16},
     "asterisk": {"src": "0x2a", "type": "fa.icon", "weight": "solid", "color": "alert", "size": 12},
+    "file": {"src": "0xf15b", "type": "fa.icon", "weight": "regular", "color": "fillColorSecondary", "size": 48},
 
     "down-to-bracket": {"src": "0xe4e7", "type": "fa.icon", "weight": "regular", "color": "fillColorSecondary", "size": 18},
     "up-from-bracket": {"src": "0xe590", "type": "fa.icon", "weight": "regular", "color": "fillColorSecondary", "size": 18},
@@ -1190,7 +1193,7 @@
     "instagram-logo": {"src": "images/ig-32x32.png", "type": "flutter.asset", "todo": "size?"},
 
     "splash": {"src": "images/splash_image.png", "type": "flutter.asset"},
-    "header-login": {"src": "images/login-header.png", "type": "flutter.asset"},
+    "header-login": {"src": "images/university-logo.png", "size": 56, "type": "flutter.asset"},
     "header-location": {"src": "images/share-location-header.png", "type": "flutter.asset"},
     "header-questionnaire": {"src": "images/questionnaire-header.png", "type": "flutter.asset"},
     "header-privacy": {"src": "images/privacy-header.png", "type": "flutter.asset"},
