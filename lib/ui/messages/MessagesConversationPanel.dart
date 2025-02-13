@@ -69,6 +69,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   bool _loading = false;
   bool _loadingMore = false;
   bool _submitting = false;
+  bool _uploadingFiles = false;
 
   // Use the actual Auth2 accountId instead of a placeholder.
   String? get _currentUserId => Auth2().accountId;
@@ -1163,15 +1164,19 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       extendLimitToMessageId: extendLimitToMessageId,
     );
     if (loadAttachmentUrls) {
+      List<String> fileIds = [];
       for (Message message in loadedMessages ?? []) {
-        List<String>? filenames = message.fileAttachments?.where((e) => e.type != FileType.file).map((e) => e.name).whereNotNull().toList();
-        if (filenames != null && filenames.isNotEmpty) {
-          Map<String, String>? urls = await Content().getFileContentDownloadUrls(filenames, Content.conversationsContentCategory, entityId: '$_conversationId/${message.globalId}');
-          if (urls != null && urls.isNotEmpty) {
+        fileIds.addAll(message.fileAttachments?.where((e) => e.type != FileType.file).map((e) => e.id).whereNotNull() ?? []);
+      }
+
+      if (CollectionUtils.isNotEmpty(fileIds)) {
+        List<FileContentItemReference>? fileRefs = await Content().getFileContentDownloadUrls(fileIds, Content.conversationsContentCategory, entityId: _conversationId);
+        if (CollectionUtils.isNotEmpty(fileRefs)) {
+          for (Message message in loadedMessages ?? []) {
             for (FileAttachment file in message.fileAttachments ?? []) {
-              for (MapEntry<String, String> urlEntry in urls.entries) {
-                if (urlEntry.value == file.name) {
-                  file.url = urlEntry.key;
+              for (FileContentItemReference ref in fileRefs ?? []) {
+                if (ref.id == file.id) {
+                  file.url = ref.url;
                 }
               }
             }
@@ -1207,8 +1212,13 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     if (StringUtils.isNotEmpty(messageText) && _conversationId != null && _currentUserId != null && !_submitting) {
       FocusScope.of(context).requestFocus(FocusNode());
 
+      List<FileContentItemReference>? fileRefs;
+      if (_attachedFiles.isNotEmpty) {
+        fileRefs = await _uploadAttachedFiles();
+      }
+
       _inputController.text = '';
-      List<FileAttachment> fileAttachments = _messageFileAttachments;
+      List<FileAttachment> fileAttachments = _getMessageFileAttachments(fileRefs);
 
       // Create a temporary message and add it immediately
       Message tempMessage = Message(
@@ -1225,6 +1235,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         _shouldScrollToTarget = _ScrollTarget.bottom; //TBD
       });
 
+      _removeAttachedFiles(fileAttachments);
+
       // Send to the backend
       List<Message>? newMessages = await Social().createConversationMessage(
         conversationId: _conversationId!,
@@ -1232,12 +1244,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         fileAttachments: fileAttachments,
       );
 
-      String? messageId;
       if (mounted) {
         if (newMessages != null && newMessages.isNotEmpty) {
           setState(() {
             Message serverMessage = newMessages.first;
-            messageId = serverMessage.globalId;
             // Update the temporary message with the server's message if needed
             int index = _messages.indexOf(tempMessage);
             if (index >= 0) {
@@ -1255,17 +1265,19 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           AppToast.showMessage(Localization().getStringEx('', 'Failed to send message'));
         }
       }
-
-      if (_attachedFiles.isNotEmpty && messageId != null) {
-        _uploadAttachedFiles(messageId);
-      }
     }
   }
 
-  Future<void> _uploadAttachedFiles(String? messageId) async {
-    List<String>? uploaded = await Content().uploadFileContentItems(_attachedFileData, Content.conversationsContentCategory, entityId: '$_conversationId/$messageId');
-    _removeAttachedFiles(uploaded);
-    setStateIfMounted(() {});
+  Future<List<FileContentItemReference>?> _uploadAttachedFiles() async {
+    setStateIfMounted(() {
+      _uploadingFiles = false;
+    });
+    List<FileContentItemReference>? uploaded = await Content().uploadFileContentItems(_attachedFileData, Content.conversationsContentCategory, entityId: _conversationId);
+    setStateIfMounted(() {
+      _uploadingFiles = false;
+    });
+
+    return uploaded;
   }
 
   Future<void> _updateEditingMessage(String newText) async {
@@ -1374,13 +1386,13 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
     List<dynamic> processed = [];
     for (dynamic file in files) {
-      if (file is String) {
+      if (file is FileAttachment) {
         dynamic found = _attachedFiles.firstWhereOrNull((e) {
           if (e is XFile) {
-            return e.name == file;
+            return e.name == file.name;
           }
           else if (e is PlatformFile) {
-            return e.name == file;
+            return e.name == file.name;
           }
           return false;
         });
@@ -1523,10 +1535,12 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     return FileType.values.firstWhereOrNull((e) => e.name == type) ?? FileType.file;
   }
 
-  List<FileAttachment> get _messageFileAttachments =>
-    List.generate(_attachedFiles.length, (index) {
+  List<FileAttachment> _getMessageFileAttachments(List<FileContentItemReference>? fileRefs) {
+    return fileRefs != null ? List.generate(_attachedFiles.length, (index) {
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
-      return FileAttachment(name: file.name, type: type.name);
-    });
+      String id = fileRefs.firstWhere((ref) => ref.name == file.name).id ?? '';
+      return FileAttachment(name: file.name, type: type.name, id: id);
+    }) : [];
+  }
 }
