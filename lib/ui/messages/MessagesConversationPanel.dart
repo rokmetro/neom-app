@@ -738,82 +738,85 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildAttachFilePopup(BuildContext context) {
-    return Wrap(
-      children: [
-        Container(
-          color: Styles().colors.backgroundVariant,
-          child: Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(left: 16),
-                  child: Text(
-                    Localization().getStringEx('', 'Attach Files'),
-                    style: Styles().textStyles.getTextStyle("widget.label.medium.fat"),
+    return Container(
+      constraints: BoxConstraints(maxHeight: 400),
+      child: Column(
+        children: [
+          Container(
+            color: Styles().colors.backgroundVariant,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 16),
+                    child: Text(
+                      Localization().getStringEx('', 'Attach Files'),
+                      style: Styles().textStyles.getTextStyle("widget.label.medium.fat"),
+                    ),
                   ),
                 ),
-              ),
-              Semantics(
-                label: Localization().getStringEx('dialog.close.title', 'Close'),
-                hint: Localization().getStringEx('dialog.close.hint', ''),
-                inMutuallyExclusiveGroup: true,
-                button: true,
-                child: InkWell(
-                  onTap: () => _onTapMembersPopupClose(context),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 8, right: 16, top: 16, bottom: 16),
-                    child: Styles().images.getImage('close-circle', excludeFromSemantics: true),
+                Semantics(
+                  label: Localization().getStringEx('dialog.close.title', 'Close'),
+                  hint: Localization().getStringEx('dialog.close.hint', ''),
+                  inMutuallyExclusiveGroup: true,
+                  button: true,
+                  child: InkWell(
+                    onTap: () => _onTapMembersPopupClose(context),
+                    child: Container(
+                      padding: EdgeInsets.only(left: 8, right: 16, top: 16, bottom: 16),
+                      child: Styles().images.getImage('close-circle', excludeFromSemantics: true),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(children: [
-              RibbonButton(
-                  label: Localization().getStringEx('', 'Upload an image or video'),
-                  leftIconKey: 'image',
-                  backgroundColor: Styles().colors.backgroundVariant,
-                  textColor: Styles().colors.textPrimary,
-                  onTap: _onTapUploadImageOrVideo),
-              SizedBox(height: 4),
-              RibbonButton(
-                  label: Localization().getStringEx('', 'Take a photo'),
-                  leftIconKey: 'camera',
-                  backgroundColor: Styles().colors.backgroundVariant,
-                  textColor: Styles().colors.textPrimary,
-                  onTap: _onTapCamera),
-              SizedBox(height: 4),
-              RibbonButton(
-                  label: Localization().getStringEx('', 'Record a video'),
-                  leftIconKey: 'video-camera',
-                  backgroundColor: Styles().colors.backgroundVariant,
-                  textColor: Styles().colors.textPrimary,
-                  onTap: () => _onTapCamera(isVideo: true)),
-              SizedBox(height: 4),
-              Opacity(
-                opacity: 0.4,
-                child: RibbonButton(
-                    label: Localization().getStringEx('', 'Record an audio clip'),
-                    leftIconKey: 'microphone',
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(children: [
+                RibbonButton(
+                    label: Localization().getStringEx('', 'Upload an image or video'),
+                    leftIconKey: 'image',
                     backgroundColor: Styles().colors.backgroundVariant,
                     textColor: Styles().colors.textPrimary,
-                    onTap: _onTapRecordAudio),
-              ),
-              SizedBox(height: 4),
-              RibbonButton(
-                  label: Localization().getStringEx('', 'Upload a file'),
-                  leftIconKey: 'file',
-                  backgroundColor: Styles().colors.backgroundVariant,
-                  textColor: Styles().colors.textPrimary,
-                  onTap: _onTapAttachFile)
-            ])
+                    onTap: _onTapUploadImageOrVideo),
+                SizedBox(height: 4),
+                RibbonButton(
+                    label: Localization().getStringEx('', 'Take a photo'),
+                    leftIconKey: 'camera',
+                    backgroundColor: Styles().colors.backgroundVariant,
+                    textColor: Styles().colors.textPrimary,
+                    onTap: _onTapCamera),
+                SizedBox(height: 4),
+                RibbonButton(
+                    label: Localization().getStringEx('', 'Record a video'),
+                    leftIconKey: 'video-camera',
+                    backgroundColor: Styles().colors.backgroundVariant,
+                    textColor: Styles().colors.textPrimary,
+                    onTap: () => _onTapCamera(isVideo: true)),
+                SizedBox(height: 4),
+                Opacity(
+                  opacity: 0.4,
+                  child: RibbonButton(
+                      label: Localization().getStringEx('', 'Record an audio clip'),
+                      leftIconKey: 'microphone',
+                      backgroundColor: Styles().colors.backgroundVariant,
+                      textColor: Styles().colors.textPrimary,
+                      onTap: _onTapRecordAudio),
+                ),
+                SizedBox(height: 4),
+                RibbonButton(
+                    label: Localization().getStringEx('', 'Upload a file'),
+                    leftIconKey: 'file',
+                    backgroundColor: Styles().colors.backgroundVariant,
+                    textColor: Styles().colors.textPrimary,
+                    onTap: _onTapAttachFile)
+              ])
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
