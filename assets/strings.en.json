@@ -3187,7 +3187,7 @@
     "panel.project_detail.group.delete.failed.msg": "Failed to delete project.",
 
     "panel.group.attributes.attributes.header.title": "Group Attributes",
-    "panel.group.attributes.attributes.header.description": "Choose at least one attribute to describe this group",
+    "panel.group.attributes.attributes.header.description": "Choose at least one attribute to describe this group.",
     "panel.group.attributes.filters.header.title": "Group Filters",
     "panel.group.attributes.filters.header.description": "Choose at least one attribute to filter the list of groups",
     "panel.project.attributes.attributes.header.title": "Project Attributes",

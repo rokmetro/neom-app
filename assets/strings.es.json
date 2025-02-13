@@ -3172,7 +3172,7 @@
     "panel.project_detail.group.delete.failed.msg": "Error al eliminar el proyecto.",
 
     "panel.group.attributes.attributes.header.title": "Atributos del Grupo",
-    "panel.group.attributes.attributes.header.description": "Elige uno o más atributos que ayuden a describir este grupo",
+    "panel.group.attributes.attributes.header.description": "Elige uno o más atributos que ayuden a describir este grupo.",
     "panel.group.attributes.filters.header.title": "Filtros del Grupo",
     "panel.group.attributes.filters.header.description": "Elige uno o más atributos para filtrar la lista de grupos",
     "panel.project.attributes.attributes.header.title": "Atributos del Proyecto",
