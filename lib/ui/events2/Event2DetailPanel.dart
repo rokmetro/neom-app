@@ -314,7 +314,7 @@ class _Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> im
       ...?_privacyDetailWidget,
       ...?_publishedDetailWidget,
       ...?_superEventDetailWidget,
-      ...?_promoteButton,
+      if (!kIsWeb) ...?_promoteButton,
       ...?_addToCalendarButton,
       ...?_adminCommandsButton,
       ...?_attendanceDetailWidget,
