@@ -1058,7 +1058,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );
-      } else {
+      } else if (path != null) {
         widget = Image.file(File(path ?? ''), fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
@@ -1531,27 +1531,34 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
   }
 
-  Map<String, FutureOr<Uint8List>> get _attachedFileData {
-    Map<String, FutureOr<Uint8List>> fileData = {};
+  Map<String, FutureOr<Uint8List?>> get _attachedFileData {
+    Map<String, FutureOr<Uint8List?>> fileData = {};
     List<dynamic> files = _attachedFiles.toList();
     for (int i = 0; i < files.length; i++) {
       dynamic file = files[i];
       String? name = _getFileName(file);
-      if (file is PlatformFile) {
-        if (file.bytes != null) {
-          fileData[file.name] = file.bytes!;
-        }
-      } else if (file is XFile) {
-        Future<Uint8List> bytes = file.readAsBytes();
-        fileData[file.name] = bytes;
-      } else if (file is AudioResult) {
-        Uint8List? data = file.audioData;
-        if (data != null) {
-          fileData[_getAudioFileName(file)] = data;
-        }
+      if (name != null) {
+        fileData[name] = _getFileData(file);
       }
     }
     return fileData;
+  }
+
+  Future<Uint8List?> _getFileData(dynamic file) async {
+    if (file is PlatformFile) {
+      if (file.bytes != null) {
+        return file.bytes;
+      }
+    } else if (file is XFile) {
+      Future<Uint8List> bytes = file.readAsBytes();
+      return bytes;
+    } else if (file is AudioResult) {
+      Uint8List? data = file.audioData;
+      if (data != null) {
+        return data;
+      }
+    }
+    return null;
   }
 
   String? _getFilePath(dynamic file) {
@@ -1592,7 +1599,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       return FileType.audio;
     }
     FileType type = FileType.file;
-    String? path = _getFilePath(file);
+    String? path = kIsWeb ?  _getFileName(file) : _getFilePath(file) ?? _getFileName(file);
     if (FileUtils.isVideo(path)) {
       type = FileType.video;
     } else if (FileUtils.isImage(path)) {
