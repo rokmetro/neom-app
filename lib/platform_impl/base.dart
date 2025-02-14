@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-abstract class BaseFilePickerHelper {
-  void initialize();
+import 'package:flutter/foundation.dart';
+
+abstract class BaseFileHelper {
+  void initializePicker();
+  Future<bool> saveDownload(String name, Uint8List data);
 }

@@ -12,9 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 import 'package:neom/platform_impl/base.dart';
 
-class FilePickerHelper extends BaseFilePickerHelper {
+import 'package:path_provider/path_provider.dart';
+
+class FileHelper extends BaseFileHelper {
   @override
-  void initialize() {}
+  void initializePicker() {}
+
+  @override
+  Future<bool> saveDownload(String name, Uint8List data) async {
+    if (Platform.isAndroid) {
+      Directory? downloadsDir = Directory("/storage/emulated/0/Download");
+      if (!await downloadsDir.exists()) {
+        downloadsDir = await getExternalStorageDirectory();
+      }
+      if (downloadsDir != null) {
+        File downloadsFile = File('${downloadsDir.path}/$name');
+        downloadsFile = await downloadsFile.writeAsBytes(data);
+        FileStat stats = await downloadsFile.stat();
+        return stats.size > 0;
+      }
+    }
+    //TODO: implement for iOS
+    return false;
+  }
 }

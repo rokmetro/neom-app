@@ -12,11 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import 'package:flutter/foundation.dart';
 import 'package:neom/platform_impl/base.dart';
 
-class FilePickerHelper extends BaseFilePickerHelper {
+class FileHelper extends BaseFileHelper {
   @override
-  void initialize() {
+  void initializePicker() {
+    throw Exception("Unimplemented");
+  }
+
+  @override
+  Future<bool> saveDownload(String name, Uint8List data) async {
     throw Exception("Unimplemented");
   }
 }

@@ -24,7 +24,6 @@ import 'package:neom/ui/widgets/CustomLinkText.dart';
 import 'package:neom/utils/Utils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/social.dart';
-import 'package:rokwire_plugin/rokwire_plugin.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
@@ -67,6 +66,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   final GlobalKey _targetMessageContentItemKey = GlobalKey();
   final GlobalKey _inputFieldKey = GlobalKey();
   final FocusNode _inputFieldFocus = FocusNode();
+  final FileHelper _fileHelper = FileHelper();
 
   _ScrollTarget? _shouldScrollToTarget;
   Map<String, Uint8List?> _userPhotosCache = {};
@@ -114,7 +114,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     // Load conversation (if needed) and messages from the backend
     _initConversationAndMessages();
 
-    FilePickerHelper().initialize();
+    _fileHelper.initializePicker();
 
     super.initState();
   }
@@ -1463,7 +1463,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       if ((!kIsWeb && await _requestStoragePermissions()) && files.isNotEmpty) {
         Uint8List? data = files[file.id];
         if (CollectionUtils.isNotEmpty(data)) {
-          bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
+          bool success = await _fileHelper.saveDownload(file.name!, data!);
           String message = success ? Localization().getStringEx('', 'File saved') : Localization().getStringEx('', 'Failed to save file');
           AppToast.showMessage(message);
         }
