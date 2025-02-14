@@ -1061,6 +1061,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   void _loadLocationStatus() {
+    return;
     LocationServices().status.then((LocationServicesStatus? status) {
       if (status == LocationServicesStatus.serviceDisabled) {
         LocationServices().requestService().then((status) {

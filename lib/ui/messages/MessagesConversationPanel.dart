@@ -13,6 +13,7 @@ import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/DeepLink.dart';
 import 'package:neom/service/SpeechToText.dart';
 import 'package:neom/ui/directory/DirectoryWidgets.dart';
+import 'package:neom/ui/messages/MessagesMediaFullscreenPanel.dart';
 import 'package:neom/ui/profile/ProfileVoiceRecordigWidgets.dart';
 import 'package:neom/ui/widgets/AudioPlayerWidget.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
@@ -932,7 +933,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
       if (type == FileType.image || type == FileType.video) {
-        return _buildAttachedMediaEntry(context, file, type, removable: true);
+        return _buildAttachedMediaEntry(context, file, type, inMessage: false);
       }
       if (type == FileType.audio) {
         return _buildAudioAttachment(context, file, type, inMessage: false);
@@ -1040,7 +1041,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildAttachedMediaEntry(BuildContext context, dynamic file, FileType type,
-      {bool removable = false}) {
+      {bool inMessage = true}) {
     String? path, url;
     if (file is FileAttachment) {
       url = file.url;
@@ -1067,22 +1068,32 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     else if (type == FileType.video) {
       widget = VideoPlayerWidget(key: ValueKey(path),
           filePath: path, url: url, showControls: false,
-          muted: true, fill: true);
+          muted: true, fill: true, interactive: false);
     }
 
-    return Stack(children: [
-      AspectRatio(aspectRatio: 1/1, child: widget),
-      if (removable)
-        Positioned.fill(child:
-          Align(alignment: Alignment.topRight, child:
-            GestureDetector(onTap: () => _removeAttachedFiles([file]),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Styles().images.getImage('close-circle'),
-                ))
+    return GestureDetector(
+      onTap: inMessage ? () {
+        if (widget != null) {
+          String? filename = _getFileName(file);
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => MessagesMediaFullscreenPanel(media: widget ?? SizedBox(), filename: filename, url: url),
+          ));
+        }
+      } : null,
+      child: Stack(children: [
+        AspectRatio(aspectRatio: 1/1, child: widget),
+        if (!inMessage)
+          Positioned.fill(child:
+            Align(alignment: Alignment.topRight, child:
+              GestureDetector(onTap: () => _removeAttachedFiles([file]),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Styles().images.getImage('close-circle'),
+                  ))
+            )
           )
-        )
-    ]);
+      ]),
+    );
   }
 
   Widget get _imageErrorBuilder => AspectRatio(aspectRatio: 16/9, child:
@@ -1444,14 +1455,15 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     //TODO: implement opening files based on type
     if (StringUtils.isNotEmpty(file.name)) {
       Map<String, Uint8List> files = await Content().getFileContentItems([file.name!], Content.conversationsContentCategory, entityId: '$_conversationId/$messageId');
-      if (await _requestStoragePermissions() && files.isNotEmpty) {
-        Uint8List? data = files[file.name];
-        if (CollectionUtils.isNotEmpty(data)) {
-          bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
-          String message = success ? Localization().getStringEx('', 'File saved') : Localization().getStringEx('', 'Failed to save file');
-          AppToast.showMessage(message);
-        }
+      // if (await _requestStoragePermissions() && files.isNotEmpty) {
+      Uint8List? data = files[file.name];
+      if (CollectionUtils.isNotEmpty(data)) {
+        AppFile.downloadFile(context: context, fileName: file.name ?? 'file.out', fileBytes: data);
+        // bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
+        // String message = success ? Localization().getStringEx('', 'File saved') : Localization().getStringEx('', 'Failed to save file');
+        // AppToast.showMessage(message);
       }
+      // }
     }
   }
 
