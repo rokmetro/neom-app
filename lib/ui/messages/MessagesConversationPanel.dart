@@ -1018,6 +1018,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       } else if (file.data != null) {
         data = file.data;
       }
+    } else if (kIsWeb && file is PlatformFile) {
+      data = file.bytes;
     } else {
       path = _getFilePath(file);
     }
@@ -1026,7 +1028,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
     Widget? widget;
     if (type == FileType.image) {
-      if (kIsWeb || url != null) {
+      if (url != null || (kIsWeb && path != null)) {
         widget = Image.network(url ?? path ?? '', fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
@@ -1458,7 +1460,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     //TODO: implement opening files based on type
     if (StringUtils.isNotEmpty(file.name)) {
       Map<String, Uint8List> files = await Content().getFileContentItems([file.id!], Content.conversationsContentCategory, entityId: _conversationId);
-      if (await _requestStoragePermissions() && files.isNotEmpty) {
+      if ((!kIsWeb && await _requestStoragePermissions()) && files.isNotEmpty) {
         Uint8List? data = files[file.id];
         if (CollectionUtils.isNotEmpty(data)) {
           bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
@@ -1550,12 +1552,32 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     return null;
   }
 
+  String? _getFileName(dynamic file) {
+    if (file is XFile) {
+      return file.name;
+    }
+    else if (file is PlatformFile) {
+      return file.name;
+    }
+    else if (file is FileAttachment) {
+      return file.name;
+    }
+    else if (file is AudioResult) {
+      return _getAudioFileName(file);
+    }
+    return null;
+  }
+
+  String _getAudioFileName(AudioResult result) {
+    return 'audio_${result.hashCode}';
+  }
+
   FileType _getFileType(dynamic file) {
     if (file is FileAttachment) {
       return _getFileTypeFromString(file.type);
     }
     FileType type = FileType.file;
-    String? path = _getFilePath(file);
+    String? path = kIsWeb ?  _getFileName(file) : _getFilePath(file) ?? _getFileName(file);
     if (FileUtils.isVideo(path)) {
       type = FileType.video;
     } else if (FileUtils.isImage(path)) {
