@@ -1011,26 +1011,38 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   Widget _buildAttachedMediaEntry(BuildContext context, dynamic file, FileType type,
       {bool removable = false}) {
     String? path, url;
+    Uint8List? data;
     if (file is FileAttachment) {
-      url = file.url;
+      if (file.url != null) {
+        url = file.url;
+      } else if (file.data != null) {
+        data = file.data;
+      }
     } else {
       path = _getFilePath(file);
     }
-    if (path == null && url == null) {
+    if (path == null && url == null && data == null) {
       return const SizedBox();
     }
     Widget? widget;
     if (type == FileType.image) {
-      if (kIsWeb || file is FileAttachment) {
+      if (kIsWeb || url != null) {
         widget = Image.network(url ?? path ?? '', fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );
-      } else {
+      } else if (data != null) {
+        widget = Image.memory(data, fit: BoxFit.cover,
+          errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
+          _imageErrorBuilder,
+        );
+      } else if (!kIsWeb) {
         widget = Image.file(File(path ?? ''), fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );
+      } else {
+        return const SizedBox();
       }
     }
     else if (type == FileType.video) {
@@ -1233,7 +1245,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       }
 
       _inputController.text = '';
-      List<FileAttachment> fileAttachments = _getMessageFileAttachments(fileRefs);
+      List<FileAttachment> fileAttachments = await _getMessageFileAttachments(fileRefs);
 
       // Create a temporary message and add it immediately
       Message tempMessage = Message(
@@ -1262,7 +1274,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       if (mounted) {
         if (newMessages != null && newMessages.isNotEmpty) {
           setState(() {
-            Message serverMessage = newMessages.first;
+            Message serverMessage = Message.fromOther(newMessages.first, fileAttachments: fileAttachments);
             // Update the temporary message with the server's message if needed
             int index = _messages.indexOf(tempMessage);
             if (index >= 0) {
@@ -1562,8 +1574,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     return fileRefs != null ? List.generate(_attachedFiles.length, (index) {
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
-      String id = fileRefs.firstWhere((ref) => ref.name == file.name).id ?? '';
-      return FileAttachment(name: file.name, type: type.name, id: id);
+      FileContentItemReference ref = fileRefs.firstWhere((ref) => ref.name == file.name, orElse: () => FileContentItemReference());
+      return FileAttachment(name: file.name, type: type.name, id: ref.id, data: ref.data);
     }) : [];
   }
 }
