@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:neom/ext/Social.dart';
 import 'package:neom/service/Analytics.dart';
@@ -30,9 +31,14 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/social.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:universal_io/io.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'package:neom/platform_impl/stub.dart'
+  if (dart.library.io) 'package:neom/platform_impl/mobile.dart'
+  if (dart.library.html) 'package:neom/platform_impl/web.dart';
 
 enum FileType { image, video, audio, file }
 
@@ -69,7 +75,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   bool _loading = false;
   bool _loadingMore = false;
   bool _submitting = false;
-  bool _uploadingFiles = false;
+  Map<String, bool> _uploadingFiles = {};
 
   // Use the actual Auth2 accountId instead of a placeholder.
   String? get _currentUserId => Auth2().accountId;
@@ -107,6 +113,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
     // Load conversation (if needed) and messages from the backend
     _initConversationAndMessages();
+
+    FilePickerHelper().initialize();
 
     super.initState();
   }
@@ -925,13 +933,16 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       }
       entryBackgroundColor = Styles().colors.backgroundAccent;
       textStyleKey = 'widget.title.small';
-      onTap = () => _removeAttachedFiles([file]);
+      if (_uploadingFiles[name] != true) {
+        onTap = () => _removeAttachedFiles([file]);
+      }
       if (file is PlatformFile) {
         name = file.name;
         extension = file.extension;
       }
     }
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
         GestureDetector(
           onTap: message != null ? onTap : null,
@@ -988,6 +999,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
               ],
             ),
           ),
+        ),
+        Visibility(
+          visible: message == null && (_uploadingFiles[name] == true),
+          child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary),),
         ),
       ],
     );
@@ -1269,15 +1284,31 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Future<List<FileContentItemReference>?> _uploadAttachedFiles() async {
-    setStateIfMounted(() {
-      _uploadingFiles = false;
-    });
-    List<FileContentItemReference>? uploaded = await Content().uploadFileContentItems(_attachedFileData, Content.conversationsContentCategory, entityId: _conversationId);
-    setStateIfMounted(() {
-      _uploadingFiles = false;
-    });
+    List<FileContentItemReference>? uploaded = await Content().uploadFileContentItems(_attachedFileData, Content.conversationsContentCategory,
+      entityId: _conversationId, preUpload: _preUploadFile, postUpload: _postUploadFile);
+
+    int failedFileCount = _attachedFileData.length - (uploaded?.length ?? 0);
+    if (failedFileCount > 0) {
+      AppToast.showMessage(sprintf(Localization().getStringEx('', 'Failed to upload %s file(s)'), [failedFileCount]));
+    }
 
     return uploaded;
+  }
+
+  void _preUploadFile(FileContentItemReference ref) {
+    if (ref.name != null) {
+      setStateIfMounted(() {
+        _uploadingFiles[ref.name!] = true;
+      });
+    }
+  }
+
+  void _postUploadFile(FileContentItemReference ref, Response? response) {
+    if (ref.name != null) {
+      setStateIfMounted(() {
+        _uploadingFiles[ref.name!] = false;
+      });
+    }
   }
 
   Future<void> _updateEditingMessage(String newText) async {
@@ -1414,9 +1445,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   Future<void> _onTapDownloadFile(FileAttachment file, String messageId) async {
     //TODO: implement opening files based on type
     if (StringUtils.isNotEmpty(file.name)) {
-      Map<String, Uint8List> files = await Content().getFileContentItems([file.name!], Content.conversationsContentCategory, entityId: '$_conversationId/$messageId');
+      Map<String, Uint8List> files = await Content().getFileContentItems([file.id!], Content.conversationsContentCategory, entityId: _conversationId);
       if (await _requestStoragePermissions() && files.isNotEmpty) {
-        Uint8List? data = files[file.name];
+        Uint8List? data = files[file.id];
         if (CollectionUtils.isNotEmpty(data)) {
           bool success = await RokwirePlugin.saveDownloadedFile(file.name!, data!);
           String message = success ? Localization().getStringEx('', 'File saved') : Localization().getStringEx('', 'Failed to save file');
@@ -1469,14 +1500,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       }
     }
   }
-
-  double get _chatBarHeight {
-    RenderObject? chatBarRenderBox = _chatBarKey.currentContext?.findRenderObject();
-    double? chatBarHeight = ((chatBarRenderBox is RenderBox) && chatBarRenderBox.hasSize) ? chatBarRenderBox.size.height : null;
-    return chatBarHeight ?? 0;
-  }
-
-  double get _scrollContentPaddingBottom => _chatBarHeight;
 
   Future<bool> get _checkKeyboardVisible async {
     final checkPosition = () => (MediaQuery.of(context).viewInsets.bottom);
