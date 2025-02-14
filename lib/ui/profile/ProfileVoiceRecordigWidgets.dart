@@ -17,7 +17,7 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:universal_io/io.dart';
-
+import 'package:http/http.dart' as http;
 
 class ProfileNamePronouncementWidget extends StatefulWidget {
 
@@ -544,8 +544,8 @@ class _ProfileSoundRecorderController {
       if (await _audioRecorder.hasPermission()) {
         notifyChanged();
         String? path = await _constructFilePath;
-        if (path != null) {
-          await _audioRecorder.start(const RecordConfig(), path: path);
+        if (kIsWeb || path != null) {
+          await _audioRecorder.start(const RecordConfig(encoder: AudioEncoder.wav), path: path ?? '');
           // _recording = await _audioRecorder.isRecording();
         }
       }
@@ -558,6 +558,7 @@ class _ProfileSoundRecorderController {
     Log.d("STOP RECODING");
     try {
       String? path = await _audioRecorder.stop();
+      print('audio path: $path');
       _recording = await _audioRecorder.isRecording();
       var audioBytes = await getFileAsBytes(path);
       _audio = audioBytes;
@@ -663,6 +664,14 @@ class _ProfileSoundRecorderController {
 
   Future<Uint8List?> getFileAsBytes(String? filePath) async{
     if(StringUtils.isNotEmpty(filePath)){
+      if (kIsWeb) {
+        Uri? uri = Uri.tryParse(filePath!);
+        if (uri != null) {
+          final response = await http.get(uri);
+          return response.bodyBytes;
+        }
+        return null;
+      }
       File file = File(filePath!);
       try{
         if(file.existsSync()){
