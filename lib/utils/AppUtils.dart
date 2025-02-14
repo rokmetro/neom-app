@@ -520,7 +520,7 @@ class AppFile {
         fileBytes ??= utf8.encode(fileContent);
       }
       if (fileBytes != null) {
-        _downLoadInWeb(context: context, fileContent: fileBytes, fileName: fileName);
+        _downloadInWeb(context: context, fileContent: fileBytes, fileName: fileName);
       }
     } else {
       if (fileContent != null) {
@@ -532,7 +532,7 @@ class AppFile {
     }
   }
 
-  static void _downLoadInWeb({required BuildContext context, required Uint8List fileContent, required String fileName}) {
+  static void _downloadInWeb({required BuildContext context, required Uint8List fileContent, required String fileName}) {
     if (!kIsWeb) {
       return;
     }

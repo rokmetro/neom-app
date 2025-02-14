@@ -36,7 +36,6 @@ import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:universal_io/io.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:neom/platform_impl/stub.dart'
   if (dart.library.io) 'package:neom/platform_impl/mobile.dart'
@@ -962,6 +961,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       onTap: message != null ? onTap : null,
       onRemove: message == null ? onTap : null,
       inMessage:  message != null,
+      showProgress: message == null && (_uploadingFiles[name] == true),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1013,6 +1013,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
     else if (file is FileAttachment) {
       url = file.url;
+      bytes = file.data;
     }
     return SizedBox(
       width: 200,
@@ -1026,7 +1027,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildAttachmentContainer({required Widget child,
-    bool inMessage = true, void Function()? onTap,
+    bool inMessage = true, bool showProgress = false, void Function()? onTap,
     void Function()? onRemove}) {
     return Stack(
       alignment: Alignment.center,
@@ -1051,7 +1052,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           ),
         ),
         Visibility(
-          visible: !inMessage && (_uploadingFiles[name] == true),
+          visible: showProgress,
           child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary),),
         ),
       ],
@@ -1094,7 +1095,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           _imageErrorBuilder,
         );
       } else if (path != null) {
-        widget = Image.file(File(path ?? ''), fit: BoxFit.cover,
+        widget = Image.file(File(path), fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );
@@ -1525,15 +1526,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         AppFile.downloadFile(context: context, fileName: file.name ?? 'file.out', fileBytes: data);
       }
     }
-  }
-
-  Future<bool> _requestStoragePermissions() async {
-    PermissionStatus status = await Permission.manageExternalStorage.status;
-    if (!status.isGranted) {
-      status = await Permission.manageExternalStorage.request();
-    }
-
-    return status == PermissionStatus.granted;
   }
 
   @override
