@@ -38,7 +38,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:universal_io/io.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
 
 class AppAlert {
   

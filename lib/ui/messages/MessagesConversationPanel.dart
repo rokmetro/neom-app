@@ -26,7 +26,6 @@ import 'package:neom/ui/widgets/CustomLinkText.dart';
 import 'package:neom/utils/Utils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/social.dart';
-import 'package:rokwire_plugin/rokwire_plugin.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
@@ -312,12 +311,14 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                       SizedBox(height: 8),
                       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Expanded(child:
-                          CustomLinkText(
-                            key: UniqueKey(),
-                            message.message ?? '',
-                            textStyle: Styles().textStyles.getTextStyle('widget.detail.regular'),
-                            linkStyle: Styles().textStyles.getTextStyleEx('widget.detail.regular.underline', decorationColor: Styles().colors.fillColorPrimary),
-                            onLinkTap: _onTapLink,
+                          SelectionArea(
+                            child: CustomLinkText(
+                              key: UniqueKey(),
+                              message.message ?? '',
+                              textStyle: Styles().textStyles.getTextStyle('widget.detail.regular'),
+                              linkStyle: Styles().textStyles.getTextStyleEx('widget.detail.regular.underline', decorationColor: Styles().colors.fillColorPrimary),
+                              onLinkTap: _onTapLink,
+                            ),
                           ),
                         ),
                         // If dateUpdatedUtc is not null, show a small “(edited)” label
@@ -1046,7 +1047,12 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     if (file is FileAttachment) {
       url = file.url;
     } else {
-      path = _getFilePath(file);
+      String? filePath = _getFilePath(file);
+      if (kIsWeb) {
+        url = filePath;
+      } else {
+        path = filePath;
+      }
     }
     if (path == null && url == null) {
       return const SizedBox();
@@ -1054,7 +1060,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     Widget? widget;
     if (type == FileType.image) {
       if (kIsWeb || file is FileAttachment) {
-        widget = Image.network(url ?? path ?? '', fit: BoxFit.cover,
+        widget = Image.network(url ?? '', fit: BoxFit.cover,
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );
