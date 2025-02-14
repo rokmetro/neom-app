@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased - NEOM U
 ### Fixed
 - Improve file upload UX [#49](https://github.com/rokmetro/neom-app/issues/49)
+### Changed
+- Improve message file attachment loading [#53](https://github.com/rokmetro/neom-app/issues/53)
 
 ## [0.5.6] = 2025-02-12
 ### Added
