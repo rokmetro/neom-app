@@ -44,14 +44,20 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   void _initVideoPlayer() {
+    VideoPlayerOptions options = VideoPlayerOptions(
+      mixWithOthers: widget.muted,
+    );
     if (widget.controller != null) {
       _controller = widget.controller;
     } else if (widget.filePath != null) {
-      _controller = VideoPlayerController.file(File(widget.filePath ?? ''));
+      _controller = VideoPlayerController.file(File(widget.filePath ?? ''),
+        videoPlayerOptions: options,
+      );
     } else if (widget.uri != null || widget.url != null) {
       Uri? uri = widget.uri ?? Uri.tryParse(widget.url ?? '');
       if (uri != null) {
         _controller = VideoPlayerController.networkUrl(uri,
+            videoPlayerOptions: options,
             httpHeaders: widget.useAuthHeaders
                 ? Auth2().networkAuthHeaders ?? {} : {});
       }

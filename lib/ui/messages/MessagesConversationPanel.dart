@@ -13,6 +13,8 @@ import 'package:neom/service/Auth2.dart';
 import 'package:neom/service/DeepLink.dart';
 import 'package:neom/service/SpeechToText.dart';
 import 'package:neom/ui/directory/DirectoryWidgets.dart';
+import 'package:neom/ui/profile/ProfileVoiceRecordigWidgets.dart';
+import 'package:neom/ui/widgets/AudioPlayerWidget.dart';
 import 'package:neom/ui/widgets/HeaderBar.dart';
 import 'package:neom/ui/widgets/RibbonButton.dart';
 import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
@@ -796,15 +798,12 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                     textColor: Styles().colors.textPrimary,
                     onTap: () => _onTapCamera(isVideo: true)),
                 SizedBox(height: 4),
-                Opacity(
-                  opacity: 0.4,
-                  child: RibbonButton(
-                      label: Localization().getStringEx('', 'Record an audio clip'),
-                      leftIconKey: 'microphone',
-                      backgroundColor: Styles().colors.backgroundVariant,
-                      textColor: Styles().colors.textPrimary,
-                      onTap: _onTapRecordAudio),
-                ),
+                RibbonButton(
+                    label: Localization().getStringEx('', 'Record an audio clip'),
+                    leftIconKey: 'microphone',
+                    backgroundColor: Styles().colors.backgroundVariant,
+                    textColor: Styles().colors.textPrimary,
+                    onTap: _onTapRecordAudio),
                 SizedBox(height: 4),
                 RibbonButton(
                     label: Localization().getStringEx('', 'Upload a file'),
@@ -840,13 +839,23 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   void _onTapRecordAudio() async {
-    // TODO: Capture audio recording
-    // if (media != null) {
-    //   setStateIfMounted(() {
-    //     _attachedFiles.add(media);
-    //   });
-    // }
     Navigator.of(context).pop();
+    showDialog<AudioResult?>(
+        context: context,
+        builder: (_) =>
+          Material(
+            type: MaterialType.transparency,
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            child: ProfileSoundRecorderDialog(onSave: (audio) async {
+              if (CollectionUtils.isEmpty(audio)) {
+                return AudioResult.error(AudioErrorType.fileNameNotSupplied, 'Missing file.');
+              }
+              AudioResult result = AudioResult(AudioResultType.succeeded, audioData: audio);
+              _addAttachedFiles([result]);
+              return result;
+            }),
+          )
+    );
   }
 
   Widget _buildSendImage(bool enabled) {
@@ -885,8 +894,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   Widget _buildAttachedFilesListWidget({Message? message}) {
     return Container(
-      height: (message?.fileAttachments ?? _attachedFiles.toList()).firstWhereOrNull((e) =>
-        _getFileType(e) != FileType.file) != null ? message != null ? 300.0 : 200.0 : 100.0,
+      height: (message?.fileAttachments ?? _attachedFiles.toList()).firstWhereOrNull((e) {
+        FileType type = _getFileType(e);
+        return type == FileType.image || type == FileType.video;
+      }) != null ? message != null ? 300.0 : 200.0 : 100.0,
       child: ListView.separated(
         padding: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
         separatorBuilder: (context, index) => SizedBox(width: 8.0),
@@ -900,7 +911,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   Widget _buildAttachedFileEntry(BuildContext context, int index, {Message? message}) {
     String? name, extension;
     GestureTapCallback? onTap;
-    Color? entryBackgroundColor;
     String? textStyleKey = 'widget.title.dark.small';
     if (message != null) {
       FileAttachment? file = message.fileAttachments?[index];
@@ -911,10 +921,12 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       if (type == FileType.image || type == FileType.video) {
         return _buildAttachedMediaEntry(context, file, type);
       }
+      if (type == FileType.audio) {
+        return _buildAudioAttachment(context, file, type);
+      }
       name = file.name;
       extension = file.extension;
       onTap = () => _onTapDownloadFile(file, message.globalId!);
-      entryBackgroundColor = Styles().colors.surfaceAccent;
       textStyleKey = 'widget.title.dark.small';
     } else {
       dynamic file = _attachedFiles.elementAt(index);
@@ -922,7 +934,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       if (type == FileType.image || type == FileType.video) {
         return _buildAttachedMediaEntry(context, file, type, removable: true);
       }
-      entryBackgroundColor = Styles().colors.backgroundAccent;
+      if (type == FileType.audio) {
+        return _buildAudioAttachment(context, file, type, inMessage: false);
+      }
       textStyleKey = 'widget.title.small';
       onTap = () => _removeAttachedFiles([file]);
       if (file is PlatformFile) {
@@ -930,59 +944,92 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         extension = file.extension;
       }
     }
+    return _buildAttachmentContainer(
+      onTap: message != null ? onTap : null,
+      onRemove: message == null ? onTap : null,
+      inMessage:  message != null,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Styles().images.getImage('file', size: 24) ?? Container(height: 48.0),
+          SizedBox(width: 12.0),
+          Expanded(
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name ?? '',
+                    style: Styles().textStyles.getTextStyle(textStyleKey),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (extension != null && extension.isNotEmpty)
+                          Text(
+                            extension.toUpperCase(),
+                            style: Styles().textStyles.getTextStyle(textStyleKey),
+                          ),
+                        if (message != null)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
+                            child: Styles().images.getImage('download'),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]
+      ),
+    );
+  }
+
+  Widget _buildAudioAttachment(BuildContext context, dynamic file, FileType type,
+      {bool inMessage = true}) {
+    String? url;
+    Uint8List? bytes;
+    if (file is AudioResult) {
+      bytes = file.audioData;
+    }
+    else if (file is FileAttachment) {
+      url = file.url;
+    }
+    return SizedBox(
+      width: 200,
+      child: _buildAttachmentContainer(
+        inMessage: inMessage,
+        child: Align(alignment: inMessage ? Alignment.center : Alignment.bottomCenter,
+            child: AudioPlayerWidget(url: url, bytes: bytes)),
+        onRemove: inMessage ? null : () => _removeAttachedFiles([file]),
+      ),
+    );
+  }
+
+  Widget _buildAttachmentContainer({required Widget child,
+    bool inMessage = true, void Function()? onTap,
+    void Function()? onRemove}) {
     return Column(
       children: [
         GestureDetector(
-          onTap: message != null ? onTap : null,
+          onTap: onTap,
           child: Container(
-            width: 180,
+            width: 200,
             height: 80,
             padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0), color: entryBackgroundColor),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0),
+                color: inMessage ? Styles().colors.surfaceAccent : Styles().colors.backgroundAccent),
             child: Stack(
               alignment: Alignment.topRight,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Styles().images.getImage('file', size: 24) ?? Container(height: 48.0),
-                    SizedBox(width: 12.0),
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              name ?? '',
-                              style: Styles().textStyles.getTextStyle(textStyleKey),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0, right: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (extension != null && extension.isNotEmpty)
-                                    Text(
-                                      extension.toUpperCase(),
-                                      style: Styles().textStyles.getTextStyle(textStyleKey),
-                                    ),
-                                  if (message != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 16.0),
-                                      child: Styles().images.getImage('download'),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ]
-                ),
-                if (message == null)
-                  GestureDetector(onTap: onTap,
+                child,
+                if (onRemove != null)
+                  GestureDetector(onTap: onRemove,
                       child: Styles().images.getImage('close-circle')),
               ],
             ),
@@ -1376,13 +1423,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     for (dynamic file in files) {
       if (file is String) {
         dynamic found = _attachedFiles.firstWhereOrNull((e) {
-          if (e is XFile) {
-            return e.name == file;
-          }
-          else if (e is PlatformFile) {
-            return e.name == file;
-          }
-          return false;
+          return _getFileName(e) == file;
         });
         if (found != null) {
           processed.add(found);
@@ -1480,7 +1521,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   Map<String, FutureOr<Uint8List>> get _attachedFileData {
     Map<String, FutureOr<Uint8List>> fileData = {};
-    for (dynamic file in _attachedFiles) {
+    List<dynamic> files = _attachedFiles.toList();
+    for (int i = 0; i < files.length; i++) {
+      dynamic file = files[i];
+      String? name = _getFileName(file);
       if (file is PlatformFile) {
         if (file.bytes != null) {
           fileData[file.name] = file.bytes!;
@@ -1488,6 +1532,11 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       } else if (file is XFile) {
         Future<Uint8List> bytes = file.readAsBytes();
         fileData[file.name] = bytes;
+      } else if (file is AudioResult) {
+        Uint8List? data = file.audioData;
+        if (data != null) {
+          fileData[_getAudioFileName(file)] = data;
+        }
       }
     }
     return fileData;
@@ -1503,9 +1552,32 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     return null;
   }
 
+  String? _getFileName(dynamic file) {
+    if (file is XFile) {
+      return file.name;
+    }
+    else if (file is PlatformFile) {
+      return file.name;
+    }
+    else if (file is FileAttachment) {
+      return file.name;
+    }
+    else if (file is AudioResult) {
+      return _getAudioFileName(file);
+    }
+    return null;
+  }
+
+  String _getAudioFileName(AudioResult result) {
+    return 'audio_${result.hashCode}';
+  }
+
   FileType _getFileType(dynamic file) {
     if (file is FileAttachment) {
       return _getFileTypeFromString(file.type);
+    }
+    if (file is AudioResult) {
+      return FileType.audio;
     }
     FileType type = FileType.file;
     String? path = _getFilePath(file);
@@ -1527,6 +1599,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     List.generate(_attachedFiles.length, (index) {
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
-      return FileAttachment(name: file.name, type: type.name);
+      String? name = _getFileName(file);
+      return FileAttachment(name: name, type: type.name);
     });
 }
