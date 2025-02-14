@@ -1086,8 +1086,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
           ));
         }
       } : null,
+      behavior: inMessage ? HitTestBehavior.opaque : null,
       child: Stack(children: [
-        AspectRatio(aspectRatio: 1/1, child: widget),
+        IgnorePointer(ignoring: inMessage, child: AspectRatio(aspectRatio: 1/1, child: widget)),
         if (!inMessage)
           Positioned.fill(child:
             Align(alignment: Alignment.topRight, child:
