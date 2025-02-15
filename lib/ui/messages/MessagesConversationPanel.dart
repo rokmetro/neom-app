@@ -737,17 +737,19 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   void _openAttachFileMenu() {
-    Analytics().logSelect(target: 'Attach File');
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
-      ),
-      clipBehavior: Clip.antiAlias,
-      useSafeArea: true,
-      builder: _buildAttachFilePopup,
-    );
+    if (!_submitting && _editingMessage == null) {
+      Analytics().logSelect(target: 'Attach File');
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+        ),
+        clipBehavior: Clip.antiAlias,
+        useSafeArea: true,
+        builder: _buildAttachFilePopup,
+      );
+    }
   }
 
   Widget _buildAttachFilePopup(BuildContext context) {
@@ -1017,7 +1019,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     }
     else if (file is FileAttachment) {
       url = file.url;
-      bytes = file.data;
     }
     return SizedBox(
       width: 200,
@@ -1070,8 +1071,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     Uint8List? data;
     if (file is FileAttachment) {
       url = file.url;
-      data = file.data;
-      path = file.path;
     } else if (kIsWeb && file is PlatformFile) {
       data = file.bytes;
     } else {
@@ -1315,7 +1314,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Future<void> _createNewMessage(String messageText) async {
-    if (StringUtils.isNotEmpty(messageText) && _conversationId != null && _currentUserId != null && !_submitting) {
+    if (!_submitting && StringUtils.isNotEmpty(messageText) && _conversationId != null && _currentUserId != null) {
+      _submitting = true;
       FocusScope.of(context).requestFocus(FocusNode());
 
       List<FileContentItemReference>? fileRefs;
@@ -1335,7 +1335,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       );
 
       setState(() {
-        _submitting = true;
         _messages.add(tempMessage);
         Message.sortListByDateSent(_messages);
         _shouldScrollToTarget = _ScrollTarget.bottom; //TBD
@@ -1350,27 +1349,43 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         fileAttachments: fileAttachments,
       );
 
+      Message? newMessage;
+      List<String>? fileIds;
+      if (CollectionUtils.isNotEmpty(newMessages)) {
+        newMessage = newMessages!.first;
+        fileIds = newMessage.fileAttachments?.where((e) => e.type != FileType.file).map((e) => e.id).whereNotNull().toList();
+      }
+      if (CollectionUtils.isNotEmpty(fileIds)) {
+        List<FileContentItemReference>? fileRefs = await Content().getFileContentDownloadUrls(fileIds!, Content.conversationsContentCategory, entityId: _conversationId);
+        for (FileContentItemReference ref in fileRefs ?? []) {
+          for (FileAttachment file in newMessage?.fileAttachments ?? []) {
+            if (ref.id == file.id) {
+              file.url = ref.url;
+            }
+          }
+        }
+      }
+
       if (mounted) {
-        if (newMessages != null && newMessages.isNotEmpty) {
+        if (newMessage != null) {
           setState(() {
-            Message serverMessage = Message.fromOther(newMessages.first, fileAttachments: fileAttachments);
+            Message serverMessage = newMessage!;
             // Update the temporary message with the server's message if needed
             int index = _messages.indexOf(tempMessage);
             if (index >= 0) {
               _messages[index] = serverMessage;
               Message.sortListByDateSent(_messages);
             }
-            _submitting = false;
           });
         } else {
           // If creation failed
           setState(() {
             _messages.remove(tempMessage);
-            _submitting = false;
           });
           AppToast.showMessage(Localization().getStringEx('', 'Failed to send message'));
         }
       }
+      _submitting = false;
     }
   }
 
@@ -1403,20 +1418,17 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Future<void> _updateEditingMessage(String newText) async {
-    if (_conversationId != null && _editingMessage?.globalId != null) {
+    if (!_submitting && _conversationId != null && _editingMessage?.globalId != null) {
       if (newText == _editingMessage?.message?.trim()) {
         FocusScope.of(context).unfocus();
         setState(() {
           _editingMessage = null;
-          _submitting = false;
           //_shouldScrollToTarget = _ScrollTarget.bottom;
         });
         _inputController.clear();
       }
       else {
-        setState(() {
-          _submitting = true;
-        });
+        _submitting = true;
 
         // Close the keyboard:
         FocusScope.of(context).unfocus();
@@ -1441,7 +1453,6 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                 Message.sortListByDateSent(_messages);
 
                 _editingMessage = null;
-                _submitting = false;
                 _inputController.clear();
                 // _shouldScrollToTarget = _ScrollTarget.bottom;
               });
@@ -1449,13 +1460,11 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
               debugPrint('Could not find the old message with globalId: ${_editingMessage?.globalId} to replace.');
             }
           } else {
-            setState(() {
-              _submitting = false;
-            });
             AppToast.showMessage(Localization().getStringEx('', 'Failed to update message'));
           }
         }
       }
+      _submitting = false;
     }
   }
 
@@ -1677,9 +1686,8 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
       String? name = _getFileName(file);
-      String? path = _getFilePath(file);
       FileContentItemReference ref = fileRefs.firstWhere((ref) => ref.name == name, orElse: () => FileContentItemReference());
-      return FileAttachment(name: name, type: type.name, id: ref.id, data: ref.data, path: path);
+      return FileAttachment(name: name, type: type.name, id: ref.id);
     }) : [];
   }
 }
