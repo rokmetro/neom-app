@@ -555,9 +555,6 @@ class ConversationCard extends StatelessWidget {
     );
   }
 
-
-  //widget.card.detail.tiny.fat the style of the sender name should be widget.card.detail.tiny.fat and the rest should be widget.card.detail.tiny.medium_fat
-
   Widget get _buildDisplayDateWidget {
     String displayDateTime = StringUtils.ensureNotEmpty(conversation.displayDateTime);
     bool noSuffix = displayDateTime.toLowerCase().contains("now") || displayDateTime.toLowerCase().contains(",");
