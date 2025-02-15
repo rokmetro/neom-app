@@ -921,6 +921,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   Widget _buildAttachedFileEntry(BuildContext context, int index, {Message? message}) {
     String? name, extension;
+    bool showProgress = false;
     GestureTapCallback? onTap;
     String? textStyleKey = 'widget.title.dark.small';
     if (message != null) {
@@ -941,19 +942,20 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       textStyleKey = 'widget.title.dark.small';
     } else {
       dynamic file = _attachedFiles.elementAt(index);
+      name = _getFileName(file);
       FileType type = _getFileType(file);
+      showProgress = (message == null) && (_uploadingFiles[name] == true);
       if (type == FileType.image || type == FileType.video) {
-        return _buildAttachedMediaEntry(context, file, type, inMessage: false);
+        return _buildAttachedMediaEntry(context, file, type, inMessage: false, showProgress: showProgress);
       }
       if (type == FileType.audio) {
-        return _buildAudioAttachment(context, file, type, inMessage: false);
+        return _buildAudioAttachment(context, file, type, inMessage: false, showProgress: showProgress);
       }
       textStyleKey = 'widget.title.small';
       if (_uploadingFiles[name] != true) {
         onTap = () => _removeAttachedFiles([file]);
       }
       if (file is PlatformFile) {
-        name = file.name;
         extension = file.extension;
       }
     }
@@ -961,7 +963,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       onTap: message != null ? onTap : null,
       onRemove: message == null ? onTap : null,
       inMessage:  message != null,
-      showProgress: message == null && (_uploadingFiles[name] == true),
+      showProgress: showProgress,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1005,7 +1007,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildAudioAttachment(BuildContext context, dynamic file, FileType type,
-      {bool inMessage = true}) {
+      {bool inMessage = true, bool showProgress = false}) {
     String? url;
     Uint8List? bytes;
     if (file is AudioResult) {
@@ -1019,6 +1021,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       width: 200,
       child: _buildAttachmentContainer(
         inMessage: inMessage,
+        showProgress: showProgress,
         child: Align(alignment: inMessage ? Alignment.center : Alignment.bottomCenter,
             child: AudioPlayerWidget(url: url, bytes: bytes)),
         onRemove: inMessage ? null : () => _removeAttachedFiles([file]),
@@ -1044,7 +1047,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
               alignment: Alignment.topRight,
               children: [
                 child,
-                if (onRemove != null)
+                if (!showProgress && onRemove != null)
                   GestureDetector(onTap: onRemove,
                       child: Styles().images.getImage('close-circle')),
               ],
@@ -1060,15 +1063,13 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildAttachedMediaEntry(BuildContext context, dynamic file, FileType type,
-      {bool inMessage = true}) {
+      {bool inMessage = true, bool showProgress = false}) {
     String? path, url;
     Uint8List? data;
     if (file is FileAttachment) {
-      if (file.url != null) {
-        url = file.url;
-      } else if (file.data != null) {
-        data = file.data;
-      }
+      url = file.url;
+      data = file.data;
+      path = file.path;
     } else if (kIsWeb && file is PlatformFile) {
       data = file.bytes;
     } else {
@@ -1119,19 +1120,26 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         }
       } : null,
       behavior: inMessage ? HitTestBehavior.opaque : null,
-      child: Stack(children: [
-        IgnorePointer(ignoring: inMessage, child: AspectRatio(aspectRatio: 1/1, child: widget)),
-        if (!inMessage)
-          Positioned.fill(child:
-            Align(alignment: Alignment.topRight, child:
-              GestureDetector(onTap: () => _removeAttachedFiles([file]),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Styles().images.getImage('close-circle'),
-                  ))
-            )
-          )
-      ]),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          IgnorePointer(ignoring: inMessage, child: AspectRatio(aspectRatio: 1/1, child: widget)),
+          if (!inMessage && !showProgress)
+            Positioned.fill(child:
+              Align(alignment: Alignment.topRight, child:
+                GestureDetector(onTap: () => _removeAttachedFiles([file]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Styles().images.getImage('close-circle'),
+                    ))
+              )
+            ),
+          Visibility(
+            visible: showProgress,
+            child: CircularProgressIndicator(strokeWidth: 3, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorSecondary),),
+          ),
+        ]
+      ),
     );
   }
 
@@ -1607,10 +1615,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   String? _getFilePath(dynamic file) {
     if (file is XFile) {
-      return file.path;
+      return kIsWeb ? file.name : file.path;
     }
     else if (file is PlatformFile) {
-      return file.path;
+      return kIsWeb ? file.name : file.path;
     }
     return null;
   }
@@ -1643,7 +1651,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       return FileType.audio;
     }
     FileType type = FileType.file;
-    String? path = kIsWeb ?  _getFileName(file) : _getFilePath(file) ?? _getFileName(file);
+    String? path = _getFilePath(file) ?? _getFileName(file);
     if (FileUtils.isVideo(path)) {
       type = FileType.video;
     } else if (FileUtils.isImage(path)) {
@@ -1663,8 +1671,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       dynamic file = _attachedFiles.elementAt(index);
       FileType type = _getFileType(file);
       String? name = _getFileName(file);
+      String? path = _getFilePath(file);
       FileContentItemReference ref = fileRefs.firstWhere((ref) => ref.name == name, orElse: () => FileContentItemReference());
-      return FileAttachment(name: name, type: type.name, id: ref.id, data: ref.data);
+      return FileAttachment(name: name, type: type.name, id: ref.id, data: ref.data, path: path);
     }) : [];
   }
 }
