@@ -73,7 +73,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: event?.name,
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.event.title', 'Share this event'),
-    description: Localization().getStringEx('panel.qr_code.event.description', 'Want to invite other Illinois app users to view this event? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.event.description', 'Want to invite other NEOM U app users to view this event? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -84,7 +84,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: filterParam.buildDescription().map((span) => span.toPlainText()).join(),
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.regular, fontSize: 32, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.event_query.title', 'Share this event set'),
-    description: Localization().getStringEx('panel.qr_code.event_query.description', 'Want to invite other Illinois app users to view this set of filtered events? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.event_query.description', 'Want to invite other NEOM U app users to view this set of filtered events? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -95,7 +95,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: group?.title,
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.group.title', 'Share this group'),
-    description: Localization().getStringEx('panel.qr_code.group.description.label', 'Want to invite other Illinois app users to view this group? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.group.description.label', 'Want to invite other NEOM U app users to view this group? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -106,7 +106,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: 'Skills Self-Evaluation',
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.feature.title', 'Share this feature'),
-    description: Localization().getStringEx('panel.qr_code.feature.description.label', 'Want to invite other Illinois app users to view this feature? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.feature.description.label', 'Want to invite other NEOM U app users to view this feature? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -117,7 +117,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: building?.name,
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.building.title', 'Share this location'),
-    description: Localization().getStringEx('panel.qr_code.building.description.label', 'Want to invite other Illinois app users to view this location? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.building.description.label', 'Want to invite other NEOM U app users to view this location? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -128,7 +128,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: place?.name,
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.building.title', 'Share this location'),
-    description: Localization().getStringEx('panel.qr_code.building.description.label', 'Want to invite other Illinois app users to view this location? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.building.description.label', 'Want to invite other NEOM U app users to view this location? Use one of the sharing options below.'),
     analyticsFeature: analyticsFeature,
   );
 
@@ -142,7 +142,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     saveWatermarkText: Localization().getStringEx('model.safety.safewalks.title', 'SafeWalks'),
     saveWatermarkStyle: TextStyle(fontFamily: Styles().fontFamilies.bold, fontSize: 64, color: Styles().colors.textDark),
     title: Localization().getStringEx('panel.qr_code.feature.title', 'Share this feature'),
-    description: Localization().getStringEx('panel.qr_code.feature.description.label', 'Want to invite other Illinois app users to view this feature? Use one of the sharing options below.'),
+    description: Localization().getStringEx('panel.qr_code.feature.description.label', 'Want to invite other NEOM U app users to view this feature? Use one of the sharing options below.'),
   );
 
   factory QrCodePanel.fromProfile({ Key? key, Auth2UserProfile? profile, Uint8List? photoImageData, Uint8List? pronunciationAudioData, bool modalSheet = false, AnalyticsFeature? analyticsFeature}) => QrCodePanel(
@@ -310,7 +310,13 @@ class _QrCodePanelState extends State<QrCodePanel> {
       );
       bool result = (updatedImageBytes != null);
       if (result) {
-        result = await ImageUtils.saveToFs(updatedImageBytes, widget.saveFileName) ?? false;
+        result = true;
+        try {
+          await AppFile.downloadFile(context: context, fileBytes: updatedImageBytes, fileName: widget.saveFileName);
+        } catch (e) {
+          result = false;
+          debugPrint(e.toString());
+        }
       }
 
       const String destinationMacro = '{{Destination}}';
@@ -349,10 +355,15 @@ class _QrCodePanelState extends State<QrCodePanel> {
   bool get _canShareLink => (widget.deepLinkUrl?.isNotEmpty == true);
 
   void _onTapShareLink() {
+    //TODO: get this working on web
     Analytics().logSelect(target: 'Share QR Code');
     String? promotionUrl = _promotionUrl;
     if (promotionUrl != null) {
-      Share.share(promotionUrl);
+      try {
+        Share.share(promotionUrl);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
     }
   }
 
