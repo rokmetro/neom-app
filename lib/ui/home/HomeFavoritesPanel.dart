@@ -36,6 +36,8 @@ import 'package:neom/ui/widgets/FlexContent.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
+import 'HomeEmptyFavoritesWidget.dart';
+
 ////////////////////////
 // HomeFavoritesPanel
 
@@ -164,11 +166,35 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
   }
 
   @override
-  Widget build(BuildContext context) =>
-    Column(children: <Widget>[
+  @override
+  Widget build(BuildContext context) {
+    bool hasNoFavorites = (_favoriteCodes == null) || _favoriteCodes!.isEmpty;
+
+    // Always build system codes on top:
+    List<Widget> children = [
       ..._buildWidgetsFromCodes(_systemCodes, availableCodes: widget.availableSystemCodes),
-      ..._buildWidgetsFromCodes(_favoriteCodes?.reversed, availableCodes: _availableCodes),
-    ],);
+    ];
+
+    // If no favorites, show empty state:
+    if (hasNoFavorites) {
+      children.add(
+        HomeEmptyFavoritesWidget(
+          favoriteId: null,
+          updateController: widget.updateController,
+        ),
+      );
+    }
+    // Otherwise show actual favorites:
+    else {
+      children.addAll(
+        _buildWidgetsFromCodes(_favoriteCodes?.reversed, availableCodes: _availableCodes),
+      );
+    }
+
+    // Return them in a Column:
+    return Column(children: children);
+  }
+
 
   List<Widget> _buildWidgetsFromCodes(Iterable<String>? codes, { Set<String>? availableCodes }) {
     List<Widget> widgets = [];
