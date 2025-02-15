@@ -21,6 +21,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/model/Analytics.dart';
 import 'package:neom/service/Auth2.dart';
+import 'package:neom/ui/home/HomeEmptyFavoritesWidget.dart';
 import 'package:neom/ui/home/HomePanel.dart';
 import 'package:neom/ui/home/HomeToutWidget.dart';
 import 'package:neom/ui/home/HomeWelcomeMessageWidget.dart';
@@ -35,8 +36,6 @@ import 'package:neom/ui/home/HomeVoterRegistrationWidget.dart';
 import 'package:neom/ui/widgets/FlexContent.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
-
-import 'HomeEmptyFavoritesWidget.dart';
 
 ////////////////////////
 // HomeFavoritesPanel
@@ -170,22 +169,15 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
     bool hasNoFavorites = (_favoriteCodes == null) || _favoriteCodes!.isEmpty;
 
     List<Widget> children = [
-      ..._buildWidgetsFromCodes(_systemCodes, availableCodes: widget.availableSystemCodes),
-    ];
-
-    if (hasNoFavorites) {
-      children.add(
+      if (hasNoFavorites)
         HomeEmptyFavoritesWidget(
           favoriteId: null,
           updateController: widget.updateController,
         ),
-      );
-    }
-    else {
-      children.addAll(
-        _buildWidgetsFromCodes(_favoriteCodes?.reversed, availableCodes: _availableCodes),
-      );
-    }
+      ..._buildWidgetsFromCodes(_systemCodes, availableCodes: widget.availableSystemCodes),
+      if (!hasNoFavorites)
+        ..._buildWidgetsFromCodes(_favoriteCodes?.reversed, availableCodes: _availableCodes),
+    ];
 
     return Column(children: children);
   }

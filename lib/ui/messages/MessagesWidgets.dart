@@ -449,6 +449,7 @@ class ConversationCard extends StatelessWidget {
                         _buildDisplayDateWidget,
                       ],
                     ),
+                    const SizedBox(height: 12),
                     _buildLastMessageWidget()
                   ],
                 ),
