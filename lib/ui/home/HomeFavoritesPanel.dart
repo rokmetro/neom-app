@@ -166,16 +166,13 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     bool hasNoFavorites = (_favoriteCodes == null) || _favoriteCodes!.isEmpty;
 
-    // Always build system codes on top:
     List<Widget> children = [
       ..._buildWidgetsFromCodes(_systemCodes, availableCodes: widget.availableSystemCodes),
     ];
 
-    // If no favorites, show empty state:
     if (hasNoFavorites) {
       children.add(
         HomeEmptyFavoritesWidget(
@@ -184,14 +181,12 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
         ),
       );
     }
-    // Otherwise show actual favorites:
     else {
       children.addAll(
         _buildWidgetsFromCodes(_favoriteCodes?.reversed, availableCodes: _availableCodes),
       );
     }
 
-    // Return them in a Column:
     return Column(children: children);
   }
 
