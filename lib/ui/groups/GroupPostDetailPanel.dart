@@ -71,6 +71,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   Comment? _editingReply; //Edit Mode for Reply {Data Edit}
   PostDataModel? _replyEditData = PostDataModel(); //used for Reply Create / Edit; Empty data for new Reply
 
+  GlobalKey _repliesKey = GlobalKey();
+  double? _repliesHeight;
+
   bool _loading = false;
 
   //Scroll and focus utils
@@ -94,6 +97,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _evalSliverHeaderHeight();
+      _evalRepliesHeight();
       if (_focusedReply != null) {
         _scrollToPostEdit();
       }
@@ -288,9 +292,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                                       flex: 1,
                                       child: RoundedButton(
                                           label: Localization().getStringEx('panel.group.detail.post.update.button.update.title', 'Update'),
-                                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
                                           borderColor: Styles().colors.fillColorSecondary,
-                                          backgroundColor: Styles().colors.surface,
+                                          backgroundColor: Styles().colors.background,
                                           onTap: _onTapUpdateMainPost)),
                                 ]),
 
@@ -389,9 +393,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                         label: (_editingReply != null) ?
                           Localization().getStringEx('panel.group.detail.post.update.button.update.title', 'Update') :
                           Localization().getStringEx('panel.group.detail.post.create.button.send.title', 'Send'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                        textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
                         borderColor: Styles().colors.fillColorSecondary,
-                        backgroundColor: Styles().colors.surface,
+                        backgroundColor: Styles().colors.background,
                         onTap: _onTapSendReply)),
                 Container(width: 20),
                 Flexible(
@@ -400,9 +404,9 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                         label: Localization().getStringEx(
                             'panel.group.detail.post.create.button.cancel.title',
                             'Cancel'),
-                        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-                        borderColor: Styles().colors.textSurface,
-                        backgroundColor: Styles().colors.surface,
+                        textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+                        borderColor: Styles().colors.fillColorSecondary,
+                        backgroundColor: Styles().colors.background,
                         onTap: _onTapCancel))
               ])
             ])));
@@ -480,10 +484,21 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
             ))));
     }
     return Padding(
-        padding: EdgeInsets.only(top: nestedReply ? 0 : 20),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: replyWidgetList));
+        padding: EdgeInsets.only(top: nestedReply ? 0 : 24),
+        child: Row(
+          children: [
+            Container(height: _repliesHeight, width: 1, color: Styles().colors.surfaceAccent),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: leftPaddingOffset),
+                child: Column(
+                    key: _repliesKey,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: replyWidgetList),
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget _buildRepliesHeader(){
@@ -865,6 +880,22 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
     setStateIfMounted(() {
       _sliverHeaderHeight = sliverHeaderHeight;
+    });
+  }
+
+  void _evalRepliesHeight() {
+    double? repliesHeight;
+    try {
+      final RenderObject? renderBox = _repliesKey.currentContext?.findRenderObject();
+      if ((renderBox is RenderBox) && renderBox.hasSize) {
+        repliesHeight = renderBox.size.height;
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+
+    setStateIfMounted(() {
+      _repliesHeight = repliesHeight;
     });
   }
 
