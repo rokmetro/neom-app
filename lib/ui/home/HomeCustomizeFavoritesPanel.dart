@@ -130,27 +130,27 @@ class _HomeCustomizeFavoritesPanelState extends State<HomeCustomizeFavoritesPane
 
   List<Widget> _buildContentList() {
     List<Widget> widgets = [];
+    LinkedHashSet<String>? homeFavorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
 
     Set<String> homeSections = {};
-    LinkedHashSet<String>? homeFavorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
     if (homeFavorites != null) {
       for (String code in homeFavorites) {
         homeSections.add(HomePanel.sectionFromCode(code));
       }
     }
 
-    if (homeSections.isNotEmpty) {
+    if (homeFavorites != null && homeFavorites.isNotEmpty) {
       widgets.add(_buildEditingHeader(
         favoriteId: _favoritesHeaderId, dropAnchorAlignment: CrossAxisAlignment.end,
         title: Localization().getStringEx('panel.home.edit.favorites.header.title', 'CURRENT FAVORITES'),
         linkButtonTitle: Localization().getStringEx('panel.home.edit.favorites.unstar.link.button', 'Unstar All'),
-        onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites!.toList()) : null,
+        onTapLinkButton: CollectionUtils.isNotEmpty(homeFavorites) ? () => _onTapUnstarAll(homeFavorites.toList()) : null,
         description: Localization().getStringEx('panel.home.edit.favorites.header.description', 'Tap, <b>hold</b>, and drag an item to reorder your favorites. To remove an item from Favorites, tap the star.'),
       ));
     }
 
     int position = 0;
-    for (String code in List<String>.from(homeSections).reversed) {
+    for (String code in List<String>.from(homeFavorites ?? <String>[]).reversed) {
       if (_availableCodes?.contains(code) ?? false) {
         dynamic widget = HomePanel.dataFromCode(code, handle: true, position: position, globalKeys: _handleKeys, dragAndDropHost: this);
         if (widget is Widget) {
