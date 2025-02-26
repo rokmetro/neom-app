@@ -71,9 +71,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   Comment? _editingReply; //Edit Mode for Reply {Data Edit}
   PostDataModel? _replyEditData = PostDataModel(); //used for Reply Create / Edit; Empty data for new Reply
 
-  GlobalKey _repliesKey = GlobalKey();
-  double? _repliesHeight;
-
   bool _loading = false;
 
   //Scroll and focus utils
@@ -97,7 +94,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _evalSliverHeaderHeight();
-      _evalRepliesHeight();
       if (_focusedReply != null) {
         _scrollToPostEdit();
       }
@@ -484,21 +480,10 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
             ))));
     }
     return Padding(
-        padding: EdgeInsets.only(top: nestedReply ? 0 : 24),
-        child: Row(
-          children: [
-            Container(height: _repliesHeight, width: 1, color: Styles().colors.surfaceAccent),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: leftPaddingOffset),
-                child: Column(
-                    key: _repliesKey,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: replyWidgetList),
-              ),
-            ),
-          ],
-        ));
+        padding: EdgeInsets.only(top: nestedReply ? 0 : 20),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: replyWidgetList));
   }
 
   Widget _buildRepliesHeader(){
@@ -880,22 +865,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
     setStateIfMounted(() {
       _sliverHeaderHeight = sliverHeaderHeight;
-    });
-  }
-
-  void _evalRepliesHeight() {
-    double? repliesHeight;
-    try {
-      final RenderObject? renderBox = _repliesKey.currentContext?.findRenderObject();
-      if ((renderBox is RenderBox) && renderBox.hasSize) {
-        repliesHeight = renderBox.size.height;
-      }
-    } on Exception catch (e) {
-      print(e.toString());
-    }
-
-    setStateIfMounted(() {
-      _repliesHeight = repliesHeight;
     });
   }
 
