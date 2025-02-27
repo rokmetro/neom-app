@@ -5,7 +5,7 @@
 			"tabbar.default": "favorites",
 
 			"home": [
-				"messages", "polls", "events", "groups", "surveys"
+				"messages", "polls", "events", "groups"
 			],
 			"home.system": ["tout", "connect"],
 			"home.connect": ["phone_or_email"],
