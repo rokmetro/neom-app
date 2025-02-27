@@ -2589,7 +2589,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
       }
       if (!_hasRecurrenceEndDate) {
         missingList.add(Localization().getStringEx('panel.event2.create.status.missing.recurrence.end_date', 'recurrence end date'));
-      } else if (_recurrenceEndDate!.isBefore(_startDate!)) {
+      } else if (_startDate != null && _recurrenceEndDate!.isBefore(_startDate!)) {
         invalidList.add(Localization().getStringEx('panel.event2.create.status.invalid.recurrence.end_date', 'recurrence end date before start date'));
       }
     }
@@ -2599,7 +2599,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
     }
     else {
       if (_inPersonEventType && !_hasLocation) {
-        missingList.add(Localization().getStringEx('panel.event2.create.status.missing.location', 'location coordinates'));
+        missingList.add(Localization().getStringEx('panel.event2.create.status.missing.location', 'location'));
       }
       if (_onlineEventType) {
         if (!_hasOnlineDetails) {
@@ -2853,20 +2853,23 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
   ExploreLocation? _constructLocation() {
     double? latitude = _parseLatLng(_locationLatitudeController);
     double? longitude = _parseLatLng(_locationLongitudeController);
-    return ((latitude != null) && (latitude != 0) && (longitude != null) && (longitude != 0)) ? ExploreLocation(
+    return ExploreLocation(
       name: _locationBuildingController.text.isNotEmpty ? _locationBuildingController.text : null,
       building: _locationBuildingController.text.isNotEmpty ? _locationBuildingController.text : null,
       description: _locationAddressController.text.isNotEmpty ? _locationAddressController.text : null,
       fullAddress: _locationAddressController.text.isNotEmpty ? _locationAddressController.text : null,
       latitude: latitude,
       longitude: longitude,
-    ) : null;
+    );
   }
 
   bool get _hasLocation {
-    double? latitude = _parseLatLng(_locationLatitudeController);
-    double? longitude = _parseLatLng(_locationLongitudeController);
-    return ((latitude != null) && (latitude != 0) && (longitude != null) && (longitude != 0));
+    bool stupid1 = _locationBuildingController.text.isNotEmpty;
+    bool stupid2 = _locationAddressController.text.isNotEmpty;
+    return stupid1 || stupid2;
+    // double? latitude = _parseLatLng(_locationLatitudeController);
+    // double? longitude = _parseLatLng(_locationLongitudeController);
+    // return ((latitude != null) && (latitude != 0) && (longitude != null) && (longitude != 0));
   }
 
   static double? _parseLatLng(TextEditingController textController) =>

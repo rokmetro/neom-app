@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased - NEOM U
 ### Fixed
 - Bug report Feb 26 [#69](https://github.com/rokmetro/neom-app/issues/69)
+
 ## [0.5.11] = 2025-02-26
 ### Fixed
 - Improve group post card UI
