@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +23,7 @@ import 'package:neom/model/Assistant.dart';
 import 'package:neom/model/Explore.dart';
 import 'package:neom/service/AppReview.dart';
 import 'package:neom/service/Canvas.dart';
+import 'package:neom/service/Content.dart';
 import 'package:neom/service/CustomCourses.dart';
 import 'package:neom/service/FlexUI.dart';
 import 'package:neom/ui/debug/mobile_access/DebugMobileAccessHomePanel.dart';
@@ -75,6 +77,8 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
 
   final TextEditingController _mapThresholdDistanceController = TextEditingController();
   final TextEditingController _geoFenceRegionRadiusController = TextEditingController();
+
+  bool _uploadingMultipartFile = false;
 
   @override
   void initState() {
@@ -549,6 +553,14 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
                     textColor: Styles().colors.fillColorPrimary,
                     borderColor: Styles().colors.fillColorPrimary,
                     onTap: _onTapClearEventAttributes
+                )
+                ),
+
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), child:
+                RoundedButton(
+                    label: "Test Multipart Upload",
+                    onTap: _onTapTestMultipartUpload,
+                    progress: _uploadingMultipartFile
                 )
                 ),
 
@@ -1038,6 +1050,27 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
   void _onTapOnboarding() {
     Storage().onBoardingPassed = false;
     NotificationService().notify(Config.notifyResetUI);
+  }
+
+  void _onTapTestMultipartUpload() async {
+    if (!_uploadingMultipartFile) {
+      final FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        withData: true,
+        dialogTitle: Localization().getStringEx("panel.messages.conversation.attach_files.message", "Select file(s) to upload"),
+      );
+      if (CollectionUtils.isNotEmpty(result?.files)) {
+        setStateIfMounted(() {
+          _uploadingMultipartFile = true;
+        });
+
+        PlatformFile file = result!.files.first;
+        await Content().multipartUploadFile(file.name, file.bytes, category: 'debug');
+        setStateIfMounted(() {
+          _uploadingMultipartFile = false;
+        });
+      }
+    }
   }
 
   String get _refreshTokenTitle {
