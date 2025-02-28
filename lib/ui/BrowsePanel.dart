@@ -349,42 +349,16 @@ class _BrowseSection extends StatelessWidget {
   // static String description({required String sectionId}) =>
   //     AppTextUtils.appBrandString('panel.browse.section.$sectionId.description', '');
 
-  List<String>? get _favoriteCodes => JsonUtils.listStringsValue(FlexUI()['browse.$sectionId']);
+  List<String>? get _favoriteCodes => JsonUtils.listStringsValue(FlexUI()['browse']);
 
   bool get _hasFavoriteContent {
-    for (String code in _favoriteCodes ?? []) {
-      HomeFavorite? entryFavorite = _favorite(code);
-      if (entryFavorite != null) {
-        return true;
-      }
-    }
-    return false;
+    return _favorite(sectionId) != null;
   }
 
-  bool? get _isSectionFavorite {
-    int favCount = 0, unfavCount = 0, totalCount = 0;
-    for (String code in _favoriteCodes ?? []) {
-      HomeFavorite? entryFavorite = _favorite(code);
-      if (entryFavorite != null) {
-        totalCount++;
-        if (Auth2().prefs?.isFavorite(entryFavorite) ?? false) {
-          favCount++;
-        }
-        else {
-          unfavCount++;
-        }
-      }
-    }
-    if (0 < totalCount) {
-      if (favCount == totalCount) {
-        return true;
-      }
-      else if (unfavCount == totalCount) {
-        return false;
-      }
-    }
-    return null;
+  bool get _isSectionFavorite {
+    return Auth2().prefs?.isFavorite(HomeFavorite(sectionId)) ?? false;
   }
+
 
   void _onTapSectionFavorite(BuildContext context) {
     Analytics().logSelect(target: "Favorite: {${HomeFavorite.favoriteKeyName(category: sectionId)}}");
@@ -409,15 +383,10 @@ class _BrowseSection extends StatelessWidget {
   }
 
   List<Favorite> get _sectionFavorites {
-    List<Favorite> favorites = <Favorite>[];
-
-    for (String favoriteCode in _favoriteCodes ?? []) {
-      if (_homeRootEntriesCodes?.contains(favoriteCode) ?? false) {
-        favorites.add(HomeFavorite(favoriteCode));
-      }
+    if (_homeRootEntriesCodes?.contains(sectionId) ?? false) {
+      return [HomeFavorite(sectionId)];
     }
-
-    return favorites;
+    return [];
   }
 
   Future<bool?> promptSectionFavorite(BuildContext context, {bool? isSectionFavorite}) async {
