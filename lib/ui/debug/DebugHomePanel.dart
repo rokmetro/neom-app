@@ -60,6 +60,7 @@ import 'package:neom/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/service/config.dart' as rokwire;
+import 'package:universal_io/io.dart';
 
 class DebugHomePanel extends StatefulWidget {
   @override
@@ -1056,7 +1057,7 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
     if (!_uploadingMultipartFile) {
       final FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
-        withData: true,
+        withReadStream: true,
         dialogTitle: Localization().getStringEx("panel.messages.conversation.attach_files.message", "Select file(s) to upload"),
       );
       if (CollectionUtils.isNotEmpty(result?.files)) {
@@ -1064,8 +1065,9 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
           _uploadingMultipartFile = true;
         });
 
-        PlatformFile file = result!.files.first;
-        await Content().multipartUploadFile(file.name, file.bytes, category: 'debug');
+        PlatformFile platformFile = result!.files.first;
+        File file = File(platformFile.xFile.path);
+        await Content().multipartUploadFile(file, fileSize: platformFile.size, category: 'debug');
         setStateIfMounted(() {
           _uploadingMultipartFile = false;
         });
