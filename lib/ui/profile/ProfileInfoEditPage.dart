@@ -346,7 +346,10 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
   );
 
   Widget get _pronunciationCreateControl => Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Styles().images.getImage('plus-circle', size: 24) ?? Container(),
+    InkWell(
+      onTap: _onCreatePronunciation,
+      child: Styles().images.getImage('plus-circle', size: 24) ?? Container()
+    ),
     Expanded(child:
       Padding(padding: EdgeInsets.symmetric(horizontal: 6), child:
         InkWell(onTap: _onCreatePronunciation, child:
