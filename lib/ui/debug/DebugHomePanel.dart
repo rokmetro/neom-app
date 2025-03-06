@@ -536,7 +536,7 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
                 Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), child:
                   RoundedButton(
                     label: 'Set Assistant Location',
-                    backgroundColor: Styles().colors.background,
+                    backgroundColor: Styles().colors.surface,
                     fontSize: 16.0,
                     textColor: Styles().colors.fillColorPrimary,
                     borderColor: Styles().colors.fillColorPrimary,
@@ -560,6 +560,10 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
                 Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5), child:
                 RoundedButton(
                     label: "Test Multipart Upload",
+                    backgroundColor: Styles().colors.surface,
+                    fontSize: 16.0,
+                    textColor: Styles().colors.fillColorPrimary,
+                    borderColor: Styles().colors.fillColorPrimary,
                     onTap: _onTapTestMultipartUpload,
                     progress: _uploadingMultipartFile
                 )
