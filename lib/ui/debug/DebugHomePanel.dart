@@ -1059,6 +1059,7 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
 
   void _onTapTestMultipartUpload() async {
     if (!_uploadingMultipartFile) {
+      Stopwatch stopwatch = new Stopwatch()..start();
       final FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
         withReadStream: true,
@@ -1071,11 +1072,15 @@ class _DebugHomePanelState extends State<DebugHomePanel> implements Notification
 
         PlatformFile platformFile = result!.files.first;
         File file = File(platformFile.xFile.path);
+        Duration pickFileTime = stopwatch.elapsed;
+        debugPrint('Multipart file chosen in $pickFileTime');
         await Content().multipartUploadFile(file, fileSize: platformFile.size, category: 'debug');
         setStateIfMounted(() {
           _uploadingMultipartFile = false;
         });
+        debugPrint('Multipart file uploaded in ${stopwatch.elapsed - pickFileTime}');
       }
+      stopwatch.stop();
     }
   }
 
