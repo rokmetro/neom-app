@@ -18,6 +18,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neom/service/Config.dart';
+import 'package:neom/service/Onboarding2.dart';
 import 'package:neom/service/Storage.dart';
 import 'package:neom/ui/onboarding2/Onboarding2Widgets.dart';
 import 'package:neom/ui/profile/ProfileLoginPhoneOrEmailPanel.dart';
@@ -27,13 +28,12 @@ import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/rokwire_plugin.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:rokwire_plugin/service/onboarding.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
 import 'package:neom/service/Analytics.dart';
 
-class ProfileLoginPasskeyPanel extends StatefulWidget with OnboardingPanel {
+class ProfileLoginPasskeyPanel extends StatefulWidget with Onboarding2Panel {
   @override
   final Map<String, dynamic>? onboardingContext;
 
@@ -43,11 +43,6 @@ class ProfileLoginPasskeyPanel extends StatefulWidget with OnboardingPanel {
 
   @override
   State<StatefulWidget> createState() => _ProfileLoginPasskeyPanelState();
-
-  @override
-  bool get onboardingCanDisplay {
-    return !Auth2().isPasskeyLinked;
-  }
 }
 
 enum ResponseType { success, error, message }
@@ -528,7 +523,7 @@ class _ProfileLoginPasskeyPanelState extends State<ProfileLoginPasskeyPanel> {
       });
     }
     else {
-      Onboarding().next(context, widget);
+      Onboarding2().next(context, widget);
     }
   }
 

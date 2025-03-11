@@ -19,6 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neom/service/Config.dart';
+import 'package:neom/service/Onboarding2.dart';
 import 'package:neom/ui/onboarding2/Onboarding2Widgets.dart';
 import 'package:neom/ui/profile/ProfileLoginPasskeyPanel.dart';
 import 'package:neom/ui/widgets/RibbonButton.dart';
@@ -26,14 +27,13 @@ import 'package:neom/ui/widgets/SlantedWidget.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:rokwire_plugin/service/onboarding.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'package:neom/service/Analytics.dart';
 
-class ProfileLoginCodePanel extends StatefulWidget with OnboardingPanel {
+class ProfileLoginCodePanel extends StatefulWidget with Onboarding2Panel {
   @override
   final Map<String, dynamic>? onboardingContext;
   final bool? linkIdentifier;
@@ -46,9 +46,6 @@ class ProfileLoginCodePanel extends StatefulWidget with OnboardingPanel {
 
   @override
   State<StatefulWidget> createState() => _ProfileLoginCodePanelState();
-
-  @override
-  bool get onboardingCanDisplay => !Auth2().isLoggedIn;
 
   String? get identifierType => onboardingContext?["identifier_type"] ?? defaultIdentifierType;
 }
@@ -297,7 +294,7 @@ class _ProfileLoginCodePanelState extends State<ProfileLoginCodePanel> {
       }));
     } else {
       // just login if a passkey is already linked
-      Onboarding().next(context, widget);
+      Onboarding2().next(context, widget);
     }
   }
 

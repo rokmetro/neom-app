@@ -32,11 +32,6 @@ class Onboarding2ProfileInfoPanel extends StatefulWidget with Onboarding2Panel {
 
   @override
   State<StatefulWidget> createState() => _Onboarding2ProfileInfoPanelState();
-
-  @override
-  bool get onboardingCanDisplay {
-    return StringUtils.isEmpty(Auth2().fullName);
-  }
 }
 
 class _Onboarding2ProfileInfoPanelState extends State<Onboarding2ProfileInfoPanel> implements NotificationsListener, Onboarding2ProgressableState {
