@@ -146,13 +146,13 @@ class Onboarding2Panel {
       return Onboarding2RolesPanel(onboardingCode: code, onboardingContext: context,);
     }
     else if (code == 'login_passkey') {
-      return ProfileLoginPasskeyPanel(onboardingContext: context);
+      return ProfileLoginPasskeyPanel(onboardingCode: code, onboardingContext: context);
     }
     else if (code == 'login_code') {
-      return ProfileLoginCodePanel(onboardingContext: context);
+      return ProfileLoginCodePanel(onboardingCode: code, onboardingContext: context);
     }
     else if (code == 'profile_info') {
-      return Onboarding2ProfileInfoPanel(onboardingContext: context);
+      return Onboarding2ProfileInfoPanel(onboardingCode: code, onboardingContext: context);
     }
     else {
       return null;

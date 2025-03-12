@@ -27,6 +27,7 @@ import 'package:rokwire_plugin/service/localization.dart';
 import 'package:neom/service/Analytics.dart';
 import 'package:neom/ui/widgets/RoleGridButton.dart';
 import 'package:rokwire_plugin/service/styles.dart';
+import 'package:rokwire_plugin/utils/utils.dart';
 
 import 'Onboarding2Widgets.dart';
 
@@ -43,6 +44,8 @@ class Onboarding2RolesPanel extends StatefulWidget with Onboarding2Panel {
   bool get onboardingProgress => (globalKey?.currentState?.onboardingProgress == true);
   @override
   set onboardingProgress(bool value) => globalKey?.currentState?.onboardingProgress = value;
+  @override
+  Future<bool> isOnboardingEnabled() async => !(ListUtils.contains(Auth2().prefs?.roles, UserRole.values) ?? false);
 
   @override
   _Onboarding2RoleSelectionPanelState createState() => _Onboarding2RoleSelectionPanelState();
