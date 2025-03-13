@@ -44,7 +44,7 @@ class ProfileLoginCodePanel extends StatefulWidget with Onboarding2Panel {
   final String? identifierId;
   final Function()? onFinish;
 
-  ProfileLoginCodePanel({this.onboardingCode = '', this.onboardingContext, this.defaultIdentifierType, this.identifier, this.identifierId, this.linkIdentifier, this.onFinish}) :
+  ProfileLoginCodePanel({this.onboardingCode = 'login_code', this.onboardingContext, this.defaultIdentifierType, this.identifier, this.identifierId, this.linkIdentifier, this.onFinish}) :
       super(key: GlobalKey<_ProfileLoginCodePanelState>());
 
   GlobalKey<_ProfileLoginCodePanelState>? get globalKey => (super.key is GlobalKey<_ProfileLoginCodePanelState>) ?
@@ -54,6 +54,8 @@ class ProfileLoginCodePanel extends StatefulWidget with Onboarding2Panel {
   bool get onboardingProgress => (globalKey?.currentState?.onboardingProgress == true);
   @override
   set onboardingProgress(bool value) => globalKey?.currentState?.onboardingProgress = value;
+  @override
+  Future<bool> isOnboardingEnabled() async => !Auth2().isLoggedIn;
 
   @override
   State<StatefulWidget> createState() => _ProfileLoginCodePanelState();

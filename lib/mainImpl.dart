@@ -291,13 +291,13 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
       return OnboardingUpgradePanel(availableVersion:_upgradeAvailableVersion);
     }
     else if (!Storage().onBoardingPassed! || !Auth2().isLoggedIn || !Auth2().isPasskeyLinked) {
-      return ProfileLoginPasskeyPanel(onboardingContext: _onboardingContext);
+      return ProfileLoginPasskeyPanel(onboardingContext: _onboardingContext,);
     }
     else if (!(ListUtils.contains(Auth2().prefs?.roles, UserRole.values) ?? false)) {
-      return Onboarding2RolesPanel(onboardingContext: _onboardingContext, onboardingCode: "roles",);
+      return Onboarding2RolesPanel(onboardingContext: _onboardingContext,);
     }
     else if (StringUtils.isEmpty(Auth2().fullName)) {
-      return Onboarding2ProfileInfoPanel(onboardingContext: _onboardingContext, onboardingCode: "profile_info");
+      return Onboarding2ProfileInfoPanel(onboardingContext: _onboardingContext,);
     }
     // else if ((Storage().privacyUpdateVersion == null) || (AppVersion.compareVersions(Storage().privacyUpdateVersion, Config().appPrivacyVersion) < 0)) {
     //   return SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.update,);
