@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:neom/service/FlexUI.dart';
 import 'package:neom/service/Storage.dart';
-import 'package:neom/ui/onboarding2/Onboadring2RolesPanel.dart';
+import 'package:neom/ui/onboarding2/Onboarding2RolesPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2GetStartedPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2PrivacyLevelPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2PrivacyLocationServicesPanel.dart';

@@ -42,7 +42,7 @@ import 'package:neom/ui/onboarding/OnboardingErrorPanel.dart';
 import 'package:neom/ui/onboarding/OnboardingUpgradePanel.dart';
 
 import 'package:neom/ui/RootPanel.dart';
-import 'package:neom/ui/onboarding2/Onboadring2RolesPanel.dart';
+import 'package:neom/ui/onboarding2/Onboarding2RolesPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2ProfileInfoPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2ResearchQuestionnaireAcknowledgementPanel.dart';
 import 'package:neom/ui/onboarding2/Onboarding2ResearchQuestionnairePanel.dart';
