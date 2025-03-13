@@ -290,7 +290,7 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
     else if (_upgradeAvailableVersion != null) {
       return OnboardingUpgradePanel(availableVersion:_upgradeAvailableVersion);
     }
-    else if (!Storage().onBoardingPassed! || !Auth2().isLoggedIn || !Auth2().isPasskeyLinked) {
+    else if (!Auth2().isLoggedIn || !Auth2().isPasskeyLinked) {
       return ProfileLoginPasskeyPanel(onboardingContext: _onboardingContext,);
     }
     else if (!(ListUtils.contains(Auth2().prefs?.roles, UserRole.values) ?? false)) {
