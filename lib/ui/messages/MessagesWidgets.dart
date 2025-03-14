@@ -105,7 +105,7 @@ class RecentConversationsPageState extends State<RecentConversationsPage> with A
     List<Conversation>? conversations = _conversations;
     if ((conversations != null) && conversations.isNotEmpty) {
       for (Conversation conversation in conversations) {
-        if (conversation == null || conversation.members?.isEmpty == true) {
+        if (CollectionUtils.isEmpty(conversation.members)) {
           continue;
         }
         contentList.add(RecentConversationCard(conversation,
@@ -381,7 +381,7 @@ class ConversationCard extends StatelessWidget {
   });
 
   String _getConversationTitle() {
-    if (conversation == null || conversation.members?.isEmpty == true) {
+    if (CollectionUtils.isEmpty(conversation.members)) {
       return Auth2().fullName ?? 'Unknown';
     }
     return conversation.membersString ?? 'Group Conversation';

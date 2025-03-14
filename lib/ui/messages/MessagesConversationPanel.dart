@@ -173,7 +173,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   String _getConversationTitle() {
-    if (_conversation == null || _conversation?.members?.isEmpty == true) {
+    if (CollectionUtils.isEmpty(_conversation?.members)) {
       return Auth2().fullName ?? 'Unknown';
     }
     return _conversation?.membersString ?? 'Group Conversation';
