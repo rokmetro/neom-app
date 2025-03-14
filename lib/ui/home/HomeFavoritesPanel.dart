@@ -58,6 +58,7 @@ class _HomeFavoritesPanelState extends State<HomeFavoritesPanel> with AutomaticK
   @override
   void initState() {
     NotificationService().subscribe(this, []);
+    _removeExcessFavoriteWidgetIds();
     super.initState();
   }
 
@@ -102,6 +103,15 @@ class _HomeFavoritesPanelState extends State<HomeFavoritesPanel> with AutomaticK
 
   Future<void> _onPullToRefresh() async {
     _updateController.add(HomePanel.notifyRefresh);
+  }
+
+  void _removeExcessFavoriteWidgetIds() {
+    Set<String> homeWidgetIds = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName())?.toSet() ?? {};
+    Set<String> homeCodes = JsonUtils.setStringsValue(FlexUI()['home']) ?? {};
+    for (String widgetId in homeWidgetIds.difference(homeCodes)) {
+      HomeFavorite favorite = HomeFavorite(widgetId);
+      Auth2().prefs?.setFavorite(favorite, false);
+    }
   }
 }
 
