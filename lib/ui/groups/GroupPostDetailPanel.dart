@@ -20,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:neom/model/Analytics.dart';
+import 'package:neom/service/Auth2.dart';
 import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/model/social.dart';
@@ -41,12 +42,11 @@ import 'package:rokwire_plugin/utils/utils.dart';
 
 class GroupPostDetailPanel extends StatefulWidget with AnalyticsInfo {
   final Post? post;
-  final List<Reaction>? postReactions; //TBD load from bb
   final Comment? focusedReply;
   final Group group;
   final bool hidePostOptions;
 
-  GroupPostDetailPanel({required this.group, this.post, this.focusedReply, this.postReactions, this.hidePostOptions = false});
+  GroupPostDetailPanel({required this.group, this.post, this.focusedReply, this.hidePostOptions = false});
 
   @override
   _GroupPostDetailPanelState createState() => _GroupPostDetailPanelState();
@@ -63,7 +63,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   //Main Post - Edit/Show
   Post? _post; //Main post {Data Presentation}
   List<Comment>? _replies; //Main post comments
-  PostDataModel? _mainPostUpdateData;//Main Post Edit
+  PostUpdateData? _mainPostUpdateData;//Main Post Edit
   List<Member>? _allMembersAllowedToPost;
   //Reply - Edit/Create/Show
   Comment? _focusedReply; //Focused on Reply {Replies Thread Presentation} // User when Refresh post thread
@@ -111,7 +111,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     return Scaffold(
         appBar: AppBar(
             leading: HeaderBackButton(),
-            title: Text(Localization().getStringEx('panel.group.detail.post.header.title', 'Post'),
+            title: Text(_panelTitle ?? "",
                 style: Styles().textStyles.getTextStyle('widget.heading.regular.extra_fat')),
             centerTitle: false),
         backgroundColor: Styles().colors.background,
@@ -119,7 +119,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
         body: _buildContent());
   }
 
-  Widget _buildContent(){
+  Widget _buildContent() {
+    List<String>? updatedMemberIds = _isEditMainPost ? MemberExt.extractUserIds(_mainPostUpdateData?.members) : _post?.getMemberAccountIds(
+        groupId: _groupId);
+    if (CollectionUtils.isNotEmpty(updatedMemberIds) && updatedMemberIds!.contains(Auth2().accountId)) {
+      updatedMemberIds.remove(Auth2().accountId);
+    }
     return Stack(children: [
       Stack(alignment: Alignment.topCenter, children: [
         SingleChildScrollView(
@@ -138,9 +143,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                   child: Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), child:
                     GroupMembersSelectionWidget(
                       selectedMembers: GroupMembersSelectionWidget.constructUpdatedMembersList(
-                          selectedAccountIds: (_isEditMainPost
-                              ? MemberExt.extractUserIds(_mainPostUpdateData?.members)
-                              : _post?.getMemberAccountIds(groupId: _groupId)),
+                          selectedAccountIds: updatedMemberIds,
                           upToDateMembers: _allMembersAllowedToPost),
                       allMembers: _allMembersAllowedToPost,
                       enabled: _isEditMainPost,
@@ -170,7 +173,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
               _buildRepliesSection(),
               _buildPostInputSection(),
             ])),
-          Container(key: _sliverHeaderKey, color: Styles().colors.background, padding: EdgeInsets.only(left: _outerPadding, bottom: 3), child:
+          Container(key: _sliverHeaderKey, color: Styles().colors.background, padding: EdgeInsets.only(left: _outerPadding, right: 8, bottom: 3), child:
             Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
                 Row(children: [
                   Expanded( child:
@@ -216,13 +219,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                       GestureDetector( onTap: () => _onTapReportAbusePostOptions(), child:
                           Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 8), child:
                             Styles().images.getImage('report', excludeFromSemantics: true))))),
-
-                  Visibility(visible: _isReplyVisible && !widget.hidePostOptions, child:
-                    Semantics(label: Localization().getStringEx('panel.group.detail.post.reply.reply.label', "Reply"), button: true, child:
-                      GestureDetector(onTap: _onTapHeaderReply, child:
-                          Padding(padding: EdgeInsets.only(left: 8, top: 22, bottom: 10, right: 16), child:
-                            Styles().images.getImage('reply', excludeFromSemantics: true))))),
-
                 ]),
             ])
           )
@@ -257,8 +253,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                           //         onTapUrl : (url) {_onTapPostLink(url); return true;},
                           //         textStyle:  Styles().textStyles.getTextStyle("widget.detail.large"),
                           //     )
-                            GroupPostCard(post: _post, group: widget.group, isClickable: false, postReactions: widget.postReactions,
-                              isAdmin: _post?.creator?.findAsMember(groupMembers: _allMembersAllowedToPost)?.isAdmin)
+                            GroupPostCard(
+                                post: _post,
+                                group: widget.group,
+                                isClickable: false,
+                                displayMode: GroupPostCardDisplayMode.page,
+                                isAdmin: _post?.creator?.findAsMember(groupMembers: _allMembersAllowedToPost)?.isAdmin)
                           ),
                       Visibility(
                           visible: _isEditMainPost,
@@ -283,6 +283,26 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
                                                     width: 0.0))),
                                         style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
                                        )),
+                                Visibility(visible: _isPost && _canPinPost,
+                                    child: Container(
+                                      padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
+                                      child: EnabledToggleButton(
+                                          label: "Pin post to top of all posts (Only one pinned post per group is allowed. Pinning this post will automatically unpin any past admin posts.)",
+                                          borderRadius: BorderRadius.circular(4),
+                                          border: Border.all(color: Styles().colors.surfaceAccent, width: 1),
+                                          toggled: _mainPostUpdateData?.pinned == true,
+                                          textStyle: Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled"),
+                                          enabled: true,
+                                          onTap: () {
+                                            if(mounted){
+                                              setState(() {
+                                                _mainPostUpdateData?.pinned  = !(_mainPostUpdateData?.pinned ?? false);
+                                              });
+                                            }
+                                          }
+                                      ),
+                                    )
+                                ),
                                 Row(children: [
                                   Flexible(
                                       flex: 1,
@@ -669,12 +689,6 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     });
   }
 
-  void _onTapHeaderReply() {
-    Analytics().logSelect(target: 'Reply');
-    _clearBodyControllerContent();
-    _scrollToPostEdit();
-  }
-
   void _onTapPostReply({Comment? reply}) {
     Analytics().logSelect(target: 'Post Reply');
     //Navigator.push(context, CupertinoPageRoute(builder: (context) => GroupPostDetailPanel(post: widget.post, group: widget.group, focusedReply: reply, hidePostOptions: true,)));
@@ -703,12 +717,14 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
 
   void _onTapEditMainPost() {
     List<String>? selectedAccountIds = _post?.getMemberAccountIds(groupId: _groupId);
-    _mainPostUpdateData = PostDataModel(
-        body: _post?.body,
-        imageUrl: _post?.imageUrl,
+    if (CollectionUtils.isNotEmpty(selectedAccountIds) && selectedAccountIds!.contains(Auth2().accountId)) {
+      selectedAccountIds.remove(Auth2().accountId);
+    }
+    _mainPostUpdateData = PostUpdateData.fromPost(_post,
         members: GroupMembersSelectionWidget.constructUpdatedMembersList(
-            selectedAccountIds: selectedAccountIds, upToDateMembers: _allMembersAllowedToPost),
-        dateScheduled: _post?.dateActivatedLocal);
+          selectedAccountIds: selectedAccountIds,
+          upToDateMembers: _allMembersAllowedToPost),
+    );
     setStateIfMounted(() {});
   }
 
@@ -727,10 +743,21 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     _post!.body = htmlModifiedBody;
     _post!.imageUrl = imageUrl;
     _post!.dateActivatedUtc = _mainPostUpdateData?.dateScheduled?.toUtc();
-    _post!.setMemberAccountIds(groupId: _groupId, accountIds: MemberExt.extractUserIds(toMembers));
+    List<String>? memberAccountIds = MemberExt.extractUserIds(toMembers);
+    if (CollectionUtils.isNotEmpty(memberAccountIds) && !memberAccountIds!.contains(Auth2().accountId)) {
+      memberAccountIds.add(Auth2().accountId!);
+    }
+    _post!.setMemberAccountIds(groupId: _groupId, accountIds: memberAccountIds);
     Social().updatePost(post: _post!).then((succeeded) {
-      _mainPostUpdateData = null;
-      _setLoading(false);
+      if(_mainPostUpdateData?.pinned != _post?.pinned){
+        Social().pinPost(postId: _post?.id ?? "", pinned: _mainPostUpdateData?.pinned == true).whenComplete((){
+          _mainPostUpdateData = null;
+          _setLoading(false);
+        });
+      } else {
+        _mainPostUpdateData = null;
+        _setLoading(false);
+      }
     });
   }
 
@@ -919,6 +946,10 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
     return StringUtils.isNotEmpty(currentMemberId) && StringUtils.isNotEmpty(creatorId) && (currentMemberId == creatorId);
   }
 
+  String? get _panelTitle => _post?.isMessage == true ?
+      Localization().getStringEx('panel.group.detail.post.header.title.message', 'Message'):
+      Localization().getStringEx('panel.group.detail.post.header.title', 'Post');
+
   bool get _isEditPostVisible => _isEditVisible(_post?.creatorId);
 
   bool get _isDeletePostVisible => _isDeleteVisible(_post?.creatorId);
@@ -926,6 +957,12 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
   bool get _isReplyVisible => (widget.group.currentUserHasPermissionToSendReply == true);
 
   bool get _isReportAbuseVisible => widget.group.currentUserIsMemberOrAdmin;
+
+  bool get _isPost => _post?.type ==  PostType.post;
+
+  bool get _canPinPost => _isAdmin;
+
+  bool get _isAdmin => widget.group.currentUserIsAdmin;
 
   bool get _isEditMainPost => _mainPostUpdateData != null;
 
@@ -938,5 +975,21 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> implements 
       _refreshPostData();
     }
   }
+}
+
+class PostUpdateData extends PostDataModel {
+  bool? pinned;
+
+  PostUpdateData({String? body, String? subject, String? imageUrl, List<Member>? members, DateTime? dateScheduled, this.pinned}) : 
+        super(body: body, subject: subject, imageUrl: imageUrl, members: members, dateScheduled: dateScheduled);
+  
+  factory PostUpdateData.fromPost(Post? post, {List<Member>? members}) =>
+      PostUpdateData(
+          body: post?.body,
+          imageUrl: post?.imageUrl,
+          dateScheduled: post?.dateActivatedLocal,
+          pinned: post?.pinned,
+          members: members
+      );
 }
 

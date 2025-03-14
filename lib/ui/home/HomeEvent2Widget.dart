@@ -34,6 +34,7 @@ import 'package:neom/ui/events2/Event2HomePanel.dart';
 import 'package:neom/ui/events2/Event2Widgets.dart';
 import 'package:neom/ui/home/HomePanel.dart';
 import 'package:neom/ui/home/HomeWidgets.dart';
+import 'package:neom/ui/settings/SettingsPrivacyPanel.dart';
 import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/ui/widgets/SemanticsWidgets.dart';
 import 'package:neom/utils/AppUtils.dart';
@@ -79,14 +80,10 @@ class _HomeEvent2SectionWidgetState extends State<HomeEvent2SectionWidget> {
   }
 
   Widget get _widgetContent {
-    LinkedHashSet<String>? favorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
     return Column(children: [
-      if (favorites?.contains('event_feed') ?? false)
-        HomeEvent2FeedWidget(updateController: widget.updateController,),
-      if (favorites?.contains('event_feed') ?? false)
-        Container(height: 16),
-      if (favorites?.contains('my_events') ?? false)
-        HomeMyEvents2Widget(updateController: widget.updateController,),
+      HomeEvent2FeedWidget(updateController: widget.updateController,),
+      Container(height: 16),
+      HomeMyEvents2Widget(updateController: widget.updateController,),
     ],);
   }
 }
@@ -127,6 +124,9 @@ class HomeMyEvents2Widget extends HomeEvent2Widget {
   static const String localScheme = 'local';
   static const String localEventFeedHost = 'event2_feed';
   static const String localUrlMacro = '{{local_url}}';
+  static const String privacyScheme = 'privacy';
+  static const String privacyLevelHost = 'level';
+  static const String privacyUrlMacro = '{{privacy_url}}';
 
   HomeMyEvents2Widget({super.updateController});
 
@@ -142,14 +142,19 @@ class HomeMyEvents2Widget extends HomeEvent2Widget {
 
   @override
   Widget _emptyContentWidget(BuildContext context) => HomeMessageHtmlCard(
-    message: Localization().getStringEx("widget.home.my_events2.text.empty.description", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Events Feed</b></a> for quick access here.")
-      .replaceAll(localUrlMacro, '$localScheme://$localEventFeedHost'),
+    message: Localization().getStringEx("widget.home.my_events2.text.empty.description", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Events Feed</b></a> for quick access here.  (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)")
+      .replaceAll(localUrlMacro, '$localScheme://$localEventFeedHost')
+      .replaceAll(privacyUrlMacro, '$privacyScheme://$privacyLevelHost'),
     linkColor: Styles().colors.eventColor,
     onTapLink : (url) {
       Uri? uri = (url != null) ? Uri.tryParse(url) : null;
       if ((uri?.scheme == localScheme) && (uri?.host == localEventFeedHost)) {
         Analytics().logSelect(target: 'Events Feed', source: runtimeType.toString());
         Event2HomePanel.present(context, analyticsFeature: AnalyticsFeature.EventsAll);
+      }
+      else if ((uri?.scheme == privacyScheme) && (uri?.host == privacyLevelHost)) {
+        Analytics().logSelect(target: 'Privacy Level', source: runtimeType.toString());
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.regular,)));
       }
     },
   );
