@@ -1150,7 +1150,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                         Expanded(
                           flex: 3,
                           child: Container(
-                          decoration: BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1),color: Styles().colors.white),
+                          decoration: BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1),color: Styles().colors.surface),
                           child: TextField(
                             controller: _groupNetIdsController,
                             maxLines: 1,
@@ -1252,7 +1252,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
 
   bool get _canSave {
     return StringUtils.isNotEmpty(_group?.title) &&
-        (Groups().contentAttributes?.isSelectionValid(_group?.attributes) ?? false) &&
+        // (Groups().contentAttributes?.isSelectionValid(_group?.attributes) ?? false) &&
         (!(_group?.authManEnabled ?? false) || (StringUtils.isNotEmpty(_group?.authManGroupName))) &&
         ((_group?.researchProject != true) || !_researchRequiresConsentConfirmation || StringUtils.isNotEmpty(_group?.researchConsentStatement)) &&
         ((_group?.researchProject != true) || (_researchProfileQuestionsCount >= 0));

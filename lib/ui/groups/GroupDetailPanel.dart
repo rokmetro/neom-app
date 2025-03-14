@@ -1963,7 +1963,6 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
         key: (i == 0) ? lastPostKey : null,
         post: post,
         group: _group!,
-        pinned: post.pinned,
         isAdmin: post.creator?.findAsMember(groupMembers: widget.groupAdmins)?.isAdmin
       ));
       }
@@ -2416,7 +2415,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_refreshingMessages != true)) {
       int limit = _messages.length + (delta ?? 0);
       _refreshingMessages = true;
-      Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? messages) {
+      Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, showCommentsCount: true, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? messages) {
         _refreshingMessages = false;
         if (mounted && (messages != null)) {
           setState(() {
@@ -2450,7 +2449,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
   }
 
   Future<void> _loadMessagesPage() async {
-    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
+    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, showCommentsCount: true, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
     if (messagesPage != null) {
       _messages.addAll(messagesPage);
       if (messagesPage.length < _GroupDetailPanelState._postsPageSize) {
