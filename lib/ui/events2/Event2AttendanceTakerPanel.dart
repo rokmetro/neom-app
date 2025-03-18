@@ -197,7 +197,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
 
           (description != null) ? Row(children: [
             Expanded(child:
-              Text(description, style: descriptionTextStyle ?? valueTextStyle ?? Event2CreatePanel.headingTextStype,)
+              Text(description, style: descriptionTextStyle ?? valueTextStyle ?? Event2CreatePanel.headingTextStyle,)
             )
           ],) : Container()
 
@@ -413,7 +413,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
 
   Widget _buildManualNetIdInputSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.detail.attendance.manual.netid.label', 'Add NetID(s) as attended:'),
-      titleTextStyle: widget.manualCheckEnabled ? Event2CreatePanel.headingTextStype : Event2CreatePanel.headingDisabledTextStype,
+      titleTextStyle: widget.manualCheckEnabled ? Event2CreatePanel.headingTextStyle : Event2CreatePanel.headingDisabledTextStyle,
     ),
     body: _buildManualNetIdInputWidget() ,
   );
