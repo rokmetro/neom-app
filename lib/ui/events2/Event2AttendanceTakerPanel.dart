@@ -38,7 +38,7 @@ class Event2AttendanceTakerPanel extends StatelessWidget with AnalyticsInfo {
         ),
       ),
     ),
-    backgroundColor: Styles().colors.surface,
+    backgroundColor: Styles().colors.background,
   );
 
   Future<void> _onRefresh() async {
@@ -272,7 +272,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
             Text(_hasError ?
               Localization().getStringEx("panel.event2.detail.attendance.attendees.failed.text", "Failed to load attendees list.") :
               Localization().getStringEx("panel.event2.detail.attendance.attendees.empty.text", "There are no users registered or attending for this event yet."),
-              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.thin.italic'),),
+              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic'),),
           )
         ],)
       );
@@ -543,9 +543,9 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   Widget _buildScanIlliniIdSection() => Event2CreatePanel.buildSectionWidget(body:
     RoundedButton(
       label: Localization().getStringEx('panel.event2.detail.attendance.scan.button', 'Scan ID'),
-      textStyle: Styles().textStyles.getTextStyle(widget.scanEnabled ? 'widget.button.title.large.fat' : 'widget.button.title.large.fat'),
+      textStyle: Styles().textStyles.getTextStyle(widget.scanEnabled ? 'widget.button.light.title.large.fat' : 'widget.button.title.large.fat.variant3'),
       borderColor: widget.scanEnabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
-      backgroundColor: Styles().colors.surface,
+      backgroundColor: Styles().colors.background,
       onTap: _onTapScanButton,
       contentWeight: 0.5,
       progress: _scanning,

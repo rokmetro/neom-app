@@ -32,7 +32,6 @@ import 'package:neom/ui/events2/Event2DetailPanel.dart';
 import 'package:neom/ui/events2/Event2HomePanel.dart';
 import 'package:neom/ui/events2/Event2Widgets.dart';
 import 'package:neom/ui/explore/ExploreMapPanel.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
 import 'package:neom/ui/widgets/PopScopeFix.dart';
 import 'package:neom/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
@@ -380,38 +379,29 @@ class _Event2SearchPanelState extends State<Event2SearchPanel> implements Notifi
 
   Widget _buildContentDescription() {
     List<InlineSpan> descriptionList = <InlineSpan>[];
-    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.tiny.fat");
-    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.small.regular");
+    TextStyle? boldStyleVariant = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat.variant");
+    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
     
-    descriptionList.add(TextSpan(text: Localization().getStringEx('panel.event2.search.search.label.title', 'Search: ') , style: boldStyle,));
+    descriptionList.add(TextSpan(text: Localization().getStringEx('panel.event2.search.search.label.title', 'Search: ') , style: boldStyleVariant,));
     descriptionList.add(TextSpan(text: _searchText ?? '' , style: regularStyle,));
     descriptionList.add(TextSpan(text: '; ', style: regularStyle,),);
     
-    descriptionList.addAll(_buildFiltersDescription(boldStyle: boldStyle, regularStyle: regularStyle));
+    descriptionList.addAll(_buildFiltersDescription(boldStyleVariant: boldStyleVariant, regularStyle: regularStyle));
     
-    descriptionList.addAll(_buildSortDescription(boldStyle: boldStyle, regularStyle: regularStyle));
+    descriptionList.addAll(_buildSortDescription(boldStyleVariant: boldStyleVariant, regularStyle: regularStyle));
     
-    descriptionList.add(TextSpan(text: Localization().getStringEx('panel.event2.search.events.label.title', 'Events: ') , style: boldStyle,));
+    descriptionList.add(TextSpan(text: Localization().getStringEx('panel.event2.search.events.label.title', 'Events: ') , style: boldStyleVariant,));
     descriptionList.add(TextSpan(text: _searching ? '...' : (_totalEventsCount?.toString() ?? '-') , style: regularStyle,));
     descriptionList.add(TextSpan(text: '.', style: regularStyle,),);
     
-    return Padding(padding: EdgeInsets.only(top: 12), child:
-      Container(decoration: _contentDescriptionDecoration, padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16), child:
+    return Padding(padding: EdgeInsets.only(top: 24, bottom: 12, left: 16, right: 16), child:
         Row(children: [ Expanded(child:
           RichText(text: TextSpan(style: regularStyle, children: descriptionList))
         ),],)
-    ));
+    );
   }
 
-  Decoration get _contentDescriptionDecoration => BoxDecoration(
-    color: Styles().colors.surface,
-    border: Border(
-      top: BorderSide(color: Styles().colors.textDisabled, width: 1),
-      bottom: BorderSide(color: Styles().colors.textDisabled, width: 1),
-    )
-  );
-
-  List<InlineSpan> _buildFiltersDescription({TextStyle? boldStyle, TextStyle? regularStyle}) {
+  List<InlineSpan> _buildFiltersDescription({TextStyle? boldStyleVariant, TextStyle? regularStyle}) {
     List<InlineSpan> descriptionList = <InlineSpan>[];
 
     String? timeDescription = (_timeFilter != Event2TimeFilter.customRange) ?
@@ -449,19 +439,19 @@ class _Event2SearchPanelState extends State<Event2SearchPanel> implements Notifi
     }
 
     if (descriptionList.isNotEmpty) {
-      descriptionList.insert(0, TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.filter.label.title', 'Filter: ') , style: boldStyle,));
+      descriptionList.insert(0, TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.filter.label.title', 'Filter: ') , style: boldStyleVariant,));
       descriptionList.add(TextSpan(text: '; ', style: regularStyle,),);
     }
     
     return descriptionList;
   }
 
-  List<InlineSpan> _buildSortDescription({TextStyle? boldStyle, TextStyle? regularStyle}) {
+  List<InlineSpan> _buildSortDescription({TextStyle? boldStyleVariant, TextStyle? regularStyle}) {
     List<InlineSpan> descriptionList = <InlineSpan>[];
     if ((1 < (_events?.length ?? 0)) || _searching) {
       String? sortStatus = event2SortTypeDisplayStatusString(_sortType);
       if (sortStatus != null) {
-        descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.sort.label.title', 'Sort: ') , style: boldStyle,));
+        descriptionList.add(TextSpan(text: Localization().getStringEx('panel.events2.home.attributes.sort.label.title', 'Sort: ') , style: boldStyleVariant,));
         descriptionList.add(TextSpan(text: sortStatus, style: regularStyle,),);
         descriptionList.add(TextSpan(text: '; ', style: regularStyle,),);
       }

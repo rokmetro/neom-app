@@ -2312,7 +2312,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
   );
 
   Widget? _buildGroupsSectionBody() {
-    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.small.regular");
+    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
     if (_loadingEventGroups) {
       return Row(children: [
         Padding(padding: const EdgeInsets.only(right: 6), child:
