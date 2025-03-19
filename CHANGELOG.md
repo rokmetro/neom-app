@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update UI to use dark theme [#80](https://github.com/rokmetro/neom-app/issues/80)
 
+## [0.5.14] = 2025-03-19
+### Changed
+- Update UI to use dark theme [#80](https://github.com/rokmetro/neom-app/issues/80)
+
 ## [0.5.13] = 2025-03-14
 ### Added
 - Update conversations in real time [#74](https://github.com/rokmetro/neom-app/issues/74)
