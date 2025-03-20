@@ -327,7 +327,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
         Expanded(
           child: Center(
             child: Padding(padding: EdgeInsets.symmetric(horizontal: 32),
-                child: Text(_isResearchProject ? 'Failed to load project data.' : Localization().getStringEx("panel.group_detail.label.error_message", 'Failed to load group data.'),  style:  Styles().textStyles.getTextStyle('widget.message.large.fat'),)
+                child: Text(_isResearchProject ? 'Failed to load project data.' : Localization().getStringEx("panel.group_detail.label.error_message", 'Failed to load group data.'), style: Styles().textStyles.getTextStyle('widget.message.light.large.fat'),)
             ),
           ),
         ),
@@ -1764,8 +1764,8 @@ class _GroupEventsState extends State<_GroupEventsContent> with AutomaticKeepAli
             label: Localization().getStringEx(
                 "panel.group_detail.button.all_events.title", 'See all events'),
             textStyle: Styles().textStyles.getTextStyle(
-                "widget.button.title.medium.fat.dark"),
-            backgroundColor: Styles().colors.surface,
+                "widget.button.title.medium.fat"),
+            backgroundColor: Styles().colors.background,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             borderColor: Styles().colors.fillColorSecondary,
             borderWidth: 2,
