@@ -290,15 +290,7 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
               rightIconKey: _statusValuesVisible ? 'chevron-up' : 'chevron-down',
               label: _memberStatusToString(_selectedMemberStatus),
               onTap: _onTapRibbonButton))),
-      if (_isApproveAllVisible)
-        Padding(
-          padding: EdgeInsets.only(left: 8, top: 8),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: _buildApproveAllButton(),
-          ),
-        ),
-        Padding(padding: EdgeInsets.only(bottom: 8), child:
+        Padding(padding: EdgeInsets.only(top: 8), child:
           Row(
             children: [
               Expanded(child: _buildDateUpdatedFields()),
@@ -315,6 +307,13 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
             ],
           )
         ),
+      Padding(
+        padding: EdgeInsets.only(left: 8, bottom: 8),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: _buildApproveAllButton(),
+        ),
+      ),
         Stack(children: [
           Padding(padding: EdgeInsets.only(top: 0, left: 16, right: 16), child: contentWidget),
           Visibility(visible: _statusValuesVisible, child: _buildStatusDismissLayer()),
