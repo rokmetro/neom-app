@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased - NEOM U
 ### Fixed
 - Visual Cleanup [#83](https://github.com/rokmetro/neom-app/issues/83)
+
 ## [0.5.15] = 2025-03-20
 ### Changed
 - Update UI to use dark theme (progress) [#80](https://github.com/rokmetro/neom-app/issues/80)
