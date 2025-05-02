@@ -66,13 +66,13 @@ class Storage extends rokwire.Storage {
 
   // Notifications
 
-  bool? getNotifySetting(String name) {
-    return getBoolWithName(name);
-  }
+  // bool? getNotifySetting(String name) {
+  //   return getBoolWithName(name);
+  // }
 
-  void setNotifySetting(String name, bool? value) {
-    return setBoolWithName(name, value);
-  }
+  // void setNotifySetting(String name, bool? value) {
+  //   return setBoolWithName(name, value);
+  // }
 
   // Polls
   static const String selectedPollTypeKey  = 'selected_poll_type';

@@ -18,7 +18,6 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:illinois/service/FlexUI.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:illinois/model/sport/SportDetails.dart';
@@ -32,7 +31,6 @@ import 'package:rokwire_plugin/service/log.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/service.dart';
 import 'package:illinois/service/Sports.dart';
-import 'package:illinois/service/Storage.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
 
@@ -130,8 +128,8 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
 
   // Settings entry : topic name
   static const Map<String, String> _notifySettingTopics = {
-    'event_reminders'  : 'event_reminders',
-    'dining_specials'  : 'dinning_specials',
+    _eventRemindersUpdatesNotificationSetting  : _eventRemindersUpdatesNotificationSetting,
+    _diningSpecialsUpdatesNotificationSetting  : _diningSpecialsUpdatesNotificationSetting,
     _groupUpdatesPostsNotificationSetting : _groupUpdatesPostsNotificationSetting,
     _groupUpdatesInvitationsNotificationSetting : _groupUpdatesInvitationsNotificationSetting,
     _groupUpdatesEventsNotificationSetting : _groupUpdatesEventsNotificationSetting,
@@ -140,21 +138,21 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
   };
 
   // Settings entry : setting name (User.prefs.setting name)
-  static const Map<String, String> _notifySettingNames = {
-    _eventRemindersUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.event_reminders.enabled',
-    _diningSpecialsUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.dining_specials.enabled',
-    _groupUpdatesPostsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.posts.enabled',
-    _groupUpdatesPollsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.polls.enabled',
-    _groupUpdatesMessagesNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.group.messages.enabled',
-    _groupUpdatesInvitationsNotificationSetting : 'edu.illinois.rokwire.settings.inbox.notification.group.invitations.enabled',
-    _groupUpdatesEventsNotificationSetting      : 'edu.illinois.rokwire.settings.inbox.notification.group.events.enabled',
-    _athleticsUpdatesStartNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.start.enabled',
-    _athleticsUpdatesEndNotificationSetting     : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.end.enabled',
-    _athleticsUpdatesNewsNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.news.enabled',
-    _athleticsUpdatesNotificationKey            : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.main.notifications.enabled',
-    _groupUpdatesNotificationKey                : 'edu.illinois.rokwire.settings.inbox.notification.group.main.notifications.enabled',
-    _pauseNotificationKey                       : 'edu.illinois.rokwire.settings.inbox.notification.notifications.enabled',
-  };
+  // static const Map<String, String> _notifySettingNames = {
+  //   _eventRemindersUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.event_reminders.enabled',
+  //   _diningSpecialsUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.dining_specials.enabled',
+  //   _groupUpdatesPostsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.posts.enabled',
+  //   _groupUpdatesPollsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.polls.enabled',
+  //   _groupUpdatesMessagesNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.group.messages.enabled',
+  //   _groupUpdatesInvitationsNotificationSetting : 'edu.illinois.rokwire.settings.inbox.notification.group.invitations.enabled',
+  //   _groupUpdatesEventsNotificationSetting      : 'edu.illinois.rokwire.settings.inbox.notification.group.events.enabled',
+  //   _athleticsUpdatesStartNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.start.enabled',
+  //   _athleticsUpdatesEndNotificationSetting     : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.end.enabled',
+  //   _athleticsUpdatesNewsNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.news.enabled',
+  //   _athleticsUpdatesNotificationKey            : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.main.notifications.enabled',
+  //   _groupUpdatesNotificationKey                : 'edu.illinois.rokwire.settings.inbox.notification.group.main.notifications.enabled',
+  //   _pauseNotificationKey                       : 'edu.illinois.rokwire.settings.inbox.notification.notifications.enabled',
+  // };
 
   static const Map<String, bool> _defaultNotificationSettings = {
     _pauseNotificationKey : false
@@ -684,8 +682,8 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
 
   // Settings topics
 
-  bool? get notifyEventReminders               { return _getNotifySetting('event_reminders'); } 
-       set notifyEventReminders(bool? value)   { _setNotifySetting('event_reminders', value); }
+  bool? get notifyEventReminders               { return _getNotifySetting(_eventRemindersUpdatesNotificationSetting); }
+       set notifyEventReminders(bool? value)   { _setNotifySetting(_eventRemindersUpdatesNotificationSetting, value); }
 
   bool? get notifyAthleticsUpdates             { return _getNotifySetting(_athleticsUpdatesNotificationKey); }
        set notifyAthleticsUpdates(bool? value) { _setNotifySetting(_athleticsUpdatesNotificationKey, value); }
@@ -717,12 +715,12 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
   bool? get notifyGroupEventsUpdates          { return _getNotifySetting(_groupUpdatesEventsNotificationSetting); }
   set notifyGroupEventsUpdates(bool? value)   { _setNotifySetting(_groupUpdatesEventsNotificationSetting, value); }
 
-  bool? get notifyDiningSpecials               { return _getNotifySetting('dining_specials'); } 
-       set notifyDiningSpecials(bool? value)   { _setNotifySetting('dining_specials', value); }
+  bool? get notifyDiningSpecials               { return _getNotifySetting(_diningSpecialsUpdatesNotificationSetting); }
+       set notifyDiningSpecials(bool? value)   { _setNotifySetting(_diningSpecialsUpdatesNotificationSetting, value); }
 
   set notificationsPaused(bool? value)   {_setNotifySetting(_pauseNotificationKey, value);}
 
-  bool? get notificationsPaused {return _getStoredSetting(_pauseNotificationKey,);}
+  bool? get notificationsPaused => Inbox().userInfo?.notificationsDisabled;
 
   bool get _notifySettingsAvailable  {
     return FlexUI().isNotificationsAvailable;
@@ -740,7 +738,7 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
 
   void _setNotifySetting(String name, bool? value) {
     if (_notifySettingsAvailable && (_getNotifySetting(name) != value)) {
-      _storeSetting(name, value);
+      // _storeSetting(name, value);
       NotificationService().notify(notifySettingUpdated, name);
 
       if (name == _athleticsUpdatesNotificationKey) {
@@ -894,13 +892,15 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
   bool? _getStoredSetting(String name){
     bool defaultValue = _defaultNotificationSettings[name] ?? true; //true by default
     if(name == _pauseNotificationKey){ // settings depending on userInfo
-      if(Auth2().isLoggedIn && Inbox().userInfo != null){
+      // if(Auth2().isLoggedIn && Inbox().userInfo != null){
         return Inbox().userInfo?.notificationsDisabled ?? false; //This is the only setting stored in the userInfo
-      }
+      // }
     }
-    return Storage().getNotifySetting(_notifySettingNames[name] ?? name) ?? defaultValue;
+    return Inbox().userInfo?.topics?.contains(name) ?? defaultValue;
+    // return Storage().getNotifySetting(_notifySettingNames[name] ?? name) ?? defaultValue;
   }
 
+  /*
   void _storeSetting(String name, bool? value) {
       Storage().setNotifySetting(_notifySettingNames[name] ?? name, value);
   }
@@ -929,4 +929,7 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging implements Notificatio
 
     return subscribedTopics;
   }
+  */
+
+  Set<String?>? get currentTopics => Inbox().userInfo?.topics;
 }

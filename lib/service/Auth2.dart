@@ -214,7 +214,7 @@ class Auth2 extends rokwire.Auth2 {
     profile: Storage().userProfile,
     includedFoodTypes: Storage().includedFoodTypesPrefs,
     excludedFoodIngredients: Storage().excludedFoodIngredientsPrefs,
-    settings: FirebaseMessaging.storedSettings,
+    // settings: FirebaseMessaging.storedSettings,
   );
 
   // iCard
