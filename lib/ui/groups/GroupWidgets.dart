@@ -24,34 +24,34 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:neom/mainImpl.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/Storage.dart';
-import 'package:neom/ui/directory/DirectoryWidgets.dart';
-import 'package:neom/ui/groups/GroupMembersSelectionPanel.dart';
-import 'package:neom/ui/groups/ImageEditPanel.dart';
-import 'package:neom/ui/widgets/WebEmbed.dart';
+import 'package:illinois/mainImpl.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/Storage.dart';
+import 'package:illinois/ui/directory/DirectoryWidgets.dart';
+import 'package:illinois/ui/groups/GroupMembersSelectionPanel.dart';
+import 'package:illinois/ui/groups/ImageEditPanel.dart';
+import 'package:illinois/ui/widgets/WebEmbed.dart';
 import 'package:intl/intl.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/ext/Social.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/ext/Social.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/log.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/social.dart';
 import 'package:rokwire_plugin/service/styles.dart';
-import 'package:neom/ui/groups/GroupDetailPanel.dart';
-import 'package:neom/ui/groups/GroupPostDetailPanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/groups/GroupDetailPanel.dart';
+import 'package:illinois/ui/groups/GroupPostDetailPanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/ui/panels/modal_image_holder.dart';
 import 'package:rokwire_plugin/ui/panels/modal_image_panel.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
@@ -2682,7 +2682,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                       changeSetting: (){ settings?.memberInfoPreferences?.allowMemberInfo =  !(settings?.memberInfoPreferences?.allowMemberInfo ?? true);}
                   );},
                   textStyle: isGroupInfoAllowed
-                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.fat.enabled")
+                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.regular.enabled")
                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.fat.disabled")),
               Row(children: [
                 Expanded(
@@ -2700,7 +2700,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){if(isGroupInfoAllowed == true) {settings?.memberInfoPreferences?.viewMemberNetId = !(settings?.memberInfoPreferences?.viewMemberNetId ?? false);}}
                                   );},
                                   textStyle: isGroupInfoAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                              //Hide View Name. We will always want to show the name, so just keep it as true and just hide it so it cannot be changed.
                               /*EnabledToggleButton(
@@ -2724,7 +2724,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){  if(isGroupInfoAllowed == true) {settings?.memberInfoPreferences?.viewMemberEmail =  !(settings?.memberInfoPreferences?.viewMemberEmail ?? false);}}
                                   );},
                                   textStyle: isGroupInfoAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                               //Hide Phone for now
                               // EnabledToggleButton(
@@ -2760,7 +2760,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                       changeSetting: (){settings?.memberPostPreferences?.allowSendPost =  !(settings?.memberPostPreferences?.allowSendPost ?? true);}
                   );},
                   textStyle: isGroupPostAllowed
-                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.fat.enabled")
+                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.regular.enabled")
                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.fat.disabled")),
               Row(children: [
                 Expanded(
@@ -2778,7 +2778,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){ if(isGroupPostAllowed == true && isGroupInfoAllowed == true) {settings?.memberPostPreferences?.sendPostToSpecificMembers =  !(settings?.memberPostPreferences?.sendPostToSpecificMembers ?? false);}}
                                   );},
                                   textStyle: (isGroupPostAllowed == true && isGroupInfoAllowed == true)
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                               EnabledToggleButton(
                                   enabled: isGroupPostAllowed,
@@ -2789,7 +2789,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){ if(isGroupPostAllowed == true) {settings?.memberPostPreferences?.sendPostToAdmins =  !(settings?.memberPostPreferences?.sendPostToAdmins ?? false);}}
                                   );},
                                   textStyle: isGroupPostAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                               EnabledToggleButton(
                                   enabled: isGroupPostAllowed,
@@ -2800,7 +2800,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){ if(isGroupPostAllowed == true) {settings?.memberPostPreferences?.sendPostToAll =  !(settings?.memberPostPreferences?.sendPostToAll ?? false);}}
                                   );},
                                   textStyle: isGroupPostAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                               EnabledToggleButton(
                                   enabled: isGroupPostAllowed,
@@ -2811,7 +2811,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){ if(isGroupPostAllowed == true) {settings?.memberPostPreferences?.sendPostReplies =  !(settings?.memberPostPreferences?.sendPostReplies ?? false);}}
                                   );},
                                   textStyle: isGroupPostAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                               EnabledToggleButton(
                                   enabled: isGroupPostAllowed,
@@ -2822,7 +2822,7 @@ class GroupMemberSettingsLayout extends StatelessWidget{
                                       changeSetting: (){ if(isGroupPostAllowed == true) {settings?.memberPostPreferences?.sendPostReactions =  !(settings?.memberPostPreferences?.sendPostReactions ?? false);}}
                                   );},
                                   textStyle: isGroupPostAllowed
-                                      ? Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled")
+                                      ? Styles().textStyles.getTextStyle("widget.toggle_button.title.small.enabled")
                                       : Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled")),
                             ]))))
                   ])
