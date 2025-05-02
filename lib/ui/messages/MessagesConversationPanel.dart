@@ -1325,7 +1325,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Future<void> _createNewMessage(String messageText) async {
-    if (!_submitting && (_attachedFiles.isNotEmpty || StringUtils.isNotEmpty(messageText)) && _conversationId != null && _currentUserId != null) {
+    if (!_submitting && _conversationId != null && _currentUserId != null) {
       _submitting = true;
       FocusScope.of(context).requestFocus(FocusNode());
 
