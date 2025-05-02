@@ -243,7 +243,7 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                 progress: _updating,
                 onTap: () {
-                  if(_approved || (_denied && _reasonController.text.length > 0)){
+                  if(_approved || (_denied && _reasonController.text.isNotEmpty)){
                     Analytics().logSelect(target: 'Apply');
                     _processMembership();
                   }
