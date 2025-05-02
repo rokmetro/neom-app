@@ -7,25 +7,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:neom/ext/Social.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/AppDateTime.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
-import 'package:neom/service/SpeechToText.dart';
-import 'package:neom/ui/directory/DirectoryWidgets.dart';
-import 'package:neom/ui/messages/MessagesMediaFullscreenPanel.dart';
-import 'package:neom/ui/profile/ProfileVoiceRecordigWidgets.dart';
-import 'package:neom/ui/widgets/AudioPlayerWidget.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
-import 'package:neom/ui/widgets/VideoPlayerWidget.dart';
-import 'package:neom/ui/widgets/WebEmbed.dart';
-import 'package:neom/utils/AppUtils.dart';
-import 'package:neom/ui/widgets/LinkTextEx.dart';
-import 'package:neom/utils/Utils.dart';
+import 'package:illinois/ext/Social.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/AppDateTime.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/service/SpeechToText.dart';
+import 'package:illinois/ui/directory/DirectoryWidgets.dart';
+import 'package:illinois/ui/messages/MessagesMediaFullscreenPanel.dart';
+import 'package:illinois/ui/profile/ProfileVoiceRecordigWidgets.dart';
+import 'package:illinois/ui/widgets/AudioPlayerWidget.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/widgets/VideoPlayerWidget.dart';
+import 'package:illinois/ui/widgets/WebEmbed.dart';
+import 'package:illinois/utils/AppUtils.dart';
+import 'package:illinois/ui/widgets/LinkTextEx.dart';
+import 'package:illinois/utils/Utils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:rokwire_plugin/service/content.dart';
@@ -38,9 +38,9 @@ import 'package:sprintf/sprintf.dart';
 import 'package:universal_io/io.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:neom/platform_impl/stub.dart'
-  if (dart.library.io) 'package:neom/platform_impl/mobile.dart'
-  if (dart.library.html) 'package:neom/platform_impl/web.dart';
+import 'package:illinois/platform_impl/stub.dart'
+  if (dart.library.io) 'package:illinois/platform_impl/mobile.dart'
+  if (dart.library.html) 'package:illinois/platform_impl/web.dart';
 
 enum FileType { image, video, audio, file }
 
@@ -880,7 +880,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildSendImage(bool enabled) {
-    if (StringUtils.isNotEmpty(_inputController.text)) {
+    final hasText = StringUtils.isNotEmpty(_inputController.text);
+    final hasFiles = _attachedFiles.isNotEmpty;
+    if (hasText || hasFiles) {
       // Show send button if there's text
       return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Send"), enabled: enabled,
           child: IconButton(
@@ -1316,13 +1318,14 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   Future<void> _submitMessage(String messageText) async {
     messageText = messageText.trim();
-    if (StringUtils.isNotEmpty(messageText)) {
+    final hasFiles = _attachedFiles.isNotEmpty;
+    if (StringUtils.isNotEmpty(messageText) || hasFiles) {
       return (_editingMessage != null) ? _updateEditingMessage(messageText) : _createNewMessage(messageText);
     }
   }
 
   Future<void> _createNewMessage(String messageText) async {
-    if (!_submitting && StringUtils.isNotEmpty(messageText) && _conversationId != null && _currentUserId != null) {
+    if (!_submitting && _conversationId != null && _currentUserId != null) {
       _submitting = true;
       FocusScope.of(context).requestFocus(FocusNode());
 
