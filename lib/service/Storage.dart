@@ -211,7 +211,7 @@ class Storage extends rokwire.Storage {
 // static const String firebaseMessagingSubscriptionTopisKey  = 'firebase_subscription_topis';
 // Replacing "firebase_subscription_topis" with "firebase_messaging_subscription_topis" key ensures that
 // all subsciptions will be applied again through Notifications BB APIs
-  @override String get inboxFirebaseMessagingSubscriptionTopicsKey => 'firebase_messaging_subscription_topis';
+//   @override String get inboxFirebaseMessagingSubscriptionTopicsKey => 'firebase_messaging_subscription_topis';
 
   @override String get inboxFirebaseMessagingTokenKey => 'inbox_firebase_messaging_token';
   @override String get inboxFirebaseMessagingUserIdKey => 'inbox_firebase_messaging_user_id';
