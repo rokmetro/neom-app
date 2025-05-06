@@ -18,15 +18,15 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/CheckList.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/ui/WebPanel.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/CheckList.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/ui/WebPanel.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/service/Storage.dart';
+import 'package:illinois/service/Storage.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:rokwire_plugin/ui/widgets/triangle_painter.dart';
@@ -214,7 +214,7 @@ class _CheckListContentWidgetState extends State<CheckListContentWidget> impleme
         String? pageId = JsonUtils.stringValue(uri.queryParameters['page_id']);
         CheckList(widget.contentKey).pushPage(CheckList(widget.contentKey).getPage(id: pageId));
       }
-      else if (UrlUtils.launchInternal(url)) {
+      else if (UrlUtils.canLaunchInternal(url)) {
         Navigator.push(context, CupertinoPageRoute(builder: (context) => WebPanel(url: url, analyticsFeature: widget.analyticsFeature,)));
       } else {
         if (uri != null) {

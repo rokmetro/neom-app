@@ -17,10 +17,10 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/dining/DiningHomePanel.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeWidgets.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/dining/DiningHomePanel.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeWidgets.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 
 class HomeDiningWidget extends StatefulWidget {
@@ -46,7 +46,7 @@ class _HomeDiningWidgetState extends HomeCompoundWidgetState<HomeDiningWidget> {
   @override String? get favoriteId => widget.favoriteId;
   @override String? get title => HomeDiningWidget.title;
   @override String? get titleIconKey => 'dining';
-  @override String? get emptyMessage => Localization().getStringEx("widget.home.dinings.text.empty.description", "Tap the \u2606 on items in Dinings so you can quickly find them here.");
+  @override String? get emptyMessage => Localization().getStringEx("widget.home.dinings.text.empty.description", "Tap the ☆ on items in Dining for quick access here. (Your privacy level must be at least 2.)");
 
   @override
   Widget? widgetFromCode(String code) {

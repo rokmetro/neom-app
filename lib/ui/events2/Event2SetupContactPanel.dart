@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
@@ -68,7 +68,7 @@ class _Event2SetupContactPanelState extends State<Event2SetupContactPanel>  {
     return Scaffold(
       appBar: HeaderBar(title: Localization().getStringEx("panel.event2.setup.contact.header.title", "Event Contact")),
       body: _buildPanelContent(),
-      backgroundColor: Styles().colors.surface,
+      backgroundColor: Styles().colors.background,
     );
   }
 
@@ -181,9 +181,9 @@ class _Event2SetupContactPanelState extends State<Event2SetupContactPanel>  {
     return Semantics(label: buttonTitle, hint: buttonHint, button: true, excludeSemantics: true, child:
       RoundedButton(
         label: buttonTitle,
-        textStyle: buttonEnabled ? Styles().textStyles.getTextStyle('widget.button.title.large.fat') : Styles().textStyles.getTextStyle('widget.button.disabled.title.large.fat'),
+        textStyle: buttonEnabled ? Styles().textStyles.getTextStyle('widget.button.light.title.large.fat') : Styles().textStyles.getTextStyle('widget.button.disabled.title.large.fat.variant_two'),
         onTap: buttonEnabled ? _onSubmit : null,
-        backgroundColor: Styles().colors.surface,
+        backgroundColor: Styles().colors.background,
         borderColor: buttonEnabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
       )
     );

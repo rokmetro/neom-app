@@ -21,9 +21,9 @@ import 'package:flutter/material.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/widgets/RoleGridButton.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/widgets/RoleGridButton.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 
 class ProfileRolesPage extends StatefulWidget {
@@ -62,12 +62,12 @@ class _ProfileRolesPageState extends State<ProfileRolesPage> {
     return Container(color: Styles().colors.background, padding: widget.margin,  child:
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         // Padding(padding: EdgeInsets.only(top: 16, left: 4, right: 4), child:
-        //   Text(Localization().getStringEx('panel.onboarding.roles.label.description', 'Please check all that apply to create a personalized experience for you'),
+        //   Text(Localization().getStringEx('panel.onboarding2.roles.label.description', 'Please check all that apply to create a personalized experience for you'),
         //     style: Styles().textStyles.getTextStyle("widget.item.light.small.thin")
         //   ),
         // ),
         Padding(padding: EdgeInsets.only(top: 10,  left: 4, right: 4), child:
-          Text(Localization().getStringEx('panel.onboarding.roles.label.description2', 'I am part of the following ERI Sector...'),
+          Text(Localization().getStringEx('panel.onboarding2.roles.label.description2', 'I am part of the following ERI Sector...'),
             style: Styles().textStyles.getTextStyle("widget.title.medium.extra_fat")
           ),
         ),

@@ -17,16 +17,16 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/ext/Survey.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/surveys/SurveyPanel.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/PopScopeFix.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/ext/Survey.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/surveys/SurveyPanel.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/PopScopeFix.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/model/survey.dart';
 import 'package:rokwire_plugin/service/events2.dart';
@@ -126,7 +126,7 @@ class _Event2SetupSurveyPanelState extends State<Event2SetupSurveyPanel>  {
   Widget _buildScaffoldContent() => Scaffold(
     appBar: _headerBar,
     body: _buildPanelContent(),
-    backgroundColor: Styles().colors.surface
+    backgroundColor: Styles().colors.background
   );
 
   Widget _buildPanelContent() {
@@ -149,7 +149,7 @@ class _Event2SetupSurveyPanelState extends State<Event2SetupSurveyPanel>  {
       Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24), child:
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(Localization().getStringEx('panel.event2.setup.survey.explanation.title', 'Choose a survey template to be sent to attendees of this event after it completes.'),
-              style: Styles().textStyles.getTextStyle('widget.description.regular')),
+              style: Styles().textStyles.getTextStyle('widget.description.regular.light')),
           SizedBox(height: 16.0),
           _buildSurveysSection(),
           _buildHoursSection(),
@@ -173,7 +173,7 @@ class _Event2SetupSurveyPanelState extends State<Event2SetupSurveyPanel>  {
     return Column(children: [
       Expanded(flex: 1, child: Container(),),
       Padding(padding: EdgeInsets.symmetric(horizontal: 32), child:
-        Text(message ?? '', textAlign: TextAlign.center, style: TextStyle(color: Styles().colors.fillColorPrimary, fontSize: 18)),
+        Text(message ?? '', textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.light.medium')),
       ),
       Expanded(flex: 2, child: Container(),),
     ],);
@@ -304,7 +304,7 @@ class _Event2SetupSurveyPanelState extends State<Event2SetupSurveyPanel>  {
         child: Text(
           Localization().getStringEx('panel.event2.setup.survey.preview.continue.message',
             'Thank you for testing your event follow-up survey. At this point, the survey would be submitted, and the results would be available to view under the event admin settings.'),
-          style: Styles().textStyles.getTextStyle('widget.detail.dark.regular.fat'),
+          style: Styles().textStyles.getTextStyle('widget.detail.regular.fat'),
         )
       ),
       buttonTitle: Localization().getStringEx("dialog.ok.title", "OK"),

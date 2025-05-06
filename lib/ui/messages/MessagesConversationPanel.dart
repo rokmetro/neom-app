@@ -7,24 +7,25 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:neom/ext/Social.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/AppDateTime.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/SpeechToText.dart';
-import 'package:neom/ui/directory/DirectoryWidgets.dart';
-import 'package:neom/ui/messages/MessagesMediaFullscreenPanel.dart';
-import 'package:neom/ui/profile/ProfileVoiceRecordigWidgets.dart';
-import 'package:neom/ui/widgets/AudioPlayerWidget.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
-import 'package:neom/ui/widgets/VideoPlayerWidget.dart';
-import 'package:neom/ui/widgets/WebEmbed.dart';
-import 'package:neom/utils/AppUtils.dart';
-import 'package:neom/ui/widgets/LinkTextEx.dart';
-import 'package:neom/utils/Utils.dart';
+import 'package:illinois/ext/Social.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/AppDateTime.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/service/SpeechToText.dart';
+import 'package:illinois/ui/directory/DirectoryWidgets.dart';
+import 'package:illinois/ui/messages/MessagesMediaFullscreenPanel.dart';
+import 'package:illinois/ui/profile/ProfileVoiceRecordigWidgets.dart';
+import 'package:illinois/ui/widgets/AudioPlayerWidget.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/widgets/VideoPlayerWidget.dart';
+import 'package:illinois/ui/widgets/WebEmbed.dart';
+import 'package:illinois/utils/AppUtils.dart';
+import 'package:illinois/ui/widgets/LinkTextEx.dart';
+import 'package:illinois/utils/Utils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:rokwire_plugin/service/content.dart';
@@ -37,9 +38,9 @@ import 'package:sprintf/sprintf.dart';
 import 'package:universal_io/io.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:neom/platform_impl/stub.dart'
-  if (dart.library.io) 'package:neom/platform_impl/mobile.dart'
-  if (dart.library.html) 'package:neom/platform_impl/web.dart';
+import 'package:illinois/platform_impl/stub.dart'
+  if (dart.library.io) 'package:illinois/platform_impl/mobile.dart'
+  if (dart.library.html) 'package:illinois/platform_impl/web.dart';
 
 enum FileType { image, video, audio, file }
 
@@ -104,6 +105,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
       Localization.notifyStringsUpdated,
       Styles.notifyChanged,
       SpeechToText.notifyError,
+      FirebaseMessaging.notifyForegroundMessage,
     ]);
     WidgetsBinding.instance.addObserver(this);
 
@@ -138,6 +140,11 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   // NotificationsListener
   @override
   void onNotification(String name, dynamic param) {
+    if (name == FirebaseMessaging.notifyForegroundMessage) {
+      if (ModalRoute.of(context)?.isCurrent ?? false) {
+        _refreshMessages();
+      }
+    }
     if ((name == Auth2UserPrefs.notifyFavoritesChanged) ||
         (name == Localization.notifyStringsUpdated) ||
         (name == Styles.notifyChanged)) {
@@ -158,7 +165,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     });
 
     return Scaffold(
-      appBar: RootHeaderBar(title: _conversation?.membersString, leading: RootHeaderBarLeading.Back, onTapTitle: _onTapHeaderBarTitle),
+      appBar: RootHeaderBar(title: _getConversationTitle(), leading: RootHeaderBarLeading.Back, onTapTitle: _onTapHeaderBarTitle),
       body: _buildContent(),
       backgroundColor: Styles().colors.background,
       bottomNavigationBar: uiuc.TabBar(),
@@ -166,14 +173,10 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   String _getConversationTitle() {
-    // If it's a one-on-one conversation, show the other member's name
-    // If group, show something else. For now, if multiple members, just show first.
-    if (_conversation?.members?.length == 1) {
-      return _conversation?.members?.first.name ?? 'Unknown';
-    } else {
-      // For group conversations, you could customize the title further
-      return _conversation?.membersString ?? 'Group Conversation';
+    if (CollectionUtils.isEmpty(_conversation?.members)) {
+      return Auth2().fullName ?? 'Unknown';
     }
+    return _conversation?.membersString ?? 'Group Conversation';
   }
 
   Widget _buildContent() {
@@ -319,17 +322,18 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
                       ]),
                       SizedBox(height: 8),
                       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Expanded(child:
-                          SelectionArea(
-                            child: LinkTextEx(
-                              key: UniqueKey(),
-                              message.message ?? '',
-                              textStyle: Styles().textStyles.getTextStyle('widget.detail.regular'),
-                              linkStyle: Styles().textStyles.getTextStyleEx('widget.detail.regular.underline', decorationColor: Styles().colors.fillColorPrimary),
-                              onLinkTap: _onTapLink,
+                        if (message.message?.isNotEmpty == true)
+                          Expanded(child:
+                            SelectionArea(
+                              child: LinkTextEx(
+                                key: UniqueKey(),
+                                message.message ?? '',
+                                textStyle: Styles().textStyles.getTextStyle('widget.detail.regular'),
+                                linkStyle: Styles().textStyles.getTextStyleEx('widget.detail.regular.underline', decorationColor: Styles().colors.fillColorPrimary),
+                                onLinkTap: _onTapLink,
+                              ),
                             ),
                           ),
-                        ),
                         // If dateUpdatedUtc is not null, show a small “(edited)” label
                         if (message.dateUpdatedUtc != null)
                           Padding(padding: EdgeInsets.only(left: 4), child:
@@ -448,10 +452,11 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   void _onTapLink(String url) {
+    Uri? uri = Uri.tryParse(url);
     if (url.contains('@')) {
-      url = UrlUtils.fixEmail(url) ?? url;
+      uri = uri?.fix(scheme: 'mailto');
     } else {
-      url = UrlUtils.fixUrl(url, scheme: 'https') ?? url;
+      uri = uri?.fix(scheme: 'https');
     }
     Analytics().logSelect(target: url);
     if (StringUtils.isNotEmpty(url)) {
@@ -876,7 +881,9 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   Widget _buildSendImage(bool enabled) {
-    if (StringUtils.isNotEmpty(_inputController.text)) {
+    final hasText = StringUtils.isNotEmpty(_inputController.text);
+    final hasFiles = _attachedFiles.isNotEmpty;
+    if (hasText || hasFiles) {
       // Show send button if there's text
       return MergeSemantics(child: Semantics(label: Localization().getStringEx('', "Send"), enabled: enabled,
           child: IconButton(
@@ -1312,13 +1319,14 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
 
   Future<void> _submitMessage(String messageText) async {
     messageText = messageText.trim();
-    if (StringUtils.isNotEmpty(messageText)) {
+    final hasFiles = _attachedFiles.isNotEmpty;
+    if (StringUtils.isNotEmpty(messageText) || hasFiles) {
       return (_editingMessage != null) ? _updateEditingMessage(messageText) : _createNewMessage(messageText);
     }
   }
 
   Future<void> _createNewMessage(String messageText) async {
-    if (!_submitting && StringUtils.isNotEmpty(messageText) && _conversationId != null && _currentUserId != null) {
+    if (!_submitting && _conversationId != null && _currentUserId != null) {
       _submitting = true;
       FocusScope.of(context).requestFocus(FocusNode());
 

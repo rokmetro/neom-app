@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
-import 'package:neom/ui/groups/GroupsHomePanel.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/ui/groups/GroupPendingMemberPanel.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/groups/GroupsHomePanel.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -245,10 +247,31 @@ class _GroupMemberPanelState extends State<GroupMemberPanel> {
           ),
         ),
         Container(height: 22,),
+        if (_member?.isPendingMember == true || _member?.isRejected == true)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: _buildReviewButton,
+          ),
         _buildRemoveFromGroup(),
       ],
     );
   }
+
+  Widget get _buildReviewButton => RoundedButton(
+    label: Localization().getStringEx("panel.manage_members.button.review_request.title", "Review Request"),
+    hint: Localization().getStringEx("panel.manage_members.button.review_request.hint", ""),
+    textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
+    borderColor: Styles().colors.fillColorSecondary,
+    backgroundColor: Styles().colors.fillColorSecondary,
+    rightIcon: Styles().images.getImage('chevron-right-bold', excludeFromSemantics: true, color: Styles().colors.surface),
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    onTap: () async {
+      Analytics().logSelect(target:"Review request");
+      await Navigator.push(context, CupertinoPageRoute(builder: (context) =>
+          GroupPendingMemberPanel(member: _member, group: _group)));
+      setStateIfMounted(() {});
+    },
+  );
 
   Widget _buildRemoveFromGroup() {
     return

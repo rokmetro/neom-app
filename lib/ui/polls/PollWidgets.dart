@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/ext/Poll.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/ext/Poll.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/model/poll.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/polls.dart';
 import 'package:rokwire_plugin/service/styles.dart';
-import 'package:neom/ui/polls/PollProgressPainter.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/polls/PollProgressPainter.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
-import 'package:neom/service/Polls.dart' as neom;
+import 'package:illinois/service/Polls.dart' as neom;
 
 class PollCard extends StatefulWidget{
   final Poll? poll;
@@ -127,12 +127,12 @@ class _PollCardState extends State<PollCard> implements NotificationsListener {
             child: Row(children: <Widget>[
               if (widget.showGroupName)
                 Expanded(child:
-                Text(StringUtils.ensureNotEmpty(widget.group?.title), overflow: TextOverflow.ellipsis, style:Styles().textStyles.getTextStyle("widget.card.detail.regular.fat")
+                  Text(StringUtils.ensureNotEmpty(widget.group?.title), overflow: TextOverflow.ellipsis, style:Styles().textStyles.getTextStyle("widget.card.detail.regular.fat")),
                 ),
-                ),
-              Spacer(),
+              if (!widget.showGroupName)
+                Spacer(),
               Padding(
-                padding: const EdgeInsets.only(right: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(pin, style: Styles().textStyles.getTextStyle('widget.card.detail.regular.fat')),
               ),
               Visibility(visible: _PollOptionsState._hasPollOptions(widget), child:
@@ -155,6 +155,7 @@ class _PollCardState extends State<PollCard> implements NotificationsListener {
           Row(children: [
             Visibility(visible: widget.poll?.creatorUserUuid != null,
                 child: GroupMemberProfileInfoWidget(
+                    key: ValueKey(widget.poll?.pollId),
                     name: widget.poll?.creatorUserName,
                     userId: widget.poll?.creatorUserUuid,
                     isAdmin: widget.isAdmin,
@@ -193,7 +194,7 @@ class _PollCardState extends State<PollCard> implements NotificationsListener {
   }
 
   String? get _pollDateText =>
-      "Quick Poll,Updated ${widget.poll?.displayUpdateTime}";
+      "Quick Poll, Updated ${widget.poll?.displayUpdateTime}";
 
   List<Widget> _buildCheckboxOptions() {
     bool isClosed = widget.poll!.status == PollStatus.closed;
@@ -238,19 +239,21 @@ class _PollCardState extends State<PollCard> implements NotificationsListener {
 
       result.add(Padding(padding: EdgeInsets.only(top: (0 < result.length) ? 8 : 0), child:
       GestureDetector(
+          onTap: widget.poll!.userVote == null ? _onVoteTapped : null,
           child:
           Semantics(label: semanticsText, excludeSemantics: true, child:
           Row(children: <Widget>[
             Padding(padding: EdgeInsets.only(right: 5), child: Styles().images.getImage(checkboxImage, size: 24.0)),
             Expanded(
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                Stack(key: progressKey, alignment: Alignment.centerLeft, children: <Widget>[
-                  CustomPaint(painter: PollProgressPainter(backgroundColor: Styles().colors.surface, progressColor: useCustomColor ? Styles().colors.fillColorPrimary : Styles().colors.lightGray, progress: votesPercent / 100.0), child: Container(height:30, width: _progressWidth),),
-                  Container(/*height: 15+ 16*MediaQuery.of(context).textScaleFactor,*/ child:
-                  Padding(padding: EdgeInsets.only(left: 10, right: 5), child:
-                  Text(option, style: useCustomColor? Styles().textStyles.getTextStyle('widget.group.card.poll.option_variant')  : Styles().textStyles.getTextStyle('widget.group.card.poll.option')),)
-                  ),
-                ],),
+                Expanded(
+                  child: Stack(key: progressKey, alignment: Alignment.centerLeft, children: <Widget>[
+                    CustomPaint(painter: PollProgressPainter(backgroundColor: Styles().colors.surface, progressColor: useCustomColor ? Styles().colors.fillColorPrimary : Styles().colors.lightGray, progress: votesPercent / 100.0), child: Container(height:30, width: _progressWidth),),
+                    Padding(padding: EdgeInsets.only(left: 10, right: 5), child:
+                      Text(option, style: useCustomColor? Styles().textStyles.getTextStyle('widget.group.card.poll.option_variant')  : Styles().textStyles.getTextStyle('widget.group.card.poll.option')),
+                    ),
+                  ],),
+                ),
                 Padding(padding: EdgeInsets.only(left: 10), child: Text('$votesString (${votesPercent.toStringAsFixed(0)}%)', textAlign: TextAlign.right,style: Styles().textStyles.getTextStyle('widget.group.card.poll.votes'),),)
               ],),
             ),

@@ -17,15 +17,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/AppDateTime.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/ui/settings/SettingsHomeContentPanel.dart';
-import 'package:neom/ui/widgets/UnderlinedButton.dart';
-import 'package:neom/utils/AppUtils.dart';
-import 'package:neom/ext/InboxMessage.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/AppDateTime.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/ui/settings/SettingsHomeContentPanel.dart';
+import 'package:illinois/ui/widgets/UnderlinedButton.dart';
+import 'package:illinois/utils/AppUtils.dart';
+import 'package:illinois/ext/InboxMessage.dart';
 import 'package:rokwire_plugin/model/inbox.dart';
 import 'package:rokwire_plugin/service/connectivity.dart';
 import 'package:rokwire_plugin/service/inbox.dart';
@@ -134,7 +134,7 @@ class NotificationsHomePanel extends StatefulWidget {
 }
 
 class _NotificationsHomePanelState extends State<NotificationsHomePanel> implements NotificationsListener {
-  static final int _messagesPageSize = 8;
+  static final int _messagesPageSize = 16;
   static final double _defaultPaddingValue = 16;
 
   bool _isFilterVisible = false;
@@ -326,14 +326,14 @@ class _NotificationsHomePanelState extends State<NotificationsHomePanel> impleme
             onTap: _onTapFilter,
             child: Container(
                 decoration: BoxDecoration(
-                    color: Styles().colors.surface,
-                    border: Border.all(color: Styles().colors.disabledTextColor, width: 1),
+                    color: Styles().colors.background,
+                    border: Border.all(color: Styles().colors.fillColorSecondary, width: 1),
                     borderRadius: BorderRadius.circular(18)),
                 child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                     child: Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
                       Padding(padding: EdgeInsets.only(right: 6), child: Styles().images.getImage('filters')),
-                      Text(title, style: Styles().textStyles.getTextStyle('widget.button.title.regular'), semanticsLabel: ''),
+                      Text(title, style: Styles().textStyles.getTextStyle('widget.button.light.title.regular'), semanticsLabel: ''),
                       Padding(padding: EdgeInsets.only(left: 3), child: Styles().images.getImage('chevron-right'))
                     ])))));
   }
@@ -523,9 +523,11 @@ class _NotificationsHomePanelState extends State<NotificationsHomePanel> impleme
         padding: EdgeInsets.only(top: 30),
         child: RoundedButton(
             label: Localization().getStringEx('panel.inbox.filter.apply.button', 'Apply'),
+            textStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.fat'),
+            backgroundColor: Styles().colors.background,
+            borderColor: Styles().colors.fillColorSecondary,
             padding: EdgeInsets.symmetric(vertical: 4),
             contentWeight: 0.35,
-            fontSize: 16,
             onTap: _onTapApplyFilter));
   }
 

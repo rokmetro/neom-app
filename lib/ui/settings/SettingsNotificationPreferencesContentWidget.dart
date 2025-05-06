@@ -16,17 +16,17 @@
 
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Appointments.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/FlexUI.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Appointments.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/FlexUI.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:firebase_messaging/firebase_messaging.dart' as firebase;
 import 'package:universal_io/io.dart';
 
@@ -111,7 +111,8 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
         borderRadius: _topRounding,
         label: Localization().getStringEx("panel.settings.notifications.pause_notifications", "Pause all notifications"),
         toggled: FirebaseMessaging().notificationsPaused,
-        onTap: _notificationsEnabled? _onPauseNotificationsToggled : (){},
+        onTap: _notificationsEnabled? _onPauseNotificationsToggled : null,
+        backgroundColor: Styles().colors.background,
         textStyle: _notificationsEnabled? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
     ));
     widgets.add(Container(color:Styles().colors.surfaceAccent,height: 1,));
@@ -170,7 +171,7 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
           borderRadius: _topRounding,
           label: Localization().getStringEx("panel.settings.notifications.reminders", "Event Reminders"),
           toggled: FirebaseMessaging().notifyEventReminders,
-          onTap: _toggleButtonEnabled?_onEventRemindersToggled : (){},
+          onTap: _toggleButtonEnabled?_onEventRemindersToggled : null,
           textStyle: _toggleButtonEnabled? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
     ));
     widgets.add(Container(color:Styles().colors.surfaceAccent,height: 1,));
@@ -226,16 +227,16 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
         borderRadius: BorderRadius.zero,
         label: Localization().getStringEx("panel.settings.notifications.group_updates", "Group Updates"),
         toggled: FirebaseMessaging().notifyGroupUpdates,
-        onTap: _toggleButtonEnabled? _onGroupsUpdatesToggled : (){},
+        onTap: _toggleButtonEnabled? _onGroupsUpdatesToggled : null,
         textStyle: _toggleButtonEnabled? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
     ));
-    widgets.add(Row(children: [Expanded(child: Container(color: Styles().colors.surface, child: Padding(padding: EdgeInsets.only(left: 10), child: Column(children: [
+    widgets.add(Padding(padding: EdgeInsets.only(left: 10), child: Column(children: [
       _CustomToggleButton(
           enabled: _groupsSubNotificationsEnabled,
           borderRadius: BorderRadius.zero,
           label: Localization().getStringEx("panel.settings.notifications.group_updates.posts.label", "Posts"),
           toggled: FirebaseMessaging().notifyGroupPostUpdates,
-          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesPostsToggled : (){},
+          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesPostsToggled : null,
           textStyle: _groupsSubNotificationsEnabled ?Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
         ),
       _CustomToggleButton(
@@ -243,7 +244,7 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
           borderRadius: BorderRadius.zero,
           label: Localization().getStringEx("panel.settings.notifications.group_updates.events.label", "Events"),
           toggled: FirebaseMessaging().notifyGroupEventsUpdates,
-          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesEventsToggled : (){},
+          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesEventsToggled : null,
           textStyle: _groupsSubNotificationsEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
       ),
       _CustomToggleButton(
@@ -251,7 +252,7 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
           borderRadius: BorderRadius.zero,
           label: Localization().getStringEx("panel.settings.notifications.group_updates.invitations.label", "Group membership"),
           toggled: FirebaseMessaging().notifyGroupInvitationsUpdates,
-          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesInvitationsToggled: (){},
+          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesInvitationsToggled: null,
           textStyle: _groupsSubNotificationsEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
         ),
       _CustomToggleButton(
@@ -259,18 +260,18 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
           borderRadius: BorderRadius.zero,
           label: Localization().getStringEx("panel.settings.notifications.group_updates.polls.label", "Polls"),
           toggled: FirebaseMessaging().notifyGroupPollsUpdates,
-          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesPollsToggled: (){},
+          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesPollsToggled: null,
           textStyle: _groupsSubNotificationsEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
       ),
-      _CustomToggleButton(
-          enabled: _groupsSubNotificationsEnabled,
-          borderRadius: BorderRadius.zero,
-          label: Localization().getStringEx("panel.settings.notifications.group_updates.messages.label", "Messages"),
-          toggled: FirebaseMessaging().notifyGroupMessagesUpdates,
-          onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesMessagesToggled: (){},
-          textStyle: _groupsSubNotificationsEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
-      )
-    ]))))]));
+      // _CustomToggleButton(
+      //     enabled: _groupsSubNotificationsEnabled,
+      //     borderRadius: BorderRadius.zero,
+      //     label: Localization().getStringEx("panel.settings.notifications.group_updates.messages.label", "Messages"),
+      //     toggled: FirebaseMessaging().notifyGroupMessagesUpdates,
+      //     onTap: _groupsSubNotificationsEnabled ? _onGroupsUpdatesMessagesToggled: null,
+      //     textStyle: _groupsSubNotificationsEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.small.disabled")
+      // )
+    ])));
 //    widgets.add(_CustomToggleButton(
 //          enabled: _notificationsEnabled,
 //          borderRadius: _bottomRounding,
@@ -281,9 +282,7 @@ class _SettingsNotificationPreferencesContentWidgetState extends State<SettingsN
 //          style: _notificationsEnabled? TextStyle(color: Styles().colors.fillColorPrimary, fontSize: 16, fontFamily: Styles().fontFamilies.bold) :
 //              TextStyle(color: Styles().colors.fillColorPrimaryTransparent015, fontSize: 16, fontFamily: Styles().fontFamilies.bold)));
 
-    return Container(
-      child: Padding(padding: EdgeInsets.all(0), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets)),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: widgets);
   }
 
   Widget get _appLogo => Container(
@@ -553,6 +552,7 @@ class _CustomToggleButton extends ToggleRibbonButton {
     void Function()? onTap,
     BoxBorder? border,
     BorderRadius? borderRadius,
+    Color? backgroundColor,
     TextStyle? textStyle,
     this.enabled,
     super.progress,
@@ -562,6 +562,7 @@ class _CustomToggleButton extends ToggleRibbonButton {
     onTap: onTap,
     border: border,
     borderRadius: borderRadius,
+    backgroundColor: backgroundColor ?? Styles().colors.background,
     textStyle: textStyle,
     progressPadding: const EdgeInsets.only(right: 24, left: 12), // Make sure progress indicator appears at the position of the toggle icon.
   );

@@ -5,11 +5,11 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:gal/gal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:neom/ext/Auth2.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/directory/DirectoryWidgets.dart';
-import 'package:neom/ui/widgets/QrCodePanel.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ext/Auth2.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/directory/DirectoryWidgets.dart';
+import 'package:illinois/ui/widgets/QrCodePanel.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/auth2.directory.dart';
@@ -81,7 +81,7 @@ class _ProfileInfoSharePanelState extends State<ProfileInfoSharePanel> {
           Container(color: Styles().colors.surfaceAccent, height: 1,),
         ),
         _buildCommand(
-          icon: Styles().images.getImage('down-to-bracket', size: _commandIconSize),
+          icon: Styles().images.getImage('download', size: _commandIconSize),
           text: Localization().getStringEx('panel.profile.info.share.command.button.save.text', 'Save to Photos'),
           progress: _savingToPhotos,
           onTap: _onTapSaveToPhotos,
@@ -93,7 +93,7 @@ class _ProfileInfoSharePanelState extends State<ProfileInfoSharePanel> {
           onTap: _onTapShareViaEmail,
         ),
         _buildCommand(
-          icon: Styles().images.getImage('message-lines', size: _commandIconSize),
+          icon: Styles().images.getImage('message', size: _commandIconSize),
           text: Localization().getStringEx('panel.profile.info.share.command.button.share.message.text', 'Share via Text Message'),
           progress: _preparingTextMessage,
           onTap: _onTapShareViaTextMessage,

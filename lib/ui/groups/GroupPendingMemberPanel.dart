@@ -15,18 +15,18 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:sprintf/sprintf.dart';
@@ -53,6 +53,13 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
   bool _approved = false;
   bool _denied = false;
   bool _updating = false;
+
+  @override
+  void initState() {
+    _denied = widget.member?.isRejected == true;
+    _approved = widget.member?.isMemberOrAdmin == true;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -210,7 +217,7 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
                       child: TextField(
                         controller: _reasonController,
                         decoration: InputDecoration(border: InputBorder.none),
-                        style: Styles().textStyles.getTextStyle("widget.title.regular"),
+                        style: Styles().textStyles.getTextStyle("widget.title.dark.regular"),
                         onChanged: (text){setState(() {});},
                         minLines: 4,
                         maxLines: 999,
@@ -243,8 +250,10 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                 progress: _updating,
                 onTap: () {
-                  Analytics().logSelect(target: 'Apply');
-                  _processMembership();
+                  if(_approved || (_denied && _reasonController.text.isNotEmpty)){
+                    Analytics().logSelect(target: 'Apply');
+                    _processMembership();
+                  }
                 },
               ),
             )
@@ -261,6 +270,7 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
       _updating = true;
     });
 
+    widget.member?.status = _approved ? GroupMemberStatus.member : GroupMemberStatus.rejected;
     Groups().acceptMembership(widget.group, widget.member, _approved, _reasonController.text).then((bool result) {
       if (mounted) {
         setState(() {

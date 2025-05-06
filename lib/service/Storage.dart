@@ -15,8 +15,8 @@
  */
 
 import 'package:flutter/foundation.dart';
-import 'package:neom/model/Assistant.dart';
-import 'package:neom/service/Config.dart';
+import 'package:illinois/model/Assistant.dart';
+import 'package:illinois/service/Config.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
@@ -84,17 +84,22 @@ class Storage extends rokwire.Storage {
   bool? get onBoardingPassed => getBoolWithName(onBoardingPassedKey, defaultValue: false);
   set onBoardingPassed(bool? showOnBoarding) => setBoolWithName(onBoardingPassedKey, showOnBoarding);
 
-  static const String onBoardingExploreChoiceKey  = 'on_boarding_explore_campus';
-  bool? get onBoardingExploreCampus => getBoolWithName(onBoardingExploreChoiceKey, defaultValue: true);
-  set onBoardingExploreCampus(bool? exploreCampus) => setBoolWithName(onBoardingExploreChoiceKey, exploreCampus);
+  // On Boarding2
+  static const String onBoarding2PrivacyReturningUserKey  = 'onBoarding2PrivacyReturningUser';
+  bool? get onBoarding2PrivacyReturningUser => getBoolWithName(onBoarding2PrivacyReturningUserKey, defaultValue: false);
+  set onBoarding2PrivacyReturningUser(bool? value) => setBoolWithName(onBoarding2PrivacyReturningUserKey, value);
 
-  static const String onBoardingPersonalizeChoiceKey  = 'on_boarding_personalize';
-  bool? get onBoardingPersonalizeChoice => getBoolWithName(onBoardingPersonalizeChoiceKey, defaultValue: true);
-  set onBoardingPersonalizeChoice(bool? personalize) => setBoolWithName(onBoardingPersonalizeChoiceKey, personalize);
+  static const String onBoarding2PrivacyLocationServicesSelectionKey  = 'onBoarding2PrivacyLocationServicesSelection';
+  bool? get onBoarding2PrivacyLocationServicesSelection => getBoolWithName(onBoarding2PrivacyLocationServicesSelectionKey, defaultValue: true);
+  set onBoarding2PrivacyLocationServicesSelection(bool? value) => setBoolWithName(onBoarding2PrivacyLocationServicesSelectionKey, value);
 
-  static const String onBoardingImproveChoiceKey  = 'on_boarding_improve';
-  bool? get onBoardingImproveChoice => getBoolWithName(onBoardingImproveChoiceKey, defaultValue: true);
-  set onBoardingImproveChoice(bool? personalize) => setBoolWithName(onBoardingImproveChoiceKey, personalize);
+  static const String onBoarding2PrivacyStoreActivitySelectionKey  = 'onBoarding2PrivacyStoreActivitySelection';
+  bool? get onBoarding2PrivacyStoreActivitySelection => getBoolWithName(onBoarding2PrivacyStoreActivitySelectionKey, defaultValue: true);
+  set onBoarding2PrivacyStoreActivitySelection(bool? value) => setBoolWithName(onBoarding2PrivacyStoreActivitySelectionKey, value);
+
+  static const String onBoarding2PrivacyShareActivitySelectionKey  = 'onBoarding2PrivacyShareActivitySelection';
+  bool? get onBoarding2PrivacyShareActivitySelection => getBoolWithName(onBoarding2PrivacyShareActivitySelectionKey, defaultValue: true);
+  set onBoarding2PrivacyShareActivitySelection(bool? value) => setBoolWithName(onBoarding2PrivacyShareActivitySelectionKey, value);
 
   // Privacy Update Version
   static const String privacyUpdateVersionKey  = 'privacy_update_version';

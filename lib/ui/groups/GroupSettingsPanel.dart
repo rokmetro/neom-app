@@ -16,30 +16,30 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/ui/groups/GroupAdvancedSettingsPanel.dart';
-import 'package:neom/ui/attributes/ContentAttributesPanel.dart';
-import 'package:neom/ui/groups/GroupsContentSettingsPanel.dart';
-import 'package:neom/ui/research/ResearchProjectProfilePanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/ui/widgets/SmallRoundedButton.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/ui/groups/GroupAdvancedSettingsPanel.dart';
+import 'package:illinois/ui/attributes/ContentAttributesPanel.dart';
+import 'package:illinois/ui/groups/GroupsContentSettingsPanel.dart';
+import 'package:illinois/ui/research/ResearchProjectProfilePanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/SmallRoundedButton.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/config.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/log.dart';
 import 'package:rokwire_plugin/ui/panels/modal_image_holder.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:rokwire_plugin/ui/widgets/triangle_painter.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
-import 'package:neom/ui/groups/GroupMembershipQuestionsPanel.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/groups/GroupMembershipQuestionsPanel.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:sprintf/sprintf.dart';
@@ -444,7 +444,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
     if (_linkController.text.isNotEmpty) {
       Uri? uri = Uri.tryParse(_linkController.text);
       if (uri != null) {
-        Uri? fixedUri = UrlUtils.fixUri(uri);
+        Uri? fixedUri = uri.fix();
         if (fixedUri != null) {
           _linkController.text = fixedUri.toString();
           uri = fixedUri;
@@ -598,7 +598,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8,vertical: 12),
               child:Text(longDescription ?? '',
-                style: Styles().textStyles.getTextStyle("widget.item.small.thin.highlight"),
+                style: Styles().textStyles.getTextStyle("widget.item.light.small.thin"),
             ),)),
           Container(height: 8,)
       ],));
@@ -637,7 +637,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
                       padding: EdgeInsets.only(left: 8, right: 8, top: 12),
                       child: Text(
                           Localization().getStringEx("panel.groups.common.private.search.hidden.description", "A hidden group is unsearchable."),
-                          style: Styles().textStyles.getTextStyle("widget.item.small.thin.highlight"))))
+                          style: Styles().textStyles.getTextStyle("widget.item.light.small.thin"))))
             ])));
   }
 
@@ -928,7 +928,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
 
   //Buttons
   Widget _buildButtonsLayout() {
-    return SafeArea(child: Container( color: Styles().colors.background,
+    return Container( color: Styles().colors.background,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Center(
         child:
@@ -965,7 +965,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
           ],)
         ],),
       )
-      ,),);
+      ,);
   }
 
   void _onCloseTap() async {
@@ -1179,7 +1179,7 @@ class _GroupSettingsPanelState extends State<GroupSettingsPanel> {
             Text(title, style: Styles().textStyles.getTextStyle("widget.title.tiny.highlight")),
           ),
           ((description != null) && description.isNotEmpty) ? Container(padding: EdgeInsets.only(top: 2), child:
-              Text(description, style: Styles().textStyles.getTextStyle("widget.item.small.thin.highlight")),
+              Text(description, style: Styles().textStyles.getTextStyle("widget.item.light.small.thin")),
             ) : Container(),
         ],),
       )

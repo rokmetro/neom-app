@@ -17,8 +17,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/IlliniCash.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/IlliniCash.dart';
 import 'package:rokwire_plugin/service/flex_ui.dart' as rokwire;
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/service.dart';
@@ -87,24 +87,26 @@ class FlexUI extends rokwire.FlexUI {
 
   bool get isMTDBusPassAvailable => hasFeature('mtd_bus_pass');
   bool get isMessagesAvailable => hasFeature('messages');
+  bool get isSafeWalkAvailable => hasFeature('safewalk_request');
+  bool get isPrivacyAvailable => hasFeature('privacy');
 
   // Local Build
 
   @override
-  bool localeIsEntryAvailable(String entry, { String? group, required Map<String, dynamic> rules }) {
+  bool localeIsEntryAvailable(String entry, { String? group, required Map<String, dynamic> rules, rokwire.FlexUiBuildContext? buildContext }) {
 
     String? pathEntry = (group != null) ? '$group.$entry' : null;
 
     Map<String, dynamic>? illiniCashRules = rules['illini_cash'];
     dynamic illiniCashRule = (illiniCashRules != null) ? (((pathEntry != null) ? illiniCashRules[pathEntry] : null) ?? illiniCashRules[entry])  : null;
-    if ((illiniCashRule != null) && !_localeEvalIlliniCashRule(illiniCashRule)) {
+    if ((illiniCashRule != null) && !_localeEvalIlliniCashRule(illiniCashRule, buildContext: buildContext)) {
       return false;
     }
 
-    return super.localeIsEntryAvailable(entry, group: group, rules: rules);
+    return super.localeIsEntryAvailable(entry, group: group, rules: rules, buildContext: buildContext);
   }
 
-  static bool _localeEvalIlliniCashRule(dynamic illiniCashRule) {
+  static bool _localeEvalIlliniCashRule(dynamic illiniCashRule, { rokwire.FlexUiBuildContext? buildContext }) {
     bool result = true;  // allow everything that is not defined or we do not understand
     if (illiniCashRule is Map) {
       illiniCashRule.forEach((dynamic key, dynamic value) {
@@ -120,8 +122,8 @@ class FlexUI extends rokwire.FlexUI {
   }
 
   @override
-  bool localeEvalAuthRule(dynamic authRule) {
-    bool result = super.localeEvalAuthRule(authRule);
+  bool localeEvalAuthRule(dynamic authRule, { rokwire.FlexUiBuildContext? buildContext }) {
+    bool result = super.localeEvalAuthRule(authRule, buildContext: buildContext);
     if (result && (authRule is Map)) {
       authRule.forEach((dynamic key, dynamic value) {
         if (key is String) {

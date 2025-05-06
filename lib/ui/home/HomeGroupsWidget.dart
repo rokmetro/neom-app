@@ -5,20 +5,20 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/groups/GroupsHomePanel.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeWidgets.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
-import 'package:neom/ui/widgets/SemanticsWidgets.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/groups/GroupsHomePanel.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeWidgets.dart';
+import 'package:illinois/ui/widgets/LinkButton.dart';
+import 'package:illinois/ui/widgets/SemanticsWidgets.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
-import 'package:neom/service/Config.dart';
+import 'package:illinois/service/Config.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
@@ -51,16 +51,10 @@ class _HomeGroupsSectionWidgetState extends State<HomeGroupsSectionWidget> {
   }
 
   Widget get _widgetContent {
-    LinkedHashSet<String>? favorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
-    bool hasMyGroups = favorites?.contains('my_groups') ?? false;
-    bool hasAllGroups = favorites?.contains('all_groups') ?? false;
     return Column(children: [
-      if (hasMyGroups)
-        HomeGroupsWidget(contentType: GroupsContentType.my, updateController: widget.updateController,),
-      if (hasMyGroups && hasAllGroups)
-        Container(height: 16),
-      if (hasAllGroups)
-        HomeGroupsWidget(contentType: GroupsContentType.all, updateController: widget.updateController,),
+      HomeGroupsWidget(contentType: GroupsContentType.my, updateController: widget.updateController,),
+      Container(height: 16),
+      HomeGroupsWidget(contentType: GroupsContentType.all, updateController: widget.updateController,),
     ],);
   }
 }

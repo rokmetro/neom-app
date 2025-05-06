@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/service/events2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -38,7 +38,7 @@ class Event2AttendanceTakerPanel extends StatelessWidget with AnalyticsInfo {
         ),
       ),
     ),
-    backgroundColor: Styles().colors.surface,
+    backgroundColor: Styles().colors.background,
   );
 
   Future<void> _onRefresh() async {
@@ -197,7 +197,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
 
           (description != null) ? Row(children: [
             Expanded(child:
-              Text(description, style: descriptionTextStyle ?? valueTextStyle ?? Event2CreatePanel.headingTextStype,)
+              Text(description, style: descriptionTextStyle ?? valueTextStyle ?? Event2CreatePanel.headingTextStyle,)
             )
           ],) : Container()
 
@@ -272,7 +272,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
             Text(_hasError ?
               Localization().getStringEx("panel.event2.detail.attendance.attendees.failed.text", "Failed to load attendees list.") :
               Localization().getStringEx("panel.event2.detail.attendance.attendees.empty.text", "There are no users registered or attending for this event yet."),
-              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.thin.italic'),),
+              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic'),),
           )
         ],)
       );
@@ -413,7 +413,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
 
   Widget _buildManualNetIdInputSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.detail.attendance.manual.netid.label', 'Add NetID(s) as attended:'),
-      titleTextStyle: widget.manualCheckEnabled ? Event2CreatePanel.headingTextStype : Event2CreatePanel.headingDisabledTextStype,
+      titleTextStyle: widget.manualCheckEnabled ? Event2CreatePanel.headingTextStyle : Event2CreatePanel.headingDisabledTextStyle,
     ),
     body: _buildManualNetIdInputWidget() ,
   );
@@ -543,9 +543,9 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   Widget _buildScanIlliniIdSection() => Event2CreatePanel.buildSectionWidget(body:
     RoundedButton(
       label: Localization().getStringEx('panel.event2.detail.attendance.scan.button', 'Scan ID'),
-      textStyle: Styles().textStyles.getTextStyle(widget.scanEnabled ? 'widget.button.title.large.fat' : 'widget.button.title.large.fat'),
+      textStyle: Styles().textStyles.getTextStyle(widget.scanEnabled ? 'widget.button.light.title.large.fat' : 'widget.button.title.large.fat.variant3'),
       borderColor: widget.scanEnabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
-      backgroundColor: Styles().colors.surface,
+      backgroundColor: Styles().colors.background,
       onTap: _onTapScanButton,
       contentWeight: 0.5,
       progress: _scanning,

@@ -21,34 +21,34 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/ui/athletics/AthleticsGameDetailPanel.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2DetailPanel.dart';
-import 'package:neom/ui/events2/Event2HomePanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/groups/GroupAboutContentWidget.dart';
-import 'package:neom/ui/groups/GroupMemberNotificationsPanel.dart';
-import 'package:neom/ui/groups/GroupMembersPanel.dart';
-import 'package:neom/ui/groups/GroupPostDetailPanel.dart';
-import 'package:neom/ui/groups/GroupPostReportAbuse.dart';
-import 'package:neom/ui/groups/GroupSettingsPanel.dart';
-import 'package:neom/ui/polls/PollWidgets.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/InfoPopup.dart';
-import 'package:neom/ui/widgets/QrCodePanel.dart';
-import 'package:neom/ui/widgets/TextTabBar.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/ui/athletics/AthleticsGameDetailPanel.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2DetailPanel.dart';
+import 'package:illinois/ui/events2/Event2HomePanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/groups/GroupAboutContentWidget.dart';
+import 'package:illinois/ui/groups/GroupMemberNotificationsPanel.dart';
+import 'package:illinois/ui/groups/GroupMembersPanel.dart';
+import 'package:illinois/ui/groups/GroupPostDetailPanel.dart';
+import 'package:illinois/ui/groups/GroupPostReportAbuse.dart';
+import 'package:illinois/ui/groups/GroupSettingsPanel.dart';
+import 'package:illinois/ui/polls/PollWidgets.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/InfoPopup.dart';
+import 'package:illinois/ui/widgets/QrCodePanel.dart';
+import 'package:illinois/ui/widgets/TextTabBar.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/ext/Social.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/ext/Social.dart';
 import 'package:rokwire_plugin/model/poll.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
@@ -60,18 +60,18 @@ import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/log.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/polls.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/ui/groups/GroupAllEventsPanel.dart';
-import 'package:neom/ui/groups/GroupMembershipRequestPanel.dart';
-import 'package:neom/ui/groups/GroupPollListPanel.dart';
-import 'package:neom/ui/groups/GroupPostCreatePanel.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
-import 'package:neom/ui/polls/CreatePollPanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/ui/groups/GroupAllEventsPanel.dart';
+import 'package:illinois/ui/groups/GroupMembershipRequestPanel.dart';
+import 'package:illinois/ui/groups/GroupPollListPanel.dart';
+import 'package:illinois/ui/groups/GroupPostCreatePanel.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/polls/CreatePollPanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/service/social.dart';
 import 'package:rokwire_plugin/ui/panels/modal_image_holder.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
@@ -1266,25 +1266,25 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                     visible: _canCreatePost,
                     child: RibbonButton(
                         leftIconKey: "plus-circle",
-                        label: Localization().getStringEx("panel.group_detail.button.create_post.title", "Post"),
+                        label: Localization().getStringEx("panel.group_detail.button.create_post.title", "Create post"),
                         onTap: () {
                           Navigator.of(context).pop();
                           _onTapCreatePost();
                         })),
-                Visibility(
-                    visible: _canCreateMessage,
-                    child: RibbonButton(
-                        leftIconKey: "plus-circle",
-                        label: Localization().getStringEx("panel.group_detail.button.create_message.title", "Message"),//localize tbd
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _onTapCreatePost(type: PostType.direct_message);
-                        })),
+                // Visibility(
+                //     visible: _canCreateMessage,
+                //     child: RibbonButton(
+                //         leftIconKey: "plus-circle",
+                //         label: Localization().getStringEx("panel.group_detail.button.create_message.title", "Message"),//localize tbd
+                //         onTap: () {
+                //           Navigator.of(context).pop();
+                //           _onTapCreatePost(type: PostType.direct_message);
+                //         })),
                 Visibility(
                     visible: _canAddEvent,
                     child: RibbonButton(
                         leftIconKey: "plus-circle",
-                        label: Localization().getStringEx("_panel.group_detail.button.group.create_event.title", "New event"),
+                        label: Localization().getStringEx("panel.group_detail.button.group.create_event.title", "Create new event"),
                         onTap: (){
                           Navigator.pop(context);
                           _onTapCreateEvent();
@@ -1293,7 +1293,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                     visible: _canAddEvent,
                     child: RibbonButton(
                         leftIconKey: "plus-circle",
-                        label: Localization().getStringEx("_panel.group_detail.button.group.add_event.title", "Existing event"),//localize
+                        label: Localization().getStringEx("panel.group_detail.button.group.add_event.title", "Add existing event"),//localize
                         onTap: (){
                           Navigator.pop(context);
                           _onTapBrowseEvents();
@@ -1302,7 +1302,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
                     visible: _canCreatePoll,
                     child: RibbonButton(
                         leftIconKey: "plus-circle",
-                        label: Localization().getStringEx("panel.group_detail.button.group.create_poll.title", "Poll"), //tbd localize
+                        label: Localization().getStringEx("panel.group_detail.button.group.create_poll.title", "Create poll"), //tbd localize
                         onTap: (){
                           Navigator.pop(context);
                           _onTapCreatePoll();
@@ -1562,7 +1562,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with TickerProvider
   void _onTapBrowseEvents(){
     Analytics().logSelect(target: "Browse Events", attributes: _group?.analyticsAttributes);
     if (_group != null) {
-      Event2HomePanel.present(context, eventSelector: GroupEventSelector2(_group!), analyticsFeature: widget.analyticsFeature);
+      Event2HomePanel.present(context, eventSelector: GroupEventSelector2(_group!), timeFilter: Event2TimeFilter.upcoming, analyticsFeature: widget.analyticsFeature, showPast: false);
     }
   }
 
@@ -1657,9 +1657,9 @@ class GroupEventSelector2 extends Event2Selector2 {
         hint: (group.researchProject == true) ?
         Localization().getStringEx('panel.explore_detail.button.add_to_project.hint', '') :
         Localization().getStringEx('panel.explore_detail.button.add_to_group.hint', ''),
-        textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-        backgroundColor: Colors.white,
-        borderColor: Styles().colors.fillColorPrimary,
+        textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+        backgroundColor: Styles().colors.background,
+        borderColor: Styles().colors.fillColorSecondary,
         progress: state.bindingInProgress,
         onTap: () => _onAddEventToGroup(state, event),
       ),
@@ -1963,7 +1963,6 @@ class _GroupPostsState extends State<_GroupPostsContent> with AutomaticKeepAlive
         key: (i == 0) ? lastPostKey : null,
         post: post,
         group: _group!,
-        pinned: post.pinned,
         isAdmin: post.creator?.findAsMember(groupMembers: widget.groupAdmins)?.isAdmin
       ));
       }
@@ -2416,7 +2415,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
     if ((_group != null) && _group!.currentUserIsMemberOrAdmin && (_refreshingMessages != true)) {
       int limit = _messages.length + (delta ?? 0);
       _refreshingMessages = true;
-      Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? messages) {
+      Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, showCommentsCount: true, offset: 0, limit: limit, order: SocialSortOrder.desc).then((List<Post>? messages) {
         _refreshingMessages = false;
         if (mounted && (messages != null)) {
           setState(() {
@@ -2450,7 +2449,7 @@ class _GroupMessagesState extends State<_GroupMessagesContent> with AutomaticKee
   }
 
   Future<void> _loadMessagesPage() async {
-    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
+    List<Post>? messagesPage = await Social().loadPosts(groupId: _group?.id, type: PostType.direct_message, showCommentsCount: true, offset: _messages.length, limit: _GroupDetailPanelState._postsPageSize, order: SocialSortOrder.desc);
     if (messagesPage != null) {
       _messages.addAll(messagesPage);
       if (messagesPage.length < _GroupDetailPanelState._postsPageSize) {

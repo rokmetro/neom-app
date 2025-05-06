@@ -16,26 +16,26 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/ui/groups/GroupAdvancedSettingsPanel.dart';
-import 'package:neom/ui/attributes/ContentAttributesPanel.dart';
-import 'package:neom/ui/groups/GroupsContentSettingsPanel.dart';
-import 'package:neom/ui/research/ResearchProjectProfilePanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/ui/groups/GroupAdvancedSettingsPanel.dart';
+import 'package:illinois/ui/attributes/ContentAttributesPanel.dart';
+import 'package:illinois/ui/groups/GroupsContentSettingsPanel.dart';
+import 'package:illinois/ui/research/ResearchProjectProfilePanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/config.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/log.dart';
-import 'package:neom/ui/groups/GroupMembershipQuestionsPanel.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/groups/GroupMembershipQuestionsPanel.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/panels/modal_image_holder.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
@@ -390,7 +390,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
             title: title,
             titleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'),
             description: description,
-            descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
+            descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.light.small.thin'),
           ),
           Container(height: 5,),
           Container(
@@ -488,7 +488,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
     if (_linkController.text.isNotEmpty) {
       Uri? uri = Uri.tryParse(_linkController.text);
       if (uri != null) {
-        Uri? fixedUri = UrlUtils.fixUri(uri);
+        Uri? fixedUri = uri.fix();
         if (fixedUri != null) {
           _linkController.text = fixedUri.toString();
           uri = fixedUri;
@@ -508,7 +508,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
     return Visibility(visible: _isResearchProject, child:
       Container(padding: EdgeInsets.symmetric(horizontal: 16), child:
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-          GroupSectionTitle(title: title, titleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'), descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),),
+          GroupSectionTitle(title: title, titleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'), descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.light.small.thin'),),
           Container(decoration: BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1), color: Styles().colors.surface), child:
             Row(children: [
               Expanded(child:
@@ -609,7 +609,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
               description: _isResearchProject?
                 Localization().getStringEx("panel.groups_create.attributes.project_description", "Attributes help you provide more information."):
                 Localization().getStringEx("panel.groups_create.attributes.description", "Attributes help people understand more about your group."),
-              descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
+              descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.light.small.thin'),
               requiredMark: (!_isResearchProject) && (Groups().contentAttributes?.hasRequired(contentAttributeRequirementsFunctionalScopeCreate) ?? false),  //can we remove the * at the end of the label "Attributes" as it does not work here. //If you decide to fix this and keep the * then change the description text from...
             )
           ),
@@ -712,7 +712,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
         Semantics(container: true, child:
           Container(padding: EdgeInsets.symmetric(horizontal: 24,vertical: 12),
             child:Text(longDescription ?? '',
-              style: Styles().textStyles.getTextStyle("widget.item.small.thin.highlight")
+              style: Styles().textStyles.getTextStyle("widget.item.light.small.thin")
             ),)),
         Container(height: _isPrivateGroup ? 5 : 40)
       ],);
@@ -747,7 +747,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                       child: Text(
                           Localization()
                               .getStringEx("panel.groups.common.private.search.hidden.description", "A hidden group is unsearchable."),
-                          style: Styles().textStyles.getTextStyle("widget.item.small.thin.highlight"))))
+                          style: Styles().textStyles.getTextStyle("widget.item.light.small.thin"))))
             ])));
   }
 
@@ -917,7 +917,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                 GroupSectionTitle(
                   title: Localization().getStringEx("panel.groups_create.authman.group.name.label", "Membership name"),
                   titleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.highlight'),
-                  descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
+                  descriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.light.small.thin'),
                   requiredMark: true
                 ),
                 Container(
@@ -1150,7 +1150,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                         Expanded(
                           flex: 3,
                           child: Container(
-                          decoration: BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1),color: Styles().colors.white),
+                          decoration: BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1),color: Styles().colors.surface),
                           child: TextField(
                             controller: _groupNetIdsController,
                             maxLines: 1,
@@ -1252,7 +1252,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
 
   bool get _canSave {
     return StringUtils.isNotEmpty(_group?.title) &&
-        (Groups().contentAttributes?.isSelectionValid(_group?.attributes) ?? false) &&
+        // (Groups().contentAttributes?.isSelectionValid(_group?.attributes) ?? false) &&
         (!(_group?.authManEnabled ?? false) || (StringUtils.isNotEmpty(_group?.authManGroupName))) &&
         ((_group?.researchProject != true) || !_researchRequiresConsentConfirmation || StringUtils.isNotEmpty(_group?.researchConsentStatement)) &&
         ((_group?.researchProject != true) || (_researchProfileQuestionsCount >= 0));

@@ -15,34 +15,40 @@
  */
 
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/foundation.dart';
-import 'package:neom/service/AppDateTime.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Questionnaire.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/Content.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/service/IlliniCash.dart';
-import 'package:neom/service/NativeCommunicator.dart';
-import 'package:neom/service/Onboarding.dart';
-import 'package:neom/service/Onboarding2.dart';
-import 'package:neom/service/RecentItems.dart';
-import 'package:neom/service/Services.dart' as neom;
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Storage.dart';
+import 'package:illinois/model/Questionnaire.dart';
+import 'package:illinois/service/AppDateTime.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Polls.dart';
+import 'package:illinois/service/Questionnaire.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/Content.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/service/IlliniCash.dart';
+import 'package:illinois/service/NativeCommunicator.dart';
+import 'package:illinois/service/Onboarding2.dart';
+import 'package:illinois/service/RecentItems.dart';
+import 'package:illinois/service/Services.dart' as neom;
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Storage.dart';
 
-import 'package:neom/ui/onboarding/OnboardingErrorPanel.dart';
-import 'package:neom/ui/onboarding/OnboardingUpgradePanel.dart';
+import 'package:illinois/ui/onboarding/OnboardingErrorPanel.dart';
+import 'package:illinois/ui/onboarding/OnboardingUpgradePanel.dart';
 
-import 'package:neom/ui/RootPanel.dart';
-import 'package:neom/ui/onboarding2/Onboarding2ProfileInfoPanel.dart';
-import 'package:neom/ui/profile/ProfileLoginPasskeyPanel.dart';
-import 'package:neom/ui/widgets/FlexContent.dart';
+import 'package:illinois/ui/RootPanel.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2RolesPanel.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2ProfileInfoPanel.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2ResearchQuestionnaireAcknowledgementPanel.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2ResearchQuestionnairePanel.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2ResearchQuestionnairePromptPanel.dart';
+import 'package:illinois/ui/profile/ProfileLoginPasskeyPanel.dart';
+import 'package:illinois/ui/widgets/FlexContent.dart';
 
 import 'package:rokwire_plugin/service/config.dart' as rokwire;
 import 'package:rokwire_plugin/service/device_calendar.dart';
@@ -111,8 +117,8 @@ void mainImpl({ rokwire.ConfigEnvironment? configEnvironment }) async {
       // Dinings(),
       IlliniCash(),
       FlexUI(),
-      Onboarding(),
-      // Polls(),
+      Onboarding2(),
+      Polls(),
       GeoFence(),
       // Guide(),
       Inbox(),
@@ -232,6 +238,11 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
 
     _checkForceOnboarding();
 
+    if (Auth2().isLoggedIn && !Auth2().isAuthenticated && !Auth2().hasPasskeyForPlatform) {
+      // cannot link a passkey when user is not newly authenticated
+      Auth2().logout();
+    }
+
     if ((_lastRunVersion == null) || (_lastRunVersion != Config().appVersion)) {
       Storage().lastRunVersion = Config().appVersion;
     }
@@ -268,20 +279,7 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
         navigatorObservers:[AppNavigation()],
         //onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
         title: Localization().getStringEx('app.title', 'Illinois'),
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(backgroundColor: Styles().colors.fillColorPrimaryVariant),
-          dialogTheme: DialogTheme(
-            backgroundColor: Styles().colors.surface,
-            contentTextStyle: Styles().textStyles.getTextStyle('widget.message.medium.thin'),
-            titleTextStyle: Styles().textStyles.getTextStyle('widget.message.medium'),
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(textStyle: WidgetStateProperty.all(Styles().textStyles.getTextStyle('widget.message.medium.thin'))),
-          ),
-          primaryColor: Styles().colors.fillColorPrimaryVariant,
-          colorScheme: ColorScheme.dark(primary: Styles().colors.fillColorSecondary,
-              secondary: Styles().colors.fillColorPrimary),
-          fontFamily: Styles().fontFamilies.regular),
+        theme: _appTheme,
         home: _homePanel,
       ),
     );
@@ -291,17 +289,20 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
     if (_initializeError != null) {
       return OnboardingErrorPanel(error: _initializeError, retryHandler: _retryInitialze);
     }
-    if (_upgradeRequiredVersion != null) {
+    else if (_upgradeRequiredVersion != null) {
       return OnboardingUpgradePanel(requiredVersion:_upgradeRequiredVersion);
     }
     else if (_upgradeAvailableVersion != null) {
       return OnboardingUpgradePanel(availableVersion:_upgradeAvailableVersion);
     }
-    else if (!Storage().onBoardingPassed! || !Auth2().isLoggedIn) {
+    else if (!Auth2().isLoggedIn || !Auth2().hasPasskeyForPlatform) {
       return ProfileLoginPasskeyPanel(onboardingContext: _onboardingContext,);
     }
+    else if (!(ListUtils.contains(Auth2().prefs?.roles, UserRole.values) ?? false)) {
+      return Onboarding2RolesPanel(onboardingContext: _onboardingContext,);
+    }
     else if (StringUtils.isEmpty(Auth2().fullName)) {
-      return Onboarding2ProfileInfoPanel(onboardingContext: _onboardingContext);
+      return Onboarding2ProfileInfoPanel(onboardingContext: _onboardingContext,);
     }
     // else if ((Storage().privacyUpdateVersion == null) || (AppVersion.compareVersions(Storage().privacyUpdateVersion, Config().appPrivacyVersion) < 0)) {
     //   return SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.update,);
@@ -310,20 +311,46 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
     //   return SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.update,); // regular?
     // }
     else if ((Storage().participateInResearchPrompted != true) && (Questionnaires().participateInResearch == null) && Auth2().isOidcLoggedIn) {
-      return Onboarding2().researhQuestionnairePromptPanel(invocationContext: {
-        "onFinishResearhQuestionnaireActionEx": (BuildContext context) {
-          if (mounted) {
-            setState(() {
-              Storage().participateInResearchPrompted = true;
-            });
-            Navigator.of(context).popUntil((route) => route.isFirst);
-          }
-        }
-      });
+      return Onboarding2ResearchQuestionnairePromptPanel(
+        onContinue: _didPromptParticipateInResearch,
+      );
     }
     else {
       return RootPanel();
     }
+  }
+
+  void _didPromptParticipateInResearch(BuildContext context, Onboarding2Panel panel, bool? participateInResearch) async {
+    if (participateInResearch == true) {
+      panel.onboardingProgress = true;
+      Questionnaire? questionnaire = await Questionnaires().loadResearch();
+      Map<String, LinkedHashSet<String>>? questionnaireAnswers = Auth2().profile?.getResearchQuestionnaireAnswers(questionnaire?.id);
+      panel.onboardingProgress = false;
+      if (questionnaireAnswers?.isNotEmpty ?? false) {
+        _didFinishParticipateInResearch(context);
+      }
+      else if (context.mounted) {
+        Navigator.push(context, CupertinoPageRoute(builder: (context) => Onboarding2ResearchQuestionnairePanel(
+          onContinue: () => _didResearchQuestionnaire(context),
+        )));
+      }
+    }
+    else {
+      _didFinishParticipateInResearch(context);
+    }
+  }
+
+  void _didResearchQuestionnaire(BuildContext context) {
+    if (context.mounted) {
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => Onboarding2ResearchQuestionnaireAcknowledgementPanel(
+        onContinue: () => _didResearchQuestionnaire(context),
+      )));
+    }
+  }
+
+  void _didFinishParticipateInResearch(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    setState(() {});
   }
 
   void _resetUI() async {
@@ -399,6 +426,24 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
     }
   }
 
+  // App Theme
+
+  ThemeData get _appTheme => ThemeData(
+    appBarTheme: AppBarTheme(backgroundColor: Styles().colors.fillColorPrimaryVariant),
+    dialogTheme: DialogTheme(
+      backgroundColor: Styles().colors.surface,
+      contentTextStyle: Styles().textStyles.getTextStyle('widget.message.medium.thin'),
+      titleTextStyle: Styles().textStyles.getTextStyle('widget.message.medium'),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(textStyle: WidgetStateProperty.all(Styles().textStyles.getTextStyle('widget.message.medium.thin'))),
+    ),
+    primaryColor: Styles().colors.fillColorPrimaryVariant,
+    colorScheme: ColorScheme.dark(primary: Styles().colors.fillColorSecondary,
+        secondary: Styles().colors.fillColorPrimary),
+    fontFamily: Styles().fontFamilies.regular
+  );
+
   // NotificationsListener
 
   @override
@@ -453,6 +498,11 @@ class _AppState extends State<App> with TickerProviderStateMixin implements Noti
   void _onAppLifecycleStateChanged(AppLifecycleState? state) {
     if (state == AppLifecycleState.paused) {
       _pausedDateTime = DateTime.now();
+      /* TMP:
+      setState(() {
+        Storage().onBoardingPassed = false;
+        _key = UniqueKey();
+      });*/
     }
     else if (state == AppLifecycleState.resumed) {
       if (_initializeError != null) {

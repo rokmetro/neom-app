@@ -21,9 +21,9 @@ import 'package:rokwire_plugin/service/connectivity.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/polls.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
-import 'package:neom/service/Polls.dart' as illinois;
+import 'package:illinois/service/Polls.dart' as illinois;
 
 class PollBubblePinPanel extends StatefulWidget {
 
@@ -268,7 +268,7 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
             backgroundColor: Styles().colors.fillColorSecondaryVariant,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             progress: _loading,
-            borderColor: Styles().colors.fillColorSecondary,
+            borderColor: Styles().colors.fillColorSecondaryVariant,
             onTap: _onContinue
           ),       
       );

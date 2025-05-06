@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/ui/onboarding2/Onboarding2Widgets.dart';
-import 'package:neom/ui/profile/ProfileLoginCodePanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/ui/widgets/SlantedWidget.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/ui/onboarding2/Onboarding2Widgets.dart';
+import 'package:illinois/ui/profile/ProfileLoginCodePanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/widgets/SlantedWidget.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -27,9 +27,6 @@ class ProfileLoginPhoneOrEmailPanel extends StatefulWidget with OnboardingPanel 
   ProfileLoginPhoneOrEmailPanel({this.onboardingContext, this.mode = SettingsLoginPhoneOrEmailMode.both, this.link, this.identifier, this.onFinish });
 
   _ProfileLoginPhoneOrEmailPanelState createState() => _ProfileLoginPhoneOrEmailPanelState();
-
-  @override
-  bool get onboardingCanDisplay => !Auth2().isLoggedIn;
 }
 
 class _ProfileLoginPhoneOrEmailPanelState extends State<ProfileLoginPhoneOrEmailPanel>  {

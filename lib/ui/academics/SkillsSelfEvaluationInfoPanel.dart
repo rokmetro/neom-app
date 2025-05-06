@@ -14,9 +14,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/ui/academics/SkillsSelfEvaluation.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/academics/SkillsSelfEvaluation.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/panels/web_panel.dart';
@@ -146,7 +146,7 @@ class SkillsSelfEvaluationInfoPanel extends StatelessWidget {
   }
 
   void _onTapLink(BuildContext context, SkillsSelfEvaluationLink link) {
-    if (link.internal && UrlUtils.launchInternal(link.url)) {
+    if (link.internal && UrlUtils.canLaunchInternal(link.url)) {
       Navigator.push(context, CupertinoPageRoute(builder: (context) => WebPanel(url: link.url)));
     } else if (link.url != null) {
       Uri? parsedUri = Uri.tryParse(link.url!);

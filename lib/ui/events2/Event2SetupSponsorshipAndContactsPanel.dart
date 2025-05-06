@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2SetupContactPanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/PopScopeFix.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2SetupContactPanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/PopScopeFix.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
@@ -47,7 +47,7 @@ class _Event2SetupSponsorshipAndContactsPanelState extends State<Event2SetupSpon
   Widget _buildScaffoldContent() => Scaffold(
     appBar: HeaderBar(title: Localization().getStringEx("panel.event2.setup.sponsorship_and_contacts.header.title", "Event Host Details"), onLeading: _onHeaderBack,),
     body: _buildPanelContent(),
-    backgroundColor: Styles().colors.surface,
+    backgroundColor: Styles().colors.background,
   );
 
   Widget _buildPanelContent() =>
@@ -118,7 +118,7 @@ class _Event2SetupSponsorshipAndContactsPanelState extends State<Event2SetupSpon
 
   Widget _buildEmptyContactsContent() => 
     Text(Localization().getStringEx('panel.event2.setup.sponsorship_and_contacts.contacts.label.empty.title', 'No contacts defined yet.'), style:
-      Styles().textStyles.getTextStyle('widget.description.regular'),);
+      Styles().textStyles.getTextStyle('widget.description.regular.light'),);
 
   Widget _buildContactsList() {
     List<Widget> contentList = <Widget>[];
@@ -205,7 +205,7 @@ class _Event2ContactCard extends StatelessWidget {
       Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(child:
           Padding(padding: EdgeInsets.only(top: 16, bottom: 8), child:
-            Text(contact.fullName, style: Styles().textStyles.getTextStyle('widget.title.dark.large.extra_fat'), overflow: TextOverflow.ellipsis, maxLines: 2,)
+            Text(contact.fullName, style: Styles().textStyles.getTextStyle('widget.title.large.extra_fat'), overflow: TextOverflow.ellipsis, maxLines: 2,)
           )
         ),
         _deleteButton
@@ -244,7 +244,7 @@ class _Event2ContactCard extends StatelessWidget {
     EdgeInsetsGeometry iconPadding = const EdgeInsets.only(right: 6),
   }) =>
     _buildDetailWidget(
-      Text(text, style: Styles().textStyles.getTextStyle('widget.explore.card.detail.regular'), overflow: TextOverflow.ellipsis, maxLines: 1),
+      Text(text, style: Styles().textStyles.getTextStyle('widget.item.light.small'), overflow: TextOverflow.ellipsis, maxLines: 1),
       iconKey,
       contentPadding: contentPadding,
       iconPadding: iconPadding,

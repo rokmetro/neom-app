@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/ui/polls/CreatePollPanel.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/ui/polls/CreatePollPanel.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/model/poll.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:rokwire_plugin/service/groups.dart';
@@ -12,8 +13,8 @@ import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/social.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -67,6 +68,8 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
         appBar: AppBar(
           leading: HeaderBackButton(),
           title: Text(
+            widget.type == PostType.direct_message ?
+            Localization().getStringEx('panel.group.detail.post.header.title.message', 'Message'):
             Localization().getStringEx('panel.group.detail.post.header.title', 'Post'),
             style: Styles().textStyles.getTextStyle("widget.heading.regular.extra_fat.light")
           ),
@@ -141,6 +144,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                           textStyle: CollectionUtils.isEmpty(_selectedMembers) ?
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled") :
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled"),
+                          backgroundColor: Styles().colors.background,
                           onTap: () {
                             if(mounted){
                               setState(() {
@@ -163,6 +167,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                             textStyle: CollectionUtils.isEmpty(_selectedMembers) ?
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.enabled") :
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled"),
+                            backgroundColor: Styles().colors.background,
                             onTap: () {
                               if(mounted){
                                 setState(() {
@@ -359,6 +364,9 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
           groupIds: groupIds, subject: subject, body: htmlModifiedBody, imageUrl: imageUrl, dateActivatedUtc: scheduleDate?.toUtc());
     } else {
       List<String>? memberAccountIds = MemberExt.extractUserIds(_selectedMembers);
+      if (CollectionUtils.isNotEmpty(memberAccountIds)) {
+        memberAccountIds!.add(Auth2().accountId!);
+      }
       post = Post.forGroup(
           groupId: _groupId,
           subject: subject,

@@ -5,16 +5,16 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeWidgets.dart';
-import 'package:neom/ui/polls/CreatePollPanel.dart';
-import 'package:neom/ui/polls/PollWidgets.dart';
-import 'package:neom/ui/polls/PollsHomePanel.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
-import 'package:neom/ui/widgets/SemanticsWidgets.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeWidgets.dart';
+import 'package:illinois/ui/polls/CreatePollPanel.dart';
+import 'package:illinois/ui/polls/PollWidgets.dart';
+import 'package:illinois/ui/polls/PollsHomePanel.dart';
+import 'package:illinois/ui/widgets/LinkButton.dart';
+import 'package:illinois/ui/widgets/SemanticsWidgets.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/model/poll.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
@@ -58,16 +58,10 @@ class _HomePollsSectionWidgetState extends State<HomePollsSectionWidget> {
   }
 
   Widget get _widgetContent {
-    LinkedHashSet<String>? favorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
-    // bool hasCreatePoll = favorites?.contains('create_poll') ?? false;
-    bool hasRecentPolls = favorites?.contains('recent_polls') ?? false;
     return Column(children: [
-      if (hasRecentPolls)
-        HomeRecentPollsWidget(updateController: widget.updateController,),
-      // if (hasRecentPolls && hasCreatePoll)
-      //   Container(height: 16),
-      // if (hasCreatePoll)
-      //   HomeCreatePollWidget(updateController: widget.updateController,),
+      HomeRecentPollsWidget(updateController: widget.updateController,),
+      // Container(height: 16),
+      // HomeCreatePollWidget(updateController: widget.updateController,),
     ],);
   }
 }
@@ -115,6 +109,7 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
       Polls.notifyStatusChanged,
       Polls.notifyVoteChanged,
       Polls.notifyResultsChanged,
+      Polls.notifyDeleted,
     ]);
 
     if (widget.updateController != null) {
@@ -170,13 +165,16 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
       _onPollCreated(param);
     }
     else if (name == Polls.notifyVoteChanged) {
-      _onPollUpdated(param);
+      _onVoteChanged(param);
     }
     else if (name == Polls.notifyResultsChanged) {
       _onPollUpdated(param);
     }
     else if (name == Polls.notifyStatusChanged) {
       _onPollUpdated(param);
+    }
+    else if (name == Polls.notifyDeleted) {
+      _onPollDeleted(param);
     }
   }
 
@@ -201,7 +199,7 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
     }
     else if (CollectionUtils.isEmpty(_recentPolls)) {
       return HomeMessageCard(
-        message: Localization().getStringEx("widget.home.recent_polls.text.empty.description", "No Recent Polls are available right now."),);
+        message: Localization().getStringEx("widget.home.recent_polls.text.empty.description", "No polls are available right now."),);
     }
     else {
       return _buildPollsContent();
@@ -439,6 +437,15 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
     }
   }
 
+  void _onVoteChanged(String? pollId) {
+    if (_recentPolls != null) {
+      Poll? poll = Polls().getPoll(pollId: pollId);
+      if (poll != null) {
+        _recentPolls?.insert(0, poll);
+      }
+    }
+  }
+
   void _updatePoll(Poll poll) {
     if (_recentPolls != null) {
       for (int index = 0; index < _recentPolls!.length; index++) {
@@ -446,6 +453,14 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> implement
           _recentPolls![index] = poll;
         }
       }
+    }
+  }
+
+  void _onPollDeleted(String? pollId) {
+    if (pollId != null) {
+      setStateIfMounted(() {
+        _recentPolls?.removeWhere((poll) => poll.pollId == pollId);
+      });
     }
   }
 }

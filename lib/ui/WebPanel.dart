@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import 'package:neom/model/Analytics.dart';
+import 'package:illinois/model/Analytics.dart';
 import 'package:rokwire_plugin/service/localization.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:flutter/material.dart';
 import 'package:sprintf/sprintf.dart';
 import 'package:rokwire_plugin/ui/panels/web_panel.dart' as rokwire;
@@ -28,8 +28,8 @@ class WebPanel extends rokwire.WebPanel with AnalyticsInfo {
   final Map<String, dynamic>? analyticsSource;
   final AnalyticsFeature? analyticsFeature; //This overrides AnalyticsInfo.analyticsFeature getter
 
-  WebPanel({Key? key, String? url, String? title, this.analyticsName, this.analyticsSource, this.analyticsFeature, bool showTabBar = true}) :
-    super(key: key, url: url, title: title, headerBar: HeaderBar(title: title), tabBar: showTabBar ? uiuc.TabBar() : null);
+  WebPanel({Key? key, String? url, Uri? uri, String? title, this.analyticsName, this.analyticsSource, this.analyticsFeature, bool showTabBar = true}) :
+    super(key: key, url: url, uri: uri, title: title, headerBar: HeaderBar(title: title), tabBar: showTabBar ? uiuc.TabBar() : null);
 
   @override
   String? get analyticsPageName {
@@ -39,7 +39,7 @@ class WebPanel extends rokwire.WebPanel with AnalyticsInfo {
   @override
   Map<String, dynamic> get analyticsPageAttributes {
     return {
-      Analytics.LogAttributeUrl : url,
+      Analytics.LogAttributeUrl : uri?.toString() ?? url,
       Analytics.LogAttributeSource: analyticsSource,
     };
   }

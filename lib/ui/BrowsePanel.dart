@@ -1,34 +1,34 @@
 import 'dart:async';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:universal_io/io.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/service/Storage.dart';
-import 'package:neom/ui/WebPanel.dart';
-import 'package:neom/ui/directory/DirectoryAccountsList.dart';
-import 'package:neom/ui/directory/DirectoryAccountsPanel.dart';
-import 'package:neom/ui/events2/Event2HomePanel.dart';
-import 'package:neom/ui/groups/GroupsHomePanel.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeRecentItemsWidget.dart';
-import 'package:neom/ui/home/HomeTwitterWidget.dart';
-import 'package:neom/ui/messages/MessagesHomePanel.dart';
-import 'package:neom/ui/polls/PollsHomePanel.dart';
-import 'package:neom/ui/surveys/PublicSurveysPanel.dart';
-import 'package:neom/ui/wallet/WalletHomePanel.dart';
-import 'package:neom/ui/notifications/NotificationsHomePanel.dart';
-import 'package:neom/ui/wellness/WellnessHomePanel.dart';
-import 'package:neom/ui/widgets/FavoriteButton.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/service/Storage.dart';
+import 'package:illinois/ui/WebPanel.dart';
+import 'package:illinois/ui/directory/DirectoryAccountsList.dart';
+import 'package:illinois/ui/directory/DirectoryAccountsPanel.dart';
+import 'package:illinois/ui/events2/Event2HomePanel.dart';
+import 'package:illinois/ui/groups/GroupsHomePanel.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeRecentItemsWidget.dart';
+import 'package:illinois/ui/home/HomeTwitterWidget.dart';
+import 'package:illinois/ui/messages/MessagesHomePanel.dart';
+import 'package:illinois/ui/polls/PollsHomePanel.dart';
+import 'package:illinois/ui/surveys/PublicSurveysPanel.dart';
+import 'package:illinois/ui/wallet/WalletHomePanel.dart';
+import 'package:illinois/ui/notifications/NotificationsHomePanel.dart';
+import 'package:illinois/ui/wellness/WellnessHomePanel.dart';
+import 'package:illinois/ui/widgets/FavoriteButton.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
 import 'package:rokwire_plugin/service/content.dart';
@@ -349,44 +349,16 @@ class _BrowseSection extends StatelessWidget {
   // static String description({required String sectionId}) =>
   //     AppTextUtils.appBrandString('panel.browse.section.$sectionId.description', '');
 
-  static List<String>? favoritesFromCode(String code) {
-    return JsonUtils.listStringsValue(FlexUI()['browse.$code']);
-  }
+  List<String>? get _favoriteCodes => JsonUtils.listStringsValue(FlexUI()['browse']);
 
   bool get _hasFavoriteContent {
-    for (String code in favoritesFromCode(sectionId) ?? []) {
-      HomeFavorite? entryFavorite = _favorite(code);
-      if (entryFavorite != null) {
-        return true;
-      }
-    }
-    return false;
+    return _favorite(sectionId) != null;
   }
 
-  bool? get _isSectionFavorite {
-    int favCount = 0, unfavCount = 0, totalCount = 0;
-    for (String code in favoritesFromCode(sectionId) ?? []) {
-      HomeFavorite? entryFavorite = _favorite(code);
-      if (entryFavorite != null) {
-        totalCount++;
-        if (Auth2().prefs?.isFavorite(entryFavorite) ?? false) {
-          favCount++;
-        }
-        else {
-          unfavCount++;
-        }
-      }
-    }
-    if (0 < totalCount) {
-      if (favCount == totalCount) {
-        return true;
-      }
-      else if (unfavCount == totalCount) {
-        return false;
-      }
-    }
-    return null;
+  bool get _isSectionFavorite {
+    return Auth2().prefs?.isFavorite(HomeFavorite(sectionId)) ?? false;
   }
+
 
   void _onTapSectionFavorite(BuildContext context) {
     Analytics().logSelect(target: "Favorite: {${HomeFavorite.favoriteKeyName(category: sectionId)}}");
@@ -411,15 +383,10 @@ class _BrowseSection extends StatelessWidget {
   }
 
   List<Favorite> get _sectionFavorites {
-    List<Favorite> favorites = <Favorite>[];
-
-    for (String favoriteCode in favoritesFromCode(sectionId) ?? []) {
-      if (_homeRootEntriesCodes?.contains(favoriteCode) ?? false) {
-        favorites.add(HomeFavorite(favoriteCode));
-      }
+    if (_homeRootEntriesCodes?.contains(sectionId) ?? false) {
+      return [HomeFavorite(sectionId)];
     }
-
-    return favorites;
+    return [];
   }
 
   Future<bool?> promptSectionFavorite(BuildContext context, {bool? isSectionFavorite}) async {
@@ -539,7 +506,7 @@ class _BrowseSection extends StatelessWidget {
       if (DeepLink().isAppUrl(url)) {
         DeepLink().launchUrl(url);
       }
-      else if (launchInternal && UrlUtils.launchInternal(url)){
+      else if (launchInternal && UrlUtils.canLaunchInternal(url)){
         Navigator.push(context, CupertinoPageRoute(builder: (context) => WebPanel(url: url)));
       }
       else {

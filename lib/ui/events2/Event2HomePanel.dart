@@ -7,27 +7,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/DeepLink.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/service/Storage.dart';
-import 'package:neom/ui/athletics/AthleticsGameDetailPanel.dart';
-import 'package:neom/ui/attributes/ContentAttributesPanel.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2DetailPanel.dart';
-import 'package:neom/ui/widgets/QrCodePanel.dart';
-import 'package:neom/ui/events2/Event2SearchPanel.dart';
-import 'package:neom/ui/events2/Event2TimeRangePanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/explore/ExploreMapPanel.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
-import 'package:neom/ui/widgets/TextTabBar.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/DeepLink.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/service/Storage.dart';
+import 'package:illinois/ui/athletics/AthleticsGameDetailPanel.dart';
+import 'package:illinois/ui/attributes/ContentAttributesPanel.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2DetailPanel.dart';
+import 'package:illinois/ui/widgets/QrCodePanel.dart';
+import 'package:illinois/ui/events2/Event2SearchPanel.dart';
+import 'package:illinois/ui/events2/Event2TimeRangePanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/explore/ExploreMapPanel.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/widgets/TextTabBar.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/service/app_lifecycle.dart';
@@ -51,6 +51,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
 
   final LinkedHashSet<Event2TypeFilter>? types;
   final Map<String, dynamic>? attributes;
+  final bool showPast;
 
   final Event2SortType? sortType;
 
@@ -59,7 +60,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
 
   Event2HomePanel({Key? key,
     this.timeFilter, this.customStartTime, this.customEndTime,
-    this.types, this.attributes, this.sortType,
+    this.types, this.attributes, this.sortType, this.showPast = true,
     this.eventSelector, this.analyticsFeature,
   }) : super(key: key);
 
@@ -80,7 +81,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
   static void present(BuildContext context, {
     Event2TimeFilter? timeFilter, TZDateTime? customStartTime, TZDateTime? customEndTime,
     LinkedHashSet<Event2TypeFilter>? types, Map<String, dynamic>? attributes, Event2SortType? sortType,
-    Event2Selector2? eventSelector, AnalyticsFeature? analyticsFeature,
+    Event2Selector2? eventSelector, AnalyticsFeature? analyticsFeature, bool showPast = true,
   }) {
     if ((timeFilter != null) || (attributes != null) || (types != null)) {
       Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(
@@ -89,6 +90,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
         attributes: attributes ?? <String, dynamic>{},
         sortType: sortType ?? Event2SortType.dateTime,
         eventSelector: eventSelector, analyticsFeature: analyticsFeature,
+        showPast: showPast,
       )));
     }
     // else if (Storage().events2Attributes != null) {
@@ -98,20 +100,8 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
     // }
     else {
       // getLocationServicesStatus().then((LocationServicesStatus? status) {
-      //   Navigator.push(context, CupertinoPageRoute(builder: (context) => ContentAttributesPanel(
-      //     title: Localization().getStringEx('panel.events2.home.attributes.launch.header.title', 'Events'),
-      //     bgImageKey: 'event-filters-background',
-      //     descriptionBuilder: _buildOnboardingDescription,
-      //     sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.light.tiny.fat'),
-      //     sectionDescriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.small.thin.highlight'),
-      //     sectionRequiredMarkTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.extra_fat.highlight'),
-      //     applyBuilder: _buildOnboardingApply,
-      //     continueTitle: Localization().getStringEx('panel.events2.home.attributes.launch.continue.title', 'Set Up Later'),
-      //     continueTextStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.underline.highlight'),
-      //     contentAttributes: buildContentAttributesV1(status: status),
-      //     sortType: ContentAttributesSortType.native,
-      //     scope: Events2.contentAttributesScope,
-      //     filtersMode: true,
+      //   Navigator.push(context, CupertinoPageRoute(builder: (context) => _Event2OnboardingFiltersPanel(
+      //     status: status,
       //   ))).then((result) {
       //     Map<String, dynamic>? selection = JsonUtils.mapValue(result);
       //     if (selection != null) {
@@ -131,7 +121,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
       //     }
       //   });
       // });
-      Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(eventSelector: eventSelector, analyticsFeature: analyticsFeature,)));
+      Navigator.push(context, CupertinoPageRoute(settings: RouteSettings(name: Event2HomePanel.routeName), builder: (context) => Event2HomePanel(eventSelector: eventSelector, analyticsFeature: analyticsFeature, showPast: showPast,)));
     }
   }
 
@@ -208,7 +198,6 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
   }
 
   static Widget _buildOnboardingApply(BuildContext context, bool enabled, void Function() onTap) {
-    String applyTitle = Localization().getStringEx('panel.events2.home.attributes.launch.apply.title', 'Create My Events Feed');
     TextStyle? applyTextStyle = Styles().textStyles.getTextStyle(enabled ? 'widget.button.title.medium.fat.dark' : 'widget.button.title.regular.variant3');
     Color? borderColor = enabled ? Styles().colors.fillColorSecondary : Styles().colors.fillColorPrimaryVariant;
     Decoration? applyDecoration = BoxDecoration(
@@ -216,15 +205,42 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
       border: Border.all(color: borderColor, width: 1),
       borderRadius: BorderRadius.all(Radius.circular(16))
     );
-    return InkWell(onTap: onTap, child:
+    return InkWell(onTap: () => _onTapOnboardingApply(onTap), child:
       Container(decoration: applyDecoration, child:
         Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8), child:
-          Text(applyTitle, style: applyTextStyle, textAlign: TextAlign.center, maxLines: null,),
+          Text(_onboardingApplyTitle, style: applyTextStyle, textAlign: TextAlign.center, maxLines: null,),
         )
       ),
     );
   }
-  
+
+  static String get _onboardingApplyTitle => _onboardingApplyTitleEx();
+
+  static String _onboardingApplyTitleEx({String? language}) =>
+    Localization().getStringEx('panel.events2.home.attributes.launch.apply.title', 'Create My Events Feed', language: language);
+
+  static void _onTapOnboardingApply(void Function() applyHandler) {
+    Analytics().logSelect(target: _onboardingApplyTitleEx(language: 'en'));
+    applyHandler();
+  }
+
+  static Widget _buildOnboardingContinue(BuildContext context, void Function() onTap) =>
+    InkWell(onTap: () => _onTapOnboardingContinue(onTap), child:
+      Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
+        Text(_onboardingContinueTitle, style: Styles().textStyles.getTextStyle('widget.button.title.medium.underline.highlight'),)
+      ),
+    );
+
+  static String get _onboardingContinueTitle => _onboardingContinueTitleEx();
+
+  static String _onboardingContinueTitleEx({String? language}) =>
+    Localization().getStringEx('panel.events2.home.attributes.launch.continue.title', 'Set Up Later', language: language);
+
+  static void _onTapOnboardingContinue(void Function() continueHandler) {
+    Analytics().logSelect(target: _onboardingContinueTitleEx(language: 'en'));
+    continueHandler();
+  }
+
   // Location Services
 
   static Future<LocationServicesStatus?> getLocationServicesStatus() async =>
@@ -272,25 +288,27 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
 
   // ContentAttributes + EventTime & EventType filter
 
-  static ContentAttributes? buildContentAttributesV2({LocationServicesStatus? status, TZDateTime? customStartTime, TZDateTime? customEndTime }) {
+  static ContentAttributes? buildContentAttributesV2({LocationServicesStatus? status, TZDateTime? customStartTime, TZDateTime? customEndTime, bool showPast = true }) {
     ContentAttributes? contentAttributes = ContentAttributes.fromOther(buildContentAttributesV1(status: status));
-    contentAttributes?.attributes?.insert(0, Event2HomePanel.eventTimeContentAttribute(customStartTime: customStartTime, customEndTime: customEndTime));
+    contentAttributes?.attributes?.insert(0, Event2HomePanel.eventTimeContentAttribute(customStartTime: customStartTime, customEndTime: customEndTime, showPast: showPast));
     return contentAttributes;
   }
 
-  static ContentAttribute eventTimeContentAttribute({ TZDateTime? customStartTime, TZDateTime? customEndTime }) {
+  static ContentAttribute eventTimeContentAttribute({ TZDateTime? customStartTime, TZDateTime? customEndTime, bool showPast = true }) {
     List<ContentAttributeValue> values = <ContentAttributeValue>[];
     for (Event2TimeFilter value in Event2TimeFilter.values) {
-      values.add((value != Event2TimeFilter.customRange) ? ContentAttributeValue(
-        label: event2TimeFilterToDisplayString(value),
-        info: event2TimeFilterDisplayInfo(value),
-        value: value,
-      ) : _CustomRangeEventTimeAttributeValue(
-        label: event2TimeFilterToDisplayString(value),
-        info: event2TimeFilterDisplayInfo(value, customStartTime: customStartTime, customEndTime: customEndTime),
-        value: value,
-        customData: Event2TimeRangePanel.buldCustomData(customStartTime, customEndTime),
-      ));
+      if (value != Event2TimeFilter.past || showPast) {
+        values.add((value != Event2TimeFilter.customRange) ? ContentAttributeValue(
+          label: event2TimeFilterToDisplayString(value),
+          info: event2TimeFilterDisplayInfo(value),
+          value: value,
+        ) : _CustomRangeEventTimeAttributeValue(
+          label: event2TimeFilterToDisplayString(value),
+          info: event2TimeFilterDisplayInfo(value, customStartTime: customStartTime, customEndTime: customEndTime),
+          value: value,
+          customData: Event2TimeRangePanel.buldCustomData(customStartTime, customEndTime),
+        ));
+      }
     }
 
     return ContentAttribute(
@@ -307,10 +325,11 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
 
   // Filters UI
 
-  static Future<Event2FilterParam?> presentFiltersV2(BuildContext context, Event2FilterParam filterParam, { LocationServicesStatus? status }) async {
+  static Future<Event2FilterParam?> presentFiltersV2(BuildContext context, Event2FilterParam filterParam, { LocationServicesStatus? status, bool showPast = true }) async {
 
     ContentAttributes? contentAttributes = buildContentAttributesV2(
       status: status,
+      showPast: showPast,
       customStartTime: filterParam.customStartTime,
       customEndTime: filterParam.customEndTime,
     );
@@ -824,7 +843,7 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
       customEndTime: _customEndTime,
       types: _types,
       attributes: _attributes
-    )).then((Event2FilterParam? filterResult) {
+    ), showPast: widget.showPast,).then((Event2FilterParam? filterResult) {
       if ((filterResult != null) && mounted) {
           setState(() {
             _timeFilter = filterResult.timeFilter ?? Event2TimeFilter.upcoming;
@@ -1150,6 +1169,8 @@ class _Event2HomePanelState extends State<Event2HomePanel> with TickerProviderSt
   }
 }
 
+// _CustomRangeEventTimeAttributeValue
+
 class _CustomRangeEventTimeAttributeValue extends ContentAttributeValue {
   _CustomRangeEventTimeAttributeValue({String? label, dynamic value, String? group, Map<String, dynamic>? requirements, String? info, Map<String, dynamic>? customData }) :
     super (label: label, value: value, group: group, requirements: requirements, info: info, customData: customData);
@@ -1160,6 +1181,8 @@ class _CustomRangeEventTimeAttributeValue extends ContentAttributeValue {
     return (StringUtils.isNotEmpty(info)) ? '$title $info' : title;
   }
 }
+
+// Event2FilterParam
 
 class Event2FilterParam {
   static const String notifyChanged = "edu.illinois.rokwire.event2.home.filters.changed";
@@ -1249,4 +1272,23 @@ class Event2FilterParam {
       }
     }
   }
+}
+
+// _Event2OnboardingFiltersPanel
+
+class _Event2OnboardingFiltersPanel extends ContentAttributesPanel {
+  _Event2OnboardingFiltersPanel({Key? key, LocationServicesStatus? status }) : super(key: key,
+    title: Localization().getStringEx('panel.events2.home.attributes.launch.header.title', 'Events'),
+    bgImageKey: 'event-filters-background',
+    descriptionBuilder: Event2HomePanel._buildOnboardingDescription,
+    sectionTitleTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.fat.highlight'),
+    sectionDescriptionTextStyle: Styles().textStyles.getTextStyle('widget.item.light.small.thin'),
+    sectionRequiredMarkTextStyle: Styles().textStyles.getTextStyle('widget.title.tiny.extra_fat.highlight'),
+    applyBuilder: Event2HomePanel._buildOnboardingApply,
+    continueBuilder: Event2HomePanel._buildOnboardingContinue,
+    contentAttributes: Event2HomePanel.buildContentAttributesV1(status: status),
+    sortType: ContentAttributesSortType.native,
+    scope: Events2.contentAttributesScope,
+    filtersMode: true,
+  );
 }

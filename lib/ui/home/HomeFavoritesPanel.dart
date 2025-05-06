@@ -19,20 +19,20 @@ import 'dart:collection';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/ui/home/HomeEmptyFavoritesWidget.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeToutWidget.dart';
-import 'package:neom/ui/home/HomeWelcomeMessageWidget.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/ui/home/HomeEmptyFavoritesWidget.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeToutWidget.dart';
+import 'package:illinois/ui/home/HomeWelcomeMessageWidget.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
-import 'package:neom/service/FlexUI.dart';
+import 'package:illinois/service/FlexUI.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
-import 'package:neom/ui/home/HomeLoginWidget.dart';
-import 'package:neom/ui/home/HomeVoterRegistrationWidget.dart';
-import 'package:neom/ui/widgets/FlexContent.dart';
+import 'package:illinois/ui/home/HomeLoginWidget.dart';
+import 'package:illinois/ui/home/HomeVoterRegistrationWidget.dart';
+import 'package:illinois/ui/widgets/FlexContent.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
@@ -58,6 +58,7 @@ class _HomeFavoritesPanelState extends State<HomeFavoritesPanel> with AutomaticK
   @override
   void initState() {
     NotificationService().subscribe(this, []);
+    _removeExcessFavoriteWidgetIds();
     super.initState();
   }
 
@@ -103,6 +104,15 @@ class _HomeFavoritesPanelState extends State<HomeFavoritesPanel> with AutomaticK
   Future<void> _onPullToRefresh() async {
     _updateController.add(HomePanel.notifyRefresh);
   }
+
+  void _removeExcessFavoriteWidgetIds() {
+    Set<String> homeWidgetIds = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName())?.toSet() ?? {};
+    Set<String> homeCodes = JsonUtils.setStringsValue(FlexUI()['home']) ?? {};
+    for (String widgetId in homeWidgetIds.difference(homeCodes)) {
+      HomeFavorite favorite = HomeFavorite(widgetId);
+      Auth2().prefs?.setFavorite(favorite, false);
+    }
+  }
 }
 
 ////////////////////////
@@ -139,7 +149,7 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
     // Build Favorite codes before start listening for Auth2UserPrefs.notifyFavoritesChanged
     // because _buildFavoriteCodes may fire such.
     _systemCodes = JsonUtils.listStringsValue(FlexUI()['home.system']);
-    _availableCodes = _getAvailableHomeSections(JsonUtils.setStringsValue(FlexUI()['home'])) ?? <String>{};
+    _availableCodes = JsonUtils.setStringsValue(FlexUI()['home']) ?? <String>{};
     _favoriteCodes = _buildFavoriteCodes();
 
     super.initState();
@@ -224,10 +234,10 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
     }
   }
 
-  GlobalKey _widgetKey(String code) => _widgetKeys[HomePanel.sectionFromCode(code)] ??= GlobalKey();
+  GlobalKey _widgetKey(String code) => _widgetKeys[code] ??= GlobalKey();
 
   void _updateContentCodes() {
-    Set<String>? availableCodes = _getAvailableHomeSections(JsonUtils.setStringsValue(FlexUI()['home']));
+    Set<String>? availableCodes = JsonUtils.setStringsValue(FlexUI()['home']);
     bool availableCodesChanged = (availableCodes != null) && !DeepCollectionEquality().equals(_availableCodes, availableCodes);
 
     List<String>? systemCodes = JsonUtils.listStringsValue(FlexUI()['home.system']);
@@ -245,16 +255,16 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
     }
   }
 
-  Set<String>? _getAvailableHomeSections(Set<String>? availableCodes) {
-    Set<String>? availableSections;
-    if (availableCodes != null) {
-      availableSections = {};
-      for(String code in availableCodes) {
-        availableSections.add(HomePanel.sectionFromCode(code));
-      }
-    }
-    return availableSections;
-  }
+  // Set<String>? _getAvailableHomeSections(Set<String>? availableCodes) {
+  //   Set<String>? availableSections;
+  //   if (availableCodes != null) {
+  //     availableSections = {};
+  //     for(String code in availableCodes) {
+  //       availableSections.add(HomePanel.sectionFromCode(code));
+  //     }
+  //   }
+  //   return availableSections;
+  // }
 
   List<String>? _buildFavoriteCodes() {
     LinkedHashSet<String>? homeFavorites = Auth2().prefs?.getFavorites(HomeFavorite.favoriteKeyName());
@@ -262,8 +272,7 @@ class _HomeFavoritesContentWidgetState extends State<HomeFavoritesContentWidget>
       homeFavorites = _initDefaultFavorites();
     }
 
-    Set<String>? updatedFavorites = _getAvailableHomeSections(homeFavorites);
-    return (updatedFavorites != null) ? List.from(updatedFavorites) : null;
+    return (homeFavorites != null) ? List.from(homeFavorites) : null;
   }
 
   void _updateFavoriteCodes() {

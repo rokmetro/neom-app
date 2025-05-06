@@ -3,17 +3,17 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/ui/profile/ProfileHomePanel.dart';
-import 'package:neom/ui/profile/ProfileLoginLinkedAccountPanel.dart';
-import 'package:neom/ui/profile/ProfileLoginCodePanel.dart';
-import 'package:neom/ui/profile/ProfileLoginPhoneOrEmailPanel.dart';
-import 'package:neom/ui/settings/SettingsWidgets.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/ui/profile/ProfileHomePanel.dart';
+import 'package:illinois/ui/profile/ProfileLoginLinkedAccountPanel.dart';
+import 'package:illinois/ui/profile/ProfileLoginCodePanel.dart';
+import 'package:illinois/ui/profile/ProfileLoginPhoneOrEmailPanel.dart';
+import 'package:illinois/ui/settings/SettingsWidgets.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/service/auth2.dart';
 import 'package:rokwire_plugin/service/connectivity.dart';
@@ -24,6 +24,8 @@ import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
 class ProfileLoginPage extends StatefulWidget {
+  static const String notifyProfileInfo = "edu.illinois.rokwire.profile.info";
+
   final EdgeInsetsGeometry margin;
 
   ProfileLoginPage({super.key, this.margin = const EdgeInsets.all(16) });
@@ -268,16 +270,24 @@ class _ProfileLoginPageState extends State<ProfileLoginPage> implements Notifica
       }
       else if (code == 'disconnect') {
         contentList.add(Padding(padding: EdgeInsets.only(top: 12), child:
-          RoundedButton(
-            label: Localization().getStringEx("panel.settings.home.net_id.button.disconnect", "Sign Out"),
-            textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.medium.fat"),
-            backgroundColor: Styles().colors.gradientColorPrimary,
-            borderColor: Styles().colors.fillColorSecondary,
-            contentWeight: 0.45,
-            conentAlignment: MainAxisAlignment.start,
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            onTap: _onDisconnectClicked
-          )
+          Row(children: [ Expanded(child:
+            Wrap(alignment: WrapAlignment.start, spacing: 8, runSpacing: 8, children: [
+              CompactRoundedButton(
+                label: Localization().getStringEx("panel.settings.home.net_id.button.profile", "View My Profile"),
+                textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.medium.fat"),
+                backgroundColor: Styles().colors.gradientColorPrimary,
+                borderColor: Styles().colors.fillColorSecondary,
+                onTap: _onViewProfileClicked
+              ),
+              CompactRoundedButton(
+                label: Localization().getStringEx("panel.settings.home.net_id.button.disconnect", "Sign Out"),
+                textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.medium.fat"),
+                backgroundColor: Styles().colors.gradientColorPrimary,
+                borderColor: Styles().colors.fillColorSecondary,
+                onTap: _onDisconnectClicked
+              ),
+            ],),
+          ),],),
         ));
       }
     }
@@ -435,6 +445,7 @@ class _ProfileLoginPageState extends State<ProfileLoginPage> implements Notifica
   }
 
   void _onDisconnectClicked() {
+    Analytics().logSelect(target: 'Sign Out');
     if (Auth2().isOidcLoggedIn) {
       Analytics().logSelect(target: "Disconnect netId");
     } else if (Auth2().isCodeLoggedIn) {
@@ -449,6 +460,11 @@ class _ProfileLoginPageState extends State<ProfileLoginPage> implements Notifica
         Auth2().logout();
       }
     });
+  }
+
+  void _onViewProfileClicked() {
+    Analytics().logSelect(target: 'View Profile');
+    NotificationService().notify(ProfileLoginPage.notifyProfileInfo);
   }
 
   // Linked

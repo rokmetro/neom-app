@@ -16,25 +16,25 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/FirebaseMessaging.dart';
-import 'package:neom/ui/groups/GroupMembersSearchPanel.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/utils/AppUtils.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/FirebaseMessaging.dart';
+import 'package:illinois/ui/groups/GroupMembersSearchPanel.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/group.dart';
-import 'package:neom/ext/Group.dart';
-import 'package:neom/service/Analytics.dart';
+import 'package:illinois/ext/Group.dart';
+import 'package:illinois/service/Analytics.dart';
 import 'package:rokwire_plugin/service/Log.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/notification_service.dart';
-import 'package:neom/ui/groups/GroupWidgets.dart';
-import 'package:neom/ui/groups/GroupMemberPanel.dart';
-import 'package:neom/ui/groups/GroupPendingMemberPanel.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/groups/GroupWidgets.dart';
+import 'package:illinois/ui/groups/GroupMemberPanel.dart';
+import 'package:illinois/ui/groups/GroupPendingMemberPanel.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
-import 'package:neom/ui/widgets/TabBar.dart' as uiuc;
+import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 
@@ -290,7 +290,7 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
               rightIconKey: _statusValuesVisible ? 'chevron-up' : 'chevron-down',
               label: _memberStatusToString(_selectedMemberStatus),
               onTap: _onTapRibbonButton))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 8), child:
+        Padding(padding: EdgeInsets.only(top: 8), child:
           Row(
             children: [
               Expanded(child: _buildDateUpdatedFields()),
@@ -299,7 +299,6 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    _buildApproveAllButton(),
                     _buildSearchButton(),
                     _buildAddButton()
                   ],
@@ -308,6 +307,13 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
             ],
           )
         ),
+      Padding(
+        padding: EdgeInsets.only(left: 8, bottom: 8),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: _buildApproveAllButton(),
+        ),
+      ),
         Stack(children: [
           Padding(padding: EdgeInsets.only(top: 0, left: 16, right: 16), child: contentWidget),
           Visibility(visible: _statusValuesVisible, child: _buildStatusDismissLayer()),
@@ -372,13 +378,13 @@ class _GroupMembersPanelState extends State<GroupMembersPanel> implements Notifi
       child: Container(child: Padding(padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16), child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
         Visibility(visible: showSynced,
           child: Semantics(container: true, child:
-            Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
               Padding(padding: EdgeInsets.only(right: 5), child: Text(Localization().getStringEx('panel.group_detail.date.updated.managed.membership.label', 'Last sync:'), style: Styles().textStyles.getTextStyle('widget.detail.small.fat'))),
               Text(StringUtils.ensureNotEmpty(_group?.displayManagedMembershipUpdateTime, defaultValue: 'N/A'), style: Styles().textStyles.getTextStyle('widget.detail.small'))
         ]))),
         Visibility(visible: showUpdated,
           child: Semantics(container: true,
-            child: Padding(padding: EdgeInsets.only(top: 5), child: Row(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            child: Padding(padding: EdgeInsets.only(top: 5), child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
               Padding(padding: EdgeInsets.only(right: 5), child: Text(Localization().getStringEx('panel.group_detail.date.updated.membership.label', 'Last updated:'), style: Styles().textStyles.getTextStyle('widget.detail.small.fat'))),
               Text(StringUtils.ensureNotEmpty(_group?.displayMembershipUpdateTime, defaultValue: 'N/A'), style: Styles().textStyles.getTextStyle('widget.detail.small'))
         ]))))

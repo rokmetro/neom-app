@@ -1,7 +1,7 @@
 import 'package:http/http.dart';
-import 'package:neom/model/Assistant.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
+import 'package:illinois/model/Assistant.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
 import 'package:rokwire_plugin/ext/network.dart';
 import 'package:rokwire_plugin/service/content.dart';
 import 'package:rokwire_plugin/service/localization.dart';
@@ -20,7 +20,6 @@ class Assistant with Service implements NotificationsListener, ContentItemCatego
   Map<AssistantProvider, List<Message>> _displayMessages = <AssistantProvider, List<Message>>{
     AssistantProvider.uiuc: List<Message>.empty(growable: true),
     AssistantProvider.google: List<Message>.empty(growable: true),
-    AssistantProvider.azure: List<Message>.empty(growable: true),
     AssistantProvider.grok: List<Message>.empty(growable: true)
   };
 
@@ -168,7 +167,6 @@ class Assistant with Service implements NotificationsListener, ContentItemCatego
     await Future.wait([
       _loadMessages(provider: AssistantProvider.uiuc),
       _loadMessages(provider: AssistantProvider.google),
-      _loadMessages(provider: AssistantProvider.azure),
     ]);
   }
 

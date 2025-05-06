@@ -7,35 +7,36 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:neom/ext/Favorite.dart';
-import 'package:neom/model/Dining.dart';
-import 'package:neom/model/Explore.dart';
-import 'package:neom/model/Laundry.dart';
-import 'package:neom/model/MTD.dart';
-import 'package:neom/model/News.dart';
-import 'package:neom/model/sport/Game.dart';
-import 'package:neom/model/Appointment.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/Appointments.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/Dinings.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/service/Guide.dart';
-import 'package:neom/service/Laundries.dart';
-import 'package:neom/service/MTD.dart';
-import 'package:neom/service/Sports.dart';
-import 'package:neom/service/Storage.dart';
-import 'package:neom/ui/SavedPanel.dart';
-import 'package:neom/ui/athletics/AthleticsContentPanel.dart';
-import 'package:neom/ui/dining/DiningCard.dart';
-import 'package:neom/ui/home/HomePanel.dart';
-import 'package:neom/ui/home/HomeWidgets.dart';
-import 'package:neom/ui/mtd/MTDStopsHomePanel.dart';
-import 'package:neom/ui/mtd/MTDWidgets.dart';
-import 'package:neom/ui/appointments/AppointmentCard.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
-import 'package:neom/ui/widgets/SemanticsWidgets.dart';
+import 'package:illinois/ext/Favorite.dart';
+import 'package:illinois/model/Dining.dart';
+import 'package:illinois/model/Explore.dart';
+import 'package:illinois/model/Laundry.dart';
+import 'package:illinois/model/MTD.dart';
+import 'package:illinois/model/News.dart';
+import 'package:illinois/model/sport/Game.dart';
+import 'package:illinois/model/Appointment.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Appointments.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/Dinings.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/service/Guide.dart';
+import 'package:illinois/service/Laundries.dart';
+import 'package:illinois/service/MTD.dart';
+import 'package:illinois/service/Sports.dart';
+import 'package:illinois/service/Storage.dart';
+import 'package:illinois/ui/SavedPanel.dart';
+import 'package:illinois/ui/athletics/AthleticsContentPanel.dart';
+import 'package:illinois/ui/dining/DiningCard.dart';
+import 'package:illinois/ui/home/HomePanel.dart';
+import 'package:illinois/ui/home/HomeWidgets.dart';
+import 'package:illinois/ui/mtd/MTDStopsHomePanel.dart';
+import 'package:illinois/ui/mtd/MTDWidgets.dart';
+import 'package:illinois/ui/appointments/AppointmentCard.dart';
+import 'package:illinois/ui/settings/SettingsPrivacyPanel.dart';
+import 'package:illinois/ui/widgets/LinkButton.dart';
+import 'package:illinois/ui/widgets/SemanticsWidgets.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/service/connectivity.dart';
@@ -53,6 +54,8 @@ class HomeFavoritesWidget extends StatefulWidget {
 
   static const String localScheme = 'local';
   static const String localUrlMacro = '{{local_url}}';
+  static const String privacyUrl = 'privacy://level';
+  static const String privacyUrlMacro = '{{privacy_url}}';
 
   HomeFavoritesWidget({Key? key, required this.favoriteKey, this.favoriteId, this.updateController}) : super(key: key);
 
@@ -82,21 +85,23 @@ class HomeFavoritesWidget extends StatefulWidget {
   static String? emptyMessageHtml(String key) {
     String? message;
     switch(key) {
-      case Event2.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.events2", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Events Feed</b></a> for quick access here."); break;
-      case Dining.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.dining", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Dining</b></a> for quick access here."); break;
-      case Game.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.athletics", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Big 10 Events</b></a> for quick access here."); break;
-      case News.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.news", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Big 10 News</b></a> for quick access here."); break;
-      case LaundryRoom.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.laundry", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Laundry Locations</b></a> for quick access here."); break;
-      case MTDStop.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.mtd_stops", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Bus Stops</b></a> for quick access here."); break;
-      case ExplorePOI.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.locations", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>My Locations</b></a> for quick access here."); break;
-      case GuideFavorite.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.campus_guide", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Campus Guide</b></a> for quick access here."); break;
+      case Event2.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.events2", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Events Feed</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case Dining.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.dining", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Dining</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case Game.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.athletics", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Big 10 Events</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case News.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.news", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Big 10 News</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case LaundryRoom.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.laundry", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Laundry Locations</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case MTDStop.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.mtd_stops", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Bus Stops</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case ExplorePOI.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.locations", "Tap the \u2606 on locations on the <a href='$localUrlMacro'><b>Map</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
+      case GuideFavorite.favoriteKeyName: message = Localization().getStringEx("widget.home.favorites.message.empty.campus_guide", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>Campus Guide</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)"); break;
       case Appointment.favoriteKeyName:
         message = (Storage().appointmentsCanDisplay != true) ?
           Localization().getStringEx('widget.home.favorites.message.empty.appointments.not_to_display', 'There is nothing to display as you have chosen not to display any past or future appointments.') :
-          Localization().getStringEx("widget.home.favorites.message.empty.appointments", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>MyMcKinley Appointments</b></a> for quick access here.");
+          Localization().getStringEx("widget.home.favorites.message.empty.appointments", "Tap the \u2606 on items in <a href='$localUrlMacro'><b>MyMcKinley Appointments</b></a> for quick access here. (<a href='$privacyUrlMacro'>Your privacy level</a> must be at least 2.)");
         break;
     }
-    return (message != null) ? message.replaceAll(localUrlMacro, '$localScheme://${key.toLowerCase()}') : null;
+    return (message != null) ? message
+      .replaceAll(localUrlMacro, '$localScheme://${key.toLowerCase()}')
+      .replaceAll(privacyUrlMacro, privacyUrl) : null;
   }
 
   static Color? linkColor(String key) {
@@ -119,6 +124,10 @@ class HomeFavoritesWidget extends StatefulWidget {
     if (uri?.scheme == HomeFavoritesWidget.localScheme) {
       Analytics().logSelect(target: analyticsTarget, source: analyticsSource);
       FavoriteExt.launchHome(context, key: uri?.host);
+    }
+    else if (url == HomeFavoritesWidget.privacyUrl) {
+      Analytics().logSelect(target: 'Privacy Level', source: analyticsSource);
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.regular,)));
     }
   }
 }

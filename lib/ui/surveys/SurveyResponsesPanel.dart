@@ -15,9 +15,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/survey.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/service/styles.dart';
@@ -101,7 +101,7 @@ class _SurveyResponsesPanelState extends State<SurveyResponsesPanel>  {
         Text(
             Localization().getStringEx('panel.event2.survey.responses.surveys.empty.msg', 'There are no survey responses available.'),
             textAlign: TextAlign.center,
-            style: TextStyle(color: Styles().colors.fillColorPrimary, fontSize: 18)
+            style: Styles().textStyles.getTextStyle('widget.message.light.medium.thin')
         ),
       ),
     ];

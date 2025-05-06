@@ -8,50 +8,52 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:neom/ext/Event2.dart';
-import 'package:neom/ext/Explore.dart';
-import 'package:neom/ext/MTD.dart';
-import 'package:neom/model/Analytics.dart';
-import 'package:neom/model/Dining.dart';
-import 'package:neom/model/Explore.dart';
-import 'package:neom/model/Laundry.dart';
-import 'package:neom/model/Location.dart' as Native;
-import 'package:neom/model/MTD.dart';
-import 'package:neom/model/StudentCourse.dart';
-import 'package:neom/model/Appointment.dart';
-import 'package:neom/service/Analytics.dart';
-import 'package:neom/service/AppDateTime.dart';
-import 'package:neom/service/Appointments.dart';
-import 'package:neom/service/Auth2.dart';
-import 'package:neom/service/Config.dart';
-import 'package:neom/service/Dinings.dart';
-import 'package:neom/service/FlexUI.dart';
-import 'package:neom/service/Gateway.dart';
-import 'package:neom/service/Laundries.dart';
-import 'package:neom/service/MTD.dart';
-import 'package:neom/service/Storage.dart';
-import 'package:neom/service/StudentCourses.dart';
-import 'package:neom/service/Wellness.dart';
-import 'package:neom/ui/RootPanel.dart';
-import 'package:neom/ui/events2/Event2CreatePanel.dart';
-import 'package:neom/ui/events2/Event2HomePanel.dart';
-import 'package:neom/ui/events2/Event2SearchPanel.dart';
-import 'package:neom/ui/events2/Event2Widgets.dart';
-import 'package:neom/ui/explore/ExploreBuildingsSearchPanel.dart';
-import 'package:neom/ui/explore/ExploreListPanel.dart';
-import 'package:neom/ui/dining/DiningHomePanel.dart';
-import 'package:neom/ui/mtd/MTDStopSearchPanel.dart';
-import 'package:neom/ui/mtd/MTDStopsHomePanel.dart';
-import 'package:neom/ui/widgets/FavoriteButton.dart';
-import 'package:neom/ui/widgets/Filters.dart';
-import 'package:neom/ui/widgets/HeaderBar.dart';
-import 'package:neom/ui/widgets/LinkButton.dart';
-import 'package:neom/ui/widgets/RibbonButton.dart';
-import 'package:neom/ui/explore/ExploreStoriedSightsBottomSheet.dart';
-import 'package:neom/utils/AppUtils.dart';
-import 'package:neom/utils/Utils.dart';
+import 'package:illinois/ext/Event2.dart';
+import 'package:illinois/ext/Explore.dart';
+import 'package:illinois/ext/MTD.dart';
+import 'package:illinois/model/Analytics.dart';
+import 'package:illinois/model/Dining.dart';
+import 'package:illinois/model/Explore.dart';
+import 'package:illinois/model/Laundry.dart';
+import 'package:illinois/model/Location.dart' as Native;
+import 'package:illinois/model/MTD.dart';
+import 'package:illinois/model/StudentCourse.dart';
+import 'package:illinois/model/Appointment.dart';
+import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/AppDateTime.dart';
+import 'package:illinois/service/Appointments.dart';
+import 'package:illinois/service/Auth2.dart';
+import 'package:illinois/service/Config.dart';
+import 'package:illinois/service/Dinings.dart';
+import 'package:illinois/service/FlexUI.dart';
+import 'package:illinois/service/Gateway.dart';
+import 'package:illinois/service/Laundries.dart';
+import 'package:illinois/service/MTD.dart';
+import 'package:illinois/service/Storage.dart';
+import 'package:illinois/service/StudentCourses.dart';
+import 'package:illinois/service/Wellness.dart';
+import 'package:illinois/ui/RootPanel.dart';
+import 'package:illinois/ui/events2/Event2CreatePanel.dart';
+import 'package:illinois/ui/events2/Event2HomePanel.dart';
+import 'package:illinois/ui/events2/Event2SearchPanel.dart';
+import 'package:illinois/ui/events2/Event2Widgets.dart';
+import 'package:illinois/ui/explore/ExploreBuildingsSearchPanel.dart';
+import 'package:illinois/ui/explore/ExploreListPanel.dart';
+import 'package:illinois/ui/dining/DiningHomePanel.dart';
+import 'package:illinois/ui/mtd/MTDStopSearchPanel.dart';
+import 'package:illinois/ui/mtd/MTDStopsHomePanel.dart';
+import 'package:illinois/ui/settings/SettingsPrivacyPanel.dart';
+import 'package:illinois/ui/widgets/FavoriteButton.dart';
+import 'package:illinois/ui/widgets/Filters.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
+import 'package:illinois/ui/widgets/LinkButton.dart';
+import 'package:illinois/ui/widgets/RibbonButton.dart';
+import 'package:illinois/ui/explore/ExploreStoriedSightsBottomSheet.dart';
+import 'package:illinois/utils/AppUtils.dart';
+import 'package:illinois/utils/Utils.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/content_attributes.dart';
 import 'package:rokwire_plugin/model/event2.dart';
@@ -180,6 +182,8 @@ class _ExploreMapPanelState extends State<ExploreMapPanel>
   implements NotificationsListener {
 
   static const double _filterLayoutSortKey = 1.0;
+  static const String _privacyUrl = 'privacy://level';
+  static const String _privacyUrlMacro = '{{privacy_url}}';
 
   late List<ExploreMapType> _exploreTypes;
   ExploreMapType? _selectedMapType;
@@ -1026,7 +1030,7 @@ class _ExploreMapPanelState extends State<ExploreMapPanel>
 
   void _showMessagePopup(String? message) {
     if ((message != null) && message.isNotEmpty) {
-      ExploreMessagePopup.show(context, message);
+      ExploreMessagePopup.show(context, message, onTapUrl: _handleLocalUrl);
     }
   }
 
@@ -1034,6 +1038,7 @@ class _ExploreMapPanelState extends State<ExploreMapPanel>
     showDialog(context: context, builder: (context) => ExploreOptionalMessagePopup(
       message: message,
       showPopupStorageKey: showPopupStorageKey,
+      onTapUrl: _handleLocalUrl,
     ));
   }
 
@@ -2235,21 +2240,38 @@ class _ExploreMapPanelState extends State<ExploreMapPanel>
         _showMessagePopup(_emptyContentMessage);
       }
       else if (Storage().showMtdStopsMapInstructions != false) {
-        _showOptionalMessagePopup(Localization().getStringEx("panel.explore.instructions.mtd_stops.msg", "Please tap a bus stop on the map to get bus schedules. Tap the star to save the bus stop as a favorite."), showPopupStorageKey: Storage().showMtdStopsMapInstructionsKey,
+        String messageHtml = Localization().getStringEx("panel.explore.instructions.mtd_stops.msg", "Tap a bus stop on the map to get bus schedules.<br><br>Tap the \u2606 to save the bus stop. (<a href='$_privacyUrlMacro'>Your privacy level</a> must be at least 2.)").
+          replaceAll(_privacyUrlMacro, _privacyUrl);
+        _showOptionalMessagePopup(messageHtml, showPopupStorageKey: Storage().showMtdStopsMapInstructionsKey,
         );
       }
     }
     else if (_selectedMapType == ExploreMapType.MyLocations) {
       if (CollectionUtils.isEmpty(_explores)) {
-        _showMessagePopup(Localization().getStringEx('panel.explore.missing.my_locations.msg', 'You currently have no saved locations. Select a location on the map and tap the star to save it as a favorite.'),);
+        String messageHtml = Localization().getStringEx('panel.explore.missing.my_locations.msg', "You currently have no saved locations.<br><br>Select a location on the map and tap the \u2606 to save it as a favorite. (<a href='$_privacyUrlMacro'>Your privacy level</a> must be at least 2.)").
+          replaceAll(_privacyUrlMacro, _privacyUrl);
+        _showMessagePopup(messageHtml);
       }
       else if (Storage().showMyLocationsMapInstructions != false) {
-        _showOptionalMessagePopup(Localization().getStringEx("panel.explore.instructions.my_locations.msg", "Select a location on the map and tap the star to save it as a favorite.",), showPopupStorageKey: Storage().showMyLocationsMapInstructionsKey
+        String messageHtml = Localization().getStringEx("panel.explore.instructions.my_locations.msg", "Select a location on the map and tap the \u2606  to save it as a favorite. (<a href='$_privacyUrlMacro'>Your privacy level</a> must be at least 2.)",).
+          replaceAll(_privacyUrlMacro, _privacyUrl);
+        _showOptionalMessagePopup(messageHtml, showPopupStorageKey: Storage().showMyLocationsMapInstructionsKey
         );
       }
     }
     else if (CollectionUtils.isEmpty(_explores)) {
       _showMessagePopup(_emptyContentMessage);
+    }
+  }
+
+  bool _handleLocalUrl(String url) {
+    if (url == _privacyUrl) {
+      Analytics().logSelect(target: 'Privacy Level');
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.regular,)));
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
@@ -2699,10 +2721,11 @@ class ExploreMapSearchMTDStopsParam {
 
 class ExploreMessagePopup extends StatelessWidget {
   final String message;
-  ExploreMessagePopup({super.key, required this.message});
+  final bool Function(String url)? onTapUrl;
+  ExploreMessagePopup({super.key, required this.message, this.onTapUrl});
 
-  static Future<void> show(BuildContext context, String message) =>
-    showDialog(context: context, builder: (context) => ExploreMessagePopup(message: message));
+  static Future<void> show(BuildContext context, String message, { bool Function(String url)? onTapUrl}) =>
+    showDialog(context: context, builder: (context) => ExploreMessagePopup(message: message, onTapUrl: onTapUrl));
 
   @override
   Widget build(BuildContext context) =>
@@ -2713,8 +2736,11 @@ class ExploreMessagePopup extends StatelessWidget {
             Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
               Styles().images.getImage('university-logo') ?? Container(),
               Padding(padding: EdgeInsets.only(top: 20), child:
-                Text(message, textAlign: TextAlign.center, style:
-                  Styles().textStyles.getTextStyle("widget.detail.small")
+                // Text(message, textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle("widget.detail.small")
+                HtmlWidget(message,
+                  onTapUrl: (url) => (onTapUrl != null) ? onTapUrl!(url) : false,
+                  textStyle: Styles().textStyles.getTextStyle("widget.detail.small"),
+                  customStylesBuilder: (element) => (element.localName == "a") ? {"color": ColorUtils.toHex(Styles().colors.fillColorSecondary)} : null
                 )
               )
             ])
