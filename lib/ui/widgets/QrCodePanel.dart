@@ -307,19 +307,13 @@ class _QrCodePanelState extends State<QrCodePanel> {
       AppAlert.showDialogResult(context, Localization().getStringEx("panel.qr_code.alert.no_qr_code.msg", "There is no QR Code"));
     } else {
       Uint8List? updatedImageBytes = await ImageUtils.applyLabelOverImage(_qrCodeBytes, widget.saveWatermarkText,
-        width: _imageSize,
-        height: _imageSize,
+        width: _imageSize.toDouble(),
+        height: _imageSize.toDouble(),
         textStyle: widget.saveWatermarkStyle,
       );
       bool result = (updatedImageBytes != null);
       if (result) {
-        result = true;
-        try {
-          await AppFile.downloadFile(context: context, fileBytes: updatedImageBytes, fileName: widget.saveFileName);
-        } catch (e) {
-          result = false;
-          debugPrint(e.toString());
-        }
+        result = await ImageUtils.saveToFs(updatedImageBytes, widget.saveFileName) ?? false;
       }
 
       const String destinationMacro = '{{Destination}}';
