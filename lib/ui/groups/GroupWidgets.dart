@@ -2222,7 +2222,6 @@ class GroupMemberProfileInfoWidget extends StatefulWidget {
 }
 
 class _GroupMemberProfileInfoState extends State<GroupMemberProfileInfoWidget> {
-  String photoImageToken = DirectoryProfilePhotoUtils.newToken;
   // Uint8List? _memberImageBytes;
   // bool _loadingImage = false;
 
@@ -2270,14 +2269,12 @@ class _GroupMemberProfileInfoState extends State<GroupMemberProfileInfoWidget> {
 
   Widget get _buildProfileImage =>
       DirectoryProfilePhoto(
-        photoUrl:  Content().getUserPhotoUrl(type: UserProfileImageType.medium, accountId: widget.userId, params: DirectoryProfilePhotoUtils.tokenUrlParam(photoImageToken)),
+        type: UserProfileImageType.medium,
+        accountId: widget.userId,
         imageSize: _photoImageSize,
-        photoUrlHeaders: _photoAuthHeaders,
       );
 
   double get _photoImageSize => MediaQuery.of(context).size.width / 4;
-
-  Map<String, String>? get _photoAuthHeaders => DirectoryProfilePhotoUtils.authHeaders;
 
 // Widget? get _buildProfileImage {
 //   bool hasProfilePhoto = widget.member?.userId != null &&
@@ -2377,10 +2374,7 @@ class _GroupMemberProfileImageState extends State<GroupMemberProfileImage> imple
   void _onImageTap() {
     Analytics().logSelect(target: "Group Member Image");
     if (_imageBytes != null) {
-      String? imageUrl = Content().getUserPhotoUrl(accountId: widget.userId, type: UserProfileImageType.defaultType);
-      if (StringUtils.isNotEmpty(imageUrl)) {
-        Navigator.push(context, PageRouteBuilder(opaque: false, pageBuilder: (context, _, __) => ModalImagePanel(imageUrl: imageUrl!, networkImageHeaders: Auth2().networkAuthHeaders, onCloseAnalytics: () => Analytics().logSelect(target: "Close Group Member Image"))));
-      }
+      Navigator.push(context, PageRouteBuilder(opaque: false, pageBuilder: (context, _, __) => ModalImagePanel(image: Image.memory(_imageBytes!).image, networkImageHeaders: Auth2().networkAuthHeaders, onCloseAnalytics: () => Analytics().logSelect(target: "Close Group Member Image"))));
     }
   }
 

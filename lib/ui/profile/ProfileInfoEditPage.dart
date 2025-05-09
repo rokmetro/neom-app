@@ -38,14 +38,13 @@ class ProfileInfoEditPage extends StatefulWidget {
 
   final Uint8List? pronunciationAudioData;
   final Uint8List? photoImageData;
-  final String? photoImageToken;
 
-  final void Function({Auth2UserProfile? profile, Auth2UserPrivacy? privacy, Uint8List? pronunciationAudioData, Uint8List? photoImageData, String? photoImageToken})? onFinishEdit;
+  final void Function({Auth2UserProfile? profile, Auth2UserPrivacy? privacy, Uint8List? pronunciationAudioData, Uint8List? photoImageData})? onFinishEdit;
 
   ProfileInfoEditPage({super.key,
     required this.contentType, this.onboarding = false,
     this.authType, this.profile, this.privacy, this.identifiers,
-    this.pronunciationAudioData, this.photoImageData, this.photoImageToken,
+    this.pronunciationAudioData, this.photoImageData,
     this.onFinishEdit
   });
 
@@ -58,7 +57,6 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
   late Auth2UserProfileFieldsVisibility _profileVisibility;
   late Uint8List? _pronunciationAudioData;
   late Uint8List? _photoImageData;
-  late String? _photoImageToken;
 
   final Map<_ProfileField, Auth2FieldVisibility?> _fieldVisibilities = {};
   final Map<_ProfileField, TextEditingController> _fieldTextControllers = {};
@@ -109,7 +107,6 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
     _pronunciationAudioData = widget.pronunciationAudioData;
     _photoImageData = widget.photoImageData;
-    _photoImageToken = widget.photoImageToken;
     _identifiers = List.generate(widget.identifiers?.length ?? 0, (index) => Auth2PublicAccountIdentifier.fromUserIdentifier(widget.identifiers![index]));
 
     for (_ProfileField field in _ProfileField.values) {
@@ -218,19 +215,14 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
     // Edit: Photo
 
-    String? get _photoImageUrl => StringUtils.isNotEmpty(_photoText) ?
-      Content().getUserPhotoUrl(type: UserProfileImageType.medium, params: DirectoryProfilePhotoUtils.tokenUrlParam(_photoImageToken)) : null;
-
     double get _photoImageSize => MediaQuery.of(context).size.width / 3;
-
-    Map<String, String>? get _photoAuthHeaders => DirectoryProfilePhotoUtils.authHeaders;
 
     Widget get _photoWidget => Stack(children: [
       Padding(padding: EdgeInsets.only(left: 16, right: 16, bottom: 20), child:
         DirectoryProfilePhoto(
           key: _photoKey,
-          photoUrl: _photoImageUrl,
-          photoUrlHeaders: _photoAuthHeaders,
+          accountId: StringUtils.isNotEmpty(_photoText) ? Auth2().accountId : null,
+          type: UserProfileImageType.medium,
           photoData: _photoImageData,
           imageSize: _photoImageSize,
         ),
@@ -286,7 +278,6 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
             setState(() {
               _photoKey = UniqueKey();
               _photoText = Content().getUserPhotoUrl(accountId: Auth2().accountId, type: UserProfileImageType.medium) ?? '';
-              _photoImageToken = DirectoryProfilePhotoUtils.newToken;
               _photoImageData = imageUploadResult.imageData;
             });
           }
@@ -325,7 +316,6 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
             setState(() {
               _photoKey = UniqueKey();
               _photoText = '';
-              _photoImageToken = DirectoryProfilePhotoUtils.newToken;
               _photoImageData = null;
             });
           }
@@ -1022,14 +1012,12 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
             privacy: (result.privacy == true) ? privacy : null,
             pronunciationAudioData: _pronunciationAudioData,
             photoImageData: _photoImageData,
-            photoImageToken: _photoImageToken,
           );
         }
       }
       else if (shouldSave == false) {
         widget.onFinishEdit?.call(
           photoImageData: _photoImageData,
-          photoImageToken: _photoImageToken,
           pronunciationAudioData: _pronunciationAudioData,
         );
       }
@@ -1109,7 +1097,6 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
           privacy: (result.privacy == true) ? privacy : null,
           pronunciationAudioData: _pronunciationAudioData,
           photoImageData: _photoImageData,
-          photoImageToken: _photoImageToken,
         );
       }
     }
