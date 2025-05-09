@@ -111,7 +111,7 @@ class _DirectoryAccountListCardState extends State<DirectoryAccountListCard> {
   Widget get _expandedHeadingTextAndPronunciationContent =>
     Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
       _expandedHeadingTextContent,
-      DirectoryPronunciationButton(url: widget.account.profile?.pronunciationUrl,),
+      DirectoryPronunciationButton(accountId: widget.account.id,),
     ],);
 
   Widget get _expandedHeadingTextContent =>
@@ -598,12 +598,12 @@ class _DirectoryProfilePhotoState extends State<DirectoryProfilePhoto> {
 // DirectoryPronunciationButton
 
 class DirectoryPronunciationButton extends StatefulWidget {
-  final String? url;
+  final String? accountId;
   final Uint8List? data;
   final EdgeInsetsGeometry padding;
 
   DirectoryPronunciationButton({
-    super.key, this.url, this.data,
+    super.key, this.accountId, this.data,
     this.padding = const EdgeInsets.symmetric(horizontal: 13, vertical: 18)
   });
 
@@ -665,7 +665,7 @@ class _DirectoryPronunciationButtonState extends State<DirectoryPronunciationBut
 
         Uint8List? audioData = widget.data;
         if (audioData == null) {
-          AudioResult? result = await Content().loadUserNamePronunciationFromUrl(widget.url);
+          AudioResult? result = await Content().loadUserNamePronunciation(accountId: widget.accountId);
           audioData = (result?.resultType == AudioResultType.succeeded) ? result?.audioData : null;
         }
 

@@ -103,7 +103,6 @@ class ProfileInfoPreviewPageState extends ProfileDirectoryMyInfoBasePageState<Pr
         if (_profile?.pronunciationUrl?.isNotEmpty == true)
           WidgetSpan(alignment: PlaceholderAlignment.middle, child:
             DirectoryPronunciationButton(
-              url: _profile?.pronunciationUrl,
               data: widget.pronunciationAudioData,
               padding: EdgeInsets.symmetric(horizontal: 13, vertical: 12),
             ),
