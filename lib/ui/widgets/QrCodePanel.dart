@@ -244,17 +244,16 @@ class _QrCodePanelState extends State<QrCodePanel> {
             ),
           ),
         ),
-        if(!kIsWeb)
-          Padding(padding: EdgeInsets.only(top: 24), child:
-            RoundedButton(
-              label: Localization().getStringEx('panel.qr_code.button.save.title', 'Save QR Code'),
-              hint: '',
-              textStyle: Styles().textStyles.getTextStyle("widget.title.regular.fat"),
-              backgroundColor: _backgroundColor,
-              borderColor: Styles().colors.fillColorSecondary,
-              onTap: _onTapSave,
-            ),
+        Padding(padding: EdgeInsets.only(top: 24), child:
+          RoundedButton(
+            label: Localization().getStringEx('panel.qr_code.button.save.title', 'Save QR Code'),
+            hint: '',
+            textStyle: Styles().textStyles.getTextStyle("widget.title.regular.fat"),
+            backgroundColor: _backgroundColor,
+            borderColor: Styles().colors.fillColorSecondary,
+            onTap: _onTapSave,
           ),
+        ),
         if (_canShareLink)
           Padding(padding: EdgeInsets.only(top: 12), child:
             RoundedButton(
