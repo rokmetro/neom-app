@@ -430,7 +430,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
   }
 
   void _onEditPronunciation() {
-    Analytics().logSelect(target: 'Edit Pronuncaion');
+    Analytics().logSelect(target: 'Edit Pronunciation');
     _createPronunciation();
   }
 
@@ -438,7 +438,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
     ProfileSoundRecorderDialog.show(context).then((AudioResult? result) {
       if (result?.resultType == AudioResultType.succeeded) {
         setState(() {
-          _pronunciationText = Content().getUserNamePronunciationUrl(accountId: Auth2().accountId);
+          _pronunciationText = Content().getUserNamePronunciationFileName(accountId: Auth2().accountId);
           _pronunciationAudioData = result?.audioData;
         });
       }
@@ -446,30 +446,47 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
   }
 
   void _onDeletePronunciation() {
-    Analytics().logSelect(target: 'Delete Pronuncaion');
+    Analytics().logSelect(target: 'Delete Pronunciation');
 
     AppAlert.showConfirmationDialog(context, message: Localization().getStringEx("panel.profile_info.pronunciation.delete.confirmation.msg", "Are you sure you want to remove this pronunciation audio?")).then((bool? result) {
       if (mounted && (result == true)) {
         setState(() {
           _clearingUserPronunciation = true;
         });
-        Content().deleteUserNamePronunciation().then((AudioResult? result){
-          if (mounted) {
-            if (result?.resultType == AudioResultType.succeeded) {
-              setState(() {
-                _clearingUserPronunciation = false;
-                _pronunciationText = null;
-                _pronunciationAudioData = null;
-              });
+        List<String> splitPronunciationText = _pronunciationText?.split('.') ?? [];
+        if (splitPronunciationText.length >= 2) {
+          Content().deleteUserNamePronunciation(extension: '.${splitPronunciationText.last}').then((AudioResult? result){
+            if (mounted) {
+              if (result?.resultType == AudioResultType.succeeded) {
+                setState(() {
+                  _clearingUserPronunciation = false;
+                  _pronunciationText = null;
+                  _pronunciationAudioData = null;
+                  if (widget.privacy != null) {
+                    Auth2UserProfile profile = _Auth2UserProfileUtils.buildModified(widget.profile, _fieldTextControllers);
+                    Auth2UserPrivacy privacy = Auth2UserPrivacy.fromOther(widget.privacy);
+                    _saveEdit(profile, privacy).then((result) {
+                      if (result.succeeded) {
+                        widget.onFinishEdit?.call(
+                          profile: (result.profile == true) ? profile : null,
+                          privacy: (result.privacy == true) ? privacy : null,
+                          pronunciationAudioData: _pronunciationAudioData,
+                          photoImageData: _photoImageData,
+                        );
+                      }
+                    });
+                  }
+                });
+              }
+              else {
+                setState(() {
+                  _clearingUserPronunciation = false;
+                });
+                AppAlert.showTextMessage(context, Localization().getStringEx('panel.profile_info.pronunciation.delete.failed.msg', 'Failed to delete pronunciation audio. Please try again later.'));
+              }
             }
-            else {
-              setState(() {
-                _clearingUserPronunciation = false;
-              });
-              AppAlert.showTextMessage(context, Localization().getStringEx('panel.profile_info.pronunciation.delete.failed.msg', 'Failed to delete pronunciation audio. Please try again later.'));
-            }
-          }
-        });
+          });
+        }
       }
     });
   }
@@ -483,7 +500,7 @@ class ProfileInfoEditPageState extends ProfileDirectoryMyInfoBasePageState<Profi
 
         Uint8List? audioData = _pronunciationAudioData;
         if (audioData == null) {
-          AudioResult? result = await Content().loadUserNamePronunciation();
+          AudioResult? result = StringUtils.isNotEmpty(_pronunciationText) ? await Content().loadUserNamePronunciation(fileName: _pronunciationText) : null;
           audioData = (result?.resultType == AudioResultType.succeeded) ? result?.audioData : null;
         }
 

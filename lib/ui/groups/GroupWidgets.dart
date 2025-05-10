@@ -413,12 +413,12 @@ class GroupsConfirmationDialog extends StatelessWidget{
 // GroupAddImageWidget
 
 class GroupAddImageWidget extends StatefulWidget {
-  static String _groupImageStoragePath = 'group/tout';
   static int _groupImageWidth = 1080;
 
   final String? url;
+  final String? storagePath;
 
-  const GroupAddImageWidget({super.key, this.url});
+  const GroupAddImageWidget({super.key, this.url, this.storagePath});
 
   @override
   _GroupAddImageWidgetState createState() => _GroupAddImageWidgetState();
@@ -439,8 +439,8 @@ class GroupAddImageWidget extends StatefulWidget {
   //   return imageResult;
   // }
 
-  static Future<ImagesResult?> show({required BuildContext context, String? url}) async =>
-      showDialog(context: context, builder: (_) => Material(type: MaterialType.transparency, child: GroupAddImageWidget(url: url)));
+  static Future<ImagesResult?> show({required BuildContext context, String? url, String? storagePath}) async =>
+      showDialog(context: context, builder: (_) => Material(type: MaterialType.transparency, child: GroupAddImageWidget(url: url, storagePath: storagePath,)));
 
 }
 
@@ -570,8 +570,7 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
         _showProgress = true;
       });
 
-      Future<ImagesResult> result =
-      Content().useUrl(storageDir: GroupAddImageWidget._groupImageStoragePath, width: GroupAddImageWidget._groupImageWidth, url: url);
+      Future<ImagesResult> result = Content().useUrl(storageDir: widget.storagePath ?? Content.groupImagesContentCategory, width: GroupAddImageWidget._groupImageWidth, url: url);
       result.then((logicResult) {
         setState(() {
           _showProgress = false;
@@ -608,7 +607,11 @@ class _GroupAddImageWidgetState extends State<GroupAddImageWidget> {
     // Future<ImagesResult?> result =
     // Content().selectImageFromDevice(storagePath: _groupImageStoragePath, width: _groupImageWidth);
     // result.then((logicResult) {
-      Navigator.push(context, CupertinoPageRoute(builder: (context) => ImageEditPanel(storagePath: GroupAddImageWidget._groupImageStoragePath, width: GroupAddImageWidget._groupImageWidth, preloadImageUrl: widget.url,))).then((logicResult){
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => ImageEditPanel(
+        storagePath: widget.storagePath ?? Content.groupImagesContentCategory,
+        width: GroupAddImageWidget._groupImageWidth,
+        preloadImageUrl: widget.url,
+      ))).then((logicResult){
       setState(() {
         _showProgress = false;
       });
@@ -2193,7 +2196,7 @@ class _ImageChooserState extends State<ImageChooserWidget>{
 
   void _onTapAddImage() async {
     Analytics().logSelect(target: "Add Image");
-    ImagesResult? result = await GroupAddImageWidget.show(context: context, url: widget.imageUrl).then((result) => result);
+    ImagesResult? result = await GroupAddImageWidget.show(context: context, url: widget.imageUrl, storagePath: Content.groupPostImagesContentCategory).then((result) => result);
 
     if(result?.succeeded == true) {
       widget.onImageChanged?.call(result?.imageUrl);
