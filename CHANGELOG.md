@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased - NEOM U
 ### Fixed
 - Fixed package name bug for mobile platforms
+### Changed
+- Update media file transfers to use AWS S3 directly [#104](https://github.com/rokmetro/neom-app/issues/104)
 
 ## [0.5.16] = 2025-05-02
 ### Added
