@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update media file transfers to use AWS S3 directly [#104](https://github.com/rokmetro/neom-app/issues/104)
 ### Fixed
 - Slow image/video/file display and upload for conversations and groups [#91](https://github.com/rokmetro/neom-app/issues/91)
+- Error saving business card QR code[#90](https://github.com/rokmetro/neom-app/issues/90)
 - Fixed package name bug for mobile platforms
 
 ## [0.5.16] = 2025-05-02
