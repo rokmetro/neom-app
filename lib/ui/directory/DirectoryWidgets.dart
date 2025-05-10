@@ -13,6 +13,7 @@ import 'package:illinois/ui/messages/MessagesDirectoryPanel.dart';
 import 'package:illinois/ui/messages/MessagesHomePanel.dart';
 import 'package:illinois/utils/AppUtils.dart';
 import 'package:illinois/utils/AudioUtils.dart';
+import 'package:illinois/utils/Utils.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
 import 'package:rokwire_plugin/model/auth2.directory.dart';
@@ -664,9 +665,14 @@ class _DirectoryPronunciationButtonState extends State<DirectoryPronunciationBut
         });
 
         Uint8List? audioData = widget.data;
+        String contentType = 'audio/mp4';
         if (audioData == null) {
           AudioResult? result = await Content().loadUserNamePronunciation(fileName: widget.fileName);
           audioData = (result?.resultType == AudioResultType.succeeded) ? result?.audioData : null;
+          String? type = FileUtils.mimeTypeExt(result?.audioFileExtension);
+          if (type != null) {
+            contentType = type;
+          }
         }
 
         if (mounted) {
@@ -687,7 +693,10 @@ class _DirectoryPronunciationButtonState extends State<DirectoryPronunciationBut
             });
 
             Duration? duration;
-            try { duration = await _audioPlayer?.setAudioSource(Uint8ListAudioSource(audioData)); }
+            try {
+              duration = await _audioPlayer?.setAudioSource(
+                  Uint8ListAudioSource(audioData, contentType: contentType));
+            }
             catch(e) {}
 
             if (mounted) {
