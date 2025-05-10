@@ -195,8 +195,8 @@ class _ImageEditState extends State<ImageEditPanel> with WidgetsBindingObserver{
             Padding(
               padding: EdgeInsets.all(15.0),
               child: Text(
-                "Image Source",
-                style: Styles().textStyles.getTextStyle("widget.title.small"),
+                Localization().getStringEx("", "Image Source"),
+                style: Styles().textStyles.getTextStyle("widget.title.dark.small"),
               ),
             ),
             Padding(

@@ -1094,7 +1094,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                   padding: EdgeInsets.only(bottom: 12),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Container(
-                      padding: EdgeInsets.only(bottom: 14),
+                      padding: EdgeInsets.only(bottom: 12),
                       child: Row(crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(child:
@@ -1112,7 +1112,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                           _buildScheduledDateWidget,
                     ])),
                     Padding(padding: GroupPostCard.contentHorizontalPadding + EdgeInsets.only(bottom: 6),
-                      child: Visibility(visible: widget.post?.isPost == true,
+                      child: Visibility(visible: widget.post?.isPost == true && StringUtils.isNotEmpty(widget.post?.subject),
                         child: Container(
                           padding: EdgeInsets.only(bottom: 0),
                             child: Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
