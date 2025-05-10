@@ -665,14 +665,11 @@ class _DirectoryPronunciationButtonState extends State<DirectoryPronunciationBut
         });
 
         Uint8List? audioData = widget.data;
-        String contentType = 'audio/mp4';
+        String? contentType;
         if (audioData == null) {
           AudioResult? result = await Content().loadUserNamePronunciation(fileName: widget.fileName);
           audioData = (result?.resultType == AudioResultType.succeeded) ? result?.audioData : null;
-          String? type = FileUtils.mimeTypeExt(result?.audioFileExtension);
-          if (type != null) {
-            contentType = type;
-          }
+          contentType = FileUtils.mimeTypeExt(result?.audioFileExtension);
         }
 
         if (mounted) {
