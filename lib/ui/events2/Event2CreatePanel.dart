@@ -608,6 +608,8 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
     _locationLongitudeController.addListener(_updateErrorMap);
     _costController.addListener(_updateErrorMap);
     _websiteController.addListener(_updateErrorMap);
+    _locationBuildingController.addListener(_updateErrorMap);
+    _locationAddressController.addListener(_updateErrorMap);
 
     _initEventGroups();
     _initEventAdmins();
