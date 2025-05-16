@@ -98,9 +98,10 @@ class _GroupAddMembersState extends State<GroupAddMembersPanel> {
               )
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 2), child:
-            _membersBrowseButton,
-          ),
+          // Padding(padding: EdgeInsets.symmetric(horizontal: 2), child:
+          //   _membersBrowseButton,
+          // ),
+          const SizedBox(width: 4.0),
           _membersDropdownStatus
         ]),
       ])
@@ -423,7 +424,7 @@ class _GroupAddMembersState extends State<GroupAddMembersPanel> {
     BoxDecoration(border: Border.all(color: Styles().colors.surfaceAccent, width: 1), borderRadius: BorderRadius.circular(4), color: Styles().colors.surface);
 
   BoxDecoration get _fieldDisabledDecoration =>
-    _fieldDecorationEx(backColor: Styles().colors.background);
+    _fieldDecorationEx(backColor: Styles().colors.surface);
 
   BoxDecoration _fieldDecorationEx({Color? backColor}) =>
     BoxDecoration(border: Border.all(color: Styles().colors.fillColorPrimary, width: 1),color: backColor);
