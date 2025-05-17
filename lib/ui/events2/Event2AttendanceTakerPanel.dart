@@ -21,7 +21,6 @@ import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/widgets/rounded_button.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:universal_io/io.dart';
 
 class Event2AttendanceTakerPanel extends StatelessWidget with AnalyticsInfo {
   final Event2? event;
@@ -558,10 +557,10 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
       body: RoundedButton(
         label: Localization().getStringEx('panel.event2.setup.attendance.self_check.generate_pdf.title', 'Self Check-In PDF'),
         hint: Localization().getStringEx('panel.event2.setup.attendance.self_check.generate_pdf.hint', ''),
-        textStyle: Styles().textStyles.getTextStyle(widget.selfCheckInEnabled ? 'widget.button.title.regular' : 'widget.button.title.regular.variant3'),
+        textStyle: Styles().textStyles.getTextStyle(widget.scanEnabled ? 'widget.button.light.title.large.fat' : 'widget.button.title.large.fat.variant3'),
         borderColor: widget.selfCheckInEnabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
         padding: EdgeInsetsDirectional.symmetric(horizontal: 12, vertical: 8),
-        backgroundColor: Styles().colors.white,
+        backgroundColor: Styles().colors.background,
         onTap: _onTapSelfCheckInPdfButton,
         contentWeight: contentWeight,
       ),
@@ -603,7 +602,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
     if (widget.scanEnabled != true) {
       Event2Popup.showMessage(context,
         title: Localization().getStringEx("panel.event2.detail.attendance.message.not_available.title", "Not Available"),
-        message: Localization().getStringEx("panel.event2.detail.attendance.scan.disabled", "Scanning Illini ID is not enabled for this event."));
+        message: Localization().getStringEx("panel.event2.detail.attendance.scan.disabled", "Scanning ID is not enabled for this event."));
     }
     else if (!_scanning) {
       setState(() {
@@ -615,7 +614,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
         _onScanFinished("$uin");
       }); */
       
-      String lineColor = UiColors.toHex(Styles().colors.fillColorSecondary) ?? '#E84A27';
+      String lineColor = UiColors.toHex(Styles().colors.fillColorSecondary) ?? '#D29E01';
       String cancelButtonTitle = Localization().getStringEx('panel.event2.detail.attendance.scan.cancel.button.title', 'Cancel');
       FlutterBarcodeScanner.scanBarcode(lineColor, cancelButtonTitle, true, ScanMode.QR).then((String scanResult) {
         if (mounted) {

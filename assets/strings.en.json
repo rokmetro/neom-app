@@ -1440,6 +1440,7 @@
 
     "panel.event2.survey.responses.surveys.empty.msg": "There are no survey responses available.",
     "panel.event2.survey.responses.header.title": "{{event_name}} Survey Responses",
+    "panel.event2.survey.responses.download.label": "Download survey results",
 
     "panel.event2.attributes.attributes.header.title": "Event Attributes",
     "panel.event2.attributes.attributes.header.description": "Choose at least one attribute to describe this event.",
@@ -1552,7 +1553,7 @@
     "panel.event2.detail.attendance.scan.button": "Scan ID",
     "panel.event2.detail.attendance.message.not_available.title": "Not Available",
     "panel.event2.detail.attendance.manual_check.disabled": "Manual check is not enabled for this event.",
-    "panel.event2.detail.attendance.scan.disabled": "Scanning Illini ID is not enabled for this event.",
+    "panel.event2.detail.attendance.scan.disabled": "Scanning ID is not enabled for this event.",
     "panel.event2.detail.attendance.self_checkin.disabled": "Self Check-In is not enabled for this event.",
     "panel.event2.detail.attendance.attendees.description": "Visit {{event_attendance_url}} to upload or download a list.",
     "panel.event2.detail.attendance.additional.netids.label": "NetIDs for additional attendance takers:",
@@ -2327,6 +2328,9 @@
     "panel.directory.accounts.groups.hint.empty": "Select groups",
     "panel.directory.accounts.groups.hint.semantics": "Double type to show groups.",
 
+    "panel.directory.accounts.select.header.title": "Directory of Users",
+    "panel.directory.accounts.select.apply.prompt": "Apply your changes?",
+
     "panel.profile.info.directory.preview.description.text": "Preview of how your profile displays in the Directory of Users.",
     "panel.profile.info.directory.edit.description.text": "Choose how your profile displays in the Directory of Users.",
     "panel.profile.info.command.button.edit.text": "Edit my info",
@@ -2389,6 +2393,7 @@
     "panel.profile.info.share.command.button.share.message.text": "Share via Text Message",
     "panel.profile.info.share.command.button.share.digital_card.text": "Add to Device Contacts",
     "panel.profile.info.share.command.button.copy.clipboard.text": "Copy Text to Clipboard",
+    "panel.profile.info.share.command.button.edit.profile.text": "Edit My Info",
     "panel.profile.info.share.command.save.image.succeeded": "Contact card image saved successfully.",
     "panel.profile.info.share.command.save.image.failed": "Failed to save contact card image.",
     "panel.profile.info.share.command.save.digital_card.failed": "Failed to save Digital Business Card.",
@@ -4247,11 +4252,23 @@
     "model.groups.member.status.rejected": "Denied",
     "model.groups.member.status.unknown": "Unknown",
 
+    "model.groups.member.status.group.pending": "Pending",
+    "model.groups.member.status.group.member": "Members",
+    "model.groups.member.status.group.admin": "Admins",
+    "model.groups.member.status.group.rejected": "Denied",
+    "model.groups.member.status.group.unknown": "Unknown",
+
     "model.research_project.member.status.pending": "Pending",
     "model.research_project.member.status.member": "Participant",
     "model.research_project.member.status.admin": "Admin",
     "model.research_project.member.status.rejected": "Denied",
     "model.research_project.member.status.unknown": "Unknown",
+
+    "model.research_project.member.status.group.pending": "Pending",
+    "model.research_project.member.status.group.member": "Participants",
+    "model.research_project.member.status.group.admin": "Admins",
+    "model.research_project.member.status.group.rejected": "Denied",
+    "model.research_project.member.status.group.unknown": "Unknown",
 
     "model.event2.sort_type.date_time": "Date & Time",
     "model.event2.sort_type.alphabetical": "Alphabetical",

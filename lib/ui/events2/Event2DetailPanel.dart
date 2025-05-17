@@ -857,12 +857,12 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
             _buildSettingButton(title: "Event follow-up survey", onTap: _onSettingSurvey),
           if (_event?.hasSurvey == true)
             _buildSettingButton(title:"Event follow-up survey responses", onTap: _onSettingSurveyResponses),
-          if (Event2ManageDataPanel.canManage)
+          // if (Event2ManageDataPanel.canManage)
             _buildSettingButton(title: "Manage registration, attendance, and survey data", onTap: _onSettingManageData),
           _buildSettingButton(title: "Advanced settings", onTap: _onSettingAdvancedSettings),
           if (Auth2().isCalendarAdmin)
             _buildSettingButton(title: "Duplicate event", onTap: _onSettingDuplicateEvent),
-          if (Auth2().isCalendarAdmin)
+          if (_isAdmin)
             _buildSettingButton(title: "Delete event", onTap: _onSettingDeleteEvent),
         ],)
     );
@@ -1137,7 +1137,7 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
     if (canSelfCheckIn) {
       setState(() { _selfCheckingIn = true; });
 
-      String lineColor = UiColors.toHex(Styles().colors.fillColorSecondary) ?? '#E84A27';
+      String lineColor = UiColors.toHex(Styles().colors.fillColorSecondary) ?? '#D29E01';
       String cancelButtonTitle = Localization().getStringEx('panel.event2.detail.attendance.scan.cancel.button.title', 'Cancel');
       String scanResult = await FlutterBarcodeScanner.scanBarcode(lineColor, cancelButtonTitle, true, ScanMode.QR);
       if (mounted) {
@@ -1284,7 +1284,7 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
   void _onTapPopupSignIn() {
     Analytics().logSelect(target: 'sign in');
     Navigator.pop(context);
-    ProfileHomePanel.present(context, content: ProfileContent.login);
+    ProfileHomePanel.present(context, contentType: ProfileContentType.login);
   }
 
   void _onTapPopupProfile() {
@@ -1425,7 +1425,7 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
     Analytics().logSelect(target: "Event Survey Responses", attributes: _event?.analyticsAttributes);
     Navigator.push<Event2SetupSurveyParam?>(context, CupertinoPageRoute(builder: (context) => SurveyResponsesPanel(
       surveyId: _survey?.id,
-      eventName: _event?.name,
+      event: _event,
       analyticsFeature: widget.analyticsFeature,
     )));
   }
