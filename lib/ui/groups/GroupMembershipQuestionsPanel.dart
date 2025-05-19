@@ -173,7 +173,7 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
                     label: Localization().getStringEx("panel.membership_questions.button.clear.hint", "clear"),
                     button: true,
                     excludeSemantics: true,
-                    child: Text('X', style: Styles().textStyles.getTextStyle("widget.title.regular")),
+                    child: Text('X', style: Styles().textStyles.getTextStyle("widget.title.dark.regular")),
                 )),
               ),
             ),
