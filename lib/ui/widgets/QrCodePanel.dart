@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -371,18 +372,26 @@ class _QrCodePanelState extends State<QrCodePanel> {
   void _onTapShareDigitalCard() async {
     Analytics().logSelect(target: 'Share Digital Card');
     final String mimeType = 'text/vcard';
-    String contentToShare = widget.digitalCardShare ?? '';
+    final String contentToShare = widget.digitalCardShare ?? '';
     final String fileName = '${widget.saveFileName}.vcf';
-    Uint8List fileBytes = utf8.encode(contentToShare);
+    final Uint8List fileBytes = utf8.encode(contentToShare);
+
     if (kIsWeb) {
-      // Download the file on web - share option does not work
-      AppFile.downloadFile(context: context, fileBytes: fileBytes, fileName: fileName);
+      AppFile.downloadFile(
+        context: context,
+        fileBytes: fileBytes,
+        fileName: fileName,
+      );
     } else {
       final String dir = (await getApplicationDocumentsDirectory()).path;
-      final String fullPath = '$dir/${widget.saveFileName}.vcf';
-      XFile capturedFile = XFile.fromData(fileBytes, mimeType: mimeType, path: fullPath);
+      final String fullPath = '$dir/$fileName';
+
+      final File file = File(fullPath);
+      await file.writeAsBytes(fileBytes, flush: true);
+
       if (mounted) {
-        Share.shareXFiles([XFile(fullPath, mimeType: 'text/vcard',)],
+        await Share.shareXFiles(
+          [XFile(fullPath, mimeType: mimeType)],
           text: widget.saveWatermarkText,
         );
       }
