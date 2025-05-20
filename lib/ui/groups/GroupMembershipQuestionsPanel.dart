@@ -112,18 +112,16 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
     String description = (widget.group?.researchProject == true) ?
       Localization().getStringEx("panel.recruitment_questions.label.description", 'Learn more about people who want to participate to your research project by asking them some questions. Only the research team will see the answers.') :
       Localization().getStringEx("panel.membership_questions.label.description", 'Learn more about people who want to join your group by asking them some questions. Only the admins of your group will see the answers.');
-    return Container(color:Colors.white,
-      child: Padding(padding: EdgeInsets.all(32),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children:<Widget>[
-            Row(children: <Widget>[
-              Text(Localization().getStringEx("panel.membership_questions.label.edit", 'Edit Questions'), style: Styles().textStyles.getTextStyle("widget.title.dark.regular.fat")),
-            ],),
-            Padding(padding: EdgeInsets.only(top: 8), child:
-              Text(description, style: Styles().textStyles.getTextStyle("widget.description.medium.regular.thin")),
-            ),
-          ]),
-      ),
+    return Padding(padding: EdgeInsets.all(32),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+        children:<Widget>[
+          Row(children: <Widget>[
+            Text(Localization().getStringEx("panel.membership_questions.label.edit", 'Edit Questions'), style: Styles().textStyles.getTextStyle("widget.title.regular.fat")),
+          ],),
+          Padding(padding: EdgeInsets.only(top: 8), child:
+            Text(description, style: Styles().textStyles.getTextStyle("widget.description.regular.light")),
+          ),
+        ]),
     );
   }
 
@@ -155,16 +153,18 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
           child: Text(Localization().getStringEx("panel.membership_questions.label.question", 'QUESTION #')+(index+1).toString(), style: Styles().textStyles.getTextStyle("widget.title.light.tiny.fat")),
         ),
         Stack(children: <Widget>[
-          Container(color: Styles().colors.surface,
-            child: TextField(
-              maxLines: 2,
-              controller: _controllers![index],
-              focusNode: _focusNodes![index],
-              onChanged: _onTextChanged,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.0))),
-              style: Styles().textStyles.getTextStyle("widget.item.regular.thin")),
-          ),
+          TextField(
+            maxLines: 2,
+            controller: _controllers![index],
+            focusNode: _focusNodes![index],
+            onChanged: _onTextChanged,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              fillColor: Styles().colors.surface,
+              filled: true,
+              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.0))
+            ),
+            style: Styles().textStyles.getTextStyle("widget.item.regular.thin")),
           Align(alignment: Alignment.topRight,
             child: GestureDetector(onTap: () { _removeQuestion(index: index); },
               child: Container(width: 36, height: 36,
@@ -183,23 +183,21 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
   }
 
   Widget _buildSubmit() {
-    return Container(color: Styles().colors.surface,
-      child: Padding(padding: EdgeInsets.all(16),
-        child: Row(children: <Widget>[
-          Expanded(flex: 1,child: Container(),),
-          Expanded(flex: 5,
-          child: RoundedButton(label: Localization().getStringEx("panel.membership_questions.button.update_question.title", 'Update Questions'),
-            textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat.variant"),
-            backgroundColor: Styles().colors.surface,
-            padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-            borderColor: Styles().colors.fillColorSecondary,
-            borderWidth: 2,
-            onTap:() { _onSubmit();  }
-            )
-          ),
-          Expanded(flex: 1, child: Container(),),
-        ],),
-      ),
+    return Padding(padding: EdgeInsets.all(16),
+      child: Row(children: <Widget>[
+        Expanded(flex: 1,child: Container(),),
+        Expanded(flex: 5,
+        child: RoundedButton(label: Localization().getStringEx("panel.membership_questions.button.update_question.title", 'Update Questions'),
+          textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
+          backgroundColor: Styles().colors.background,
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          borderColor: Styles().colors.fillColorSecondary,
+          borderWidth: 2,
+          onTap:() { _onSubmit();  }
+          )
+        ),
+        Expanded(flex: 1, child: Container(),),
+      ],),
     );
   }
 
