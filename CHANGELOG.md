@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased - NEOM U
 ### Fixed
+- [TC-020a] Editing group membership questions does not work [#110](https://github.com/rokmetro/neom-app/issues/110)
 - [TC-014a] Issue adding event to group [#109](https://github.com/rokmetro/neom-app/issues/109)
+
 ## [0.5.18] = 2025-05-17
 ### Added
 - Add group members from directory [#94](https://github.com/rokmetro/neom-app/issues/94)
