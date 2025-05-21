@@ -206,6 +206,7 @@
     "widget.message.small.underline": {"extends": "widget.message.small", "decoration": "underline", "decoration_style": "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.message.light.small": {"font_family": "regular", "size": 14.0, "color": "mediumGray"},
     "widget.message.light.small.semi_fat": {"font_family": "medium", "size": 14.0, "color": "mediumGray"},
+    "widget.message.light.medium.extra_fat": {"font_family": "extra_bold", "size": 18.0, "color": "textLight"},
     "widget.message.light.medium.thin": {"font_family": "regular", "size": 18.0, "color": "textLight"},
     "widget.message.light.regular": {"font_family": "regular", "size": 16.0, "color": "mediumGray"},
     "widget.message.light.regular.fat": {"font_family": "regular", "size": 16.0, "color": "textLight"},
@@ -511,6 +512,7 @@
     "widget.button.light.title.medium.thin": { "font_family": "regular", "size": 16.0, "color": "textLight"},
     "widget.button.light.title.medium.underline": { "font_family": "medium", "size": 16.0, "color": "textLight",  "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.button.light.title.large.fat": { "font_family": "bold", "size": 20.0, "color": "textLight"},
+    "widget.button.light.title.large.thin": { "font_family": "regular", "size": 20.0, "color": "textLight"},
     "widget.button.light.description.small": { "font_family": "regular", "size": 14.0, "color": "textLight"},
     "widget.button.light.description.tiny": { "font_family": "regular", "size": 12.0, "color": "textLight"},
 
