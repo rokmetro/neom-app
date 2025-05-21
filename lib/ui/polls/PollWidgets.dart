@@ -377,16 +377,17 @@ class _PollCardState extends State<PollCard> with NotificationsListener {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         builder: (context) {
-          return _PollOptions(pollCard: widget,);
+          return _PollOptions(context: context, pollCard: widget,);
         }
     );
   }
 }
 
 class _PollOptions extends StatefulWidget with AnalyticsInfo {
+  final BuildContext? context;
   final PollCard pollCard;
 
-  _PollOptions({Key? key, required this.pollCard}) : super(key: key);
+  _PollOptions({Key? key, this.context, required this.pollCard}) : super(key: key);
 
   @override
   State<_PollOptions> createState() => _PollOptionsState();
@@ -450,11 +451,11 @@ class _PollOptionsState extends State<_PollOptions> {
       });
       Polls().open(widget.pollCard.poll?.pollId).then((_) {
         if (mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(widget.context ?? context).pop();
         }
       }).catchError((e) {
         if (mounted) {
-          AppAlert.showDialogResult(context, neom.Polls.localizedErrorString(e));
+          AppAlert.showDialogResult(widget.context ?? context, neom.Polls.localizedErrorString(e));
         }
       }).whenComplete(() {
         if (mounted) {
@@ -473,11 +474,11 @@ class _PollOptionsState extends State<_PollOptions> {
       });
       Polls().close(widget.pollCard.poll?.pollId).then((_) {
         if (mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(widget.context ?? context).pop();
         }
       }).catchError((e) {
         if (mounted) {
-          AppAlert.showDialogResult(context, neom.Polls.localizedErrorString(e));
+          AppAlert.showDialogResult(widget.context ?? context, neom.Polls.localizedErrorString(e));
         }
       }).whenComplete(() {
         if (mounted) {
@@ -496,11 +497,11 @@ class _PollOptionsState extends State<_PollOptions> {
       });
       Polls().delete(widget.pollCard.poll?.pollId).then((_) {
         if (mounted) {
-          Navigator.of(context).pop();
+          Navigator.of(widget.context ?? context).pop();
         }
       }).catchError((e) {
         if (mounted) {
-          AppAlert.showDialogResult(context, neom.Polls.localizedErrorString(e));
+          AppAlert.showDialogResult(widget.context ?? context, neom.Polls.localizedErrorString(e));
         }
       }).whenComplete(() {
         if (mounted) {
