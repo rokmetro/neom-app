@@ -204,7 +204,7 @@ class Event2HomePanel extends StatefulWidget with AnalyticsInfo {
   }
 
   static Widget _buildOnboardingApply(BuildContext context, bool enabled, void Function() onTap) {
-    TextStyle? applyTextStyle = Styles().textStyles.getTextStyle(enabled ? 'widget.button.title.medium.fat.dark' : 'widget.button.title.regular.variant3');
+    TextStyle? applyTextStyle = Styles().textStyles.getTextStyle(enabled ? 'widget.button.title.medium.fat.dark' : 'widget.button.title.medium.fat.variant3');
     Color? borderColor = enabled ? Styles().colors.fillColorSecondary : Styles().colors.fillColorPrimaryVariant;
     Decoration? applyDecoration = BoxDecoration(
       color: Styles().colors.surface,

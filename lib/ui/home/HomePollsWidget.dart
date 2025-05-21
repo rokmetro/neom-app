@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -505,7 +504,7 @@ class _HomeCreatePollWidgetState extends State<HomeCreatePollWidget> {
         Text(_canCreatePoll ?
         Localization().getStringEx("widget.home_create_poll.text.description", "People in your Group can be notified to vote through the {{app_title}} app. Or you can give voters the four-digit poll number.").replaceAll('{{app_title}}', Localization().getStringEx('app.title', 'Illinois')) :
         AppTextUtils.loggedOutFeatureNA(Localization().getStringEx('generic.app.feature.polls', 'Polls')),
-            style: Styles().textStyles.getTextStyle("widget.description.medium.regular")
+            style: Styles().textStyles.getTextStyle("widget.description.regular.light")
         ),
       ),
       _buildButtons()

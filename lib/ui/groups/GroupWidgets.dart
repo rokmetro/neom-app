@@ -314,16 +314,16 @@ class GroupMembershipAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: onTap,
+    return GestureDetector(onTap: enabled ? onTap : null,
       child: Container(height: height,
-        decoration: BoxDecoration(color: Colors.white,
+        decoration: BoxDecoration(color: Styles().colors.background,
           border: Border.all(color: enabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent, width: 2),
           borderRadius: BorderRadius.circular(height / 2),
         ),
         child: Padding(padding: EdgeInsets.only(left:16, right: 8, ),
           child: Center(
             child: Row(children: <Widget>[
-              Text(title!, style:  enabled ? Styles().textStyles.getTextStyle("widget.button.title.enabled") : Styles().textStyles.getTextStyle("widget.button.title.disabled") ),
+              Text(title!, style:  enabled ? Styles().textStyles.getTextStyle("widget.button.title.medium.fat") : Styles().textStyles.getTextStyle("widget.button.title.medium.fat.variant3") ),
             ],)
           )
         ),
