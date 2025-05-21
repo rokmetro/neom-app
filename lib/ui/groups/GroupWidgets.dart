@@ -314,16 +314,16 @@ class GroupMembershipAddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(onTap: onTap,
+    return GestureDetector(onTap: enabled ? onTap : null,
       child: Container(height: height,
-        decoration: BoxDecoration(color: Colors.white,
+        decoration: BoxDecoration(color: Styles().colors.background,
           border: Border.all(color: enabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent, width: 2),
           borderRadius: BorderRadius.circular(height / 2),
         ),
         child: Padding(padding: EdgeInsets.only(left:16, right: 8, ),
           child: Center(
             child: Row(children: <Widget>[
-              Text(title!, style:  enabled ? Styles().textStyles.getTextStyle("widget.button.title.enabled") : Styles().textStyles.getTextStyle("widget.button.title.disabled") ),
+              Text(title!, style:  enabled ? Styles().textStyles.getTextStyle("widget.button.title.medium.fat") : Styles().textStyles.getTextStyle("widget.button.title.medium.fat.variant3") ),
             ],)
           )
         ),
@@ -382,9 +382,9 @@ class GroupsConfirmationDialog extends StatelessWidget{
                       Expanded(child:
                         RoundedButton(
                           label: Localization().getStringEx('headerbar.back.title', "Back"),
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.thin"),
+                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.thin"),
                           borderColor: Styles().colors.surface,
-                          backgroundColor: Styles().colors.surface,
+                          backgroundColor: Styles().colors.background,
                           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           onTap: (){
                             Analytics().logAlert(text: message, selection: "Back");
@@ -395,9 +395,9 @@ class GroupsConfirmationDialog extends StatelessWidget{
                       Expanded(child:
                         RoundedButton(
                           label: buttonTitle ?? '',
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
                           borderColor: Styles().colors.fillColorSecondary,
-                          backgroundColor: Styles().colors.surface,
+                          backgroundColor: Styles().colors.background,
                           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           onTap: (){
                             Analytics().logAlert(text: message, selection: buttonTitle);
