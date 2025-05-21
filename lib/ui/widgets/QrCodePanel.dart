@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -166,7 +165,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
       isScrollControlled: true,
       isDismissible: true,
       clipBehavior: Clip.antiAlias,
-      backgroundColor: Styles().colors.fillColorSecondary,
+      backgroundColor: Styles().colors.background,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) => QrCodePanel.fromProfile(
         profile: profile,
@@ -202,13 +201,13 @@ class _QrCodePanelState extends State<QrCodePanel> {
     Row(children: [
       Expanded(child:
         Padding(padding: EdgeInsets.only(left: 24,), child:
-          Text(widget.title ?? '', style: Styles().textStyles.getTextStyle('widget.message.regular.extra_fat'),)
+          Text(widget.title ?? '', style: Styles().textStyles.getTextStyle('widget.message.light.medium.extra_fat'),)
         )
       ),
       Semantics( label: Localization().getStringEx('dialog.close.title', 'Close'), hint: Localization().getStringEx('dialog.close.hint', ''), inMutuallyExclusiveGroup: true, button: true, child:
         InkWell(onTap : _onTapClose, child:
           Container(padding: EdgeInsets.only(left: 8, right: 24, top: 16, bottom: 16), child:
-            Styles().images.getImage('close-circle', excludeFromSemantics: true),
+            Styles().images.getImage('close-circle-white', excludeFromSemantics: true),
           ),
         ),
       ),
@@ -377,21 +376,16 @@ class _QrCodePanelState extends State<QrCodePanel> {
     final Uint8List fileBytes = utf8.encode(contentToShare);
 
     if (kIsWeb) {
-      AppFile.downloadFile(
-        context: context,
-        fileBytes: fileBytes,
-        fileName: fileName,
-      );
+      // Download the file on web - share option does not work
+      AppFile.downloadFile(context: context, fileBytes: fileBytes, fileName: fileName);
     } else {
       final String dir = (await getApplicationDocumentsDirectory()).path;
       final String fullPath = '$dir/$fileName';
-
-      final File file = File(fullPath);
-      await file.writeAsBytes(fileBytes, flush: true);
+      XFile capturedFile = XFile.fromData(fileBytes, mimeType: mimeType);
+      await capturedFile.saveTo(fullPath);
 
       if (mounted) {
-        await Share.shareXFiles(
-          [XFile(fullPath, mimeType: mimeType)],
+        Share.shareXFiles([capturedFile],
           text: widget.saveWatermarkText,
         );
       }
