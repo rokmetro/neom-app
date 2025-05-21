@@ -112,7 +112,7 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
     String description = (widget.group?.researchProject == true) ?
       Localization().getStringEx("panel.recruitment_questions.label.description", 'Learn more about people who want to participate to your research project by asking them some questions. Only the research team will see the answers.') :
       Localization().getStringEx("panel.membership_questions.label.description", 'Learn more about people who want to join your group by asking them some questions. Only the admins of your group will see the answers.');
-    return Padding(padding: EdgeInsets.all(32),
+    return Padding(padding: const EdgeInsets.all(32),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start,
         children:<Widget>[
           Row(children: <Widget>[
@@ -131,17 +131,20 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
       content.add(_buildQuestion(index: index));
     }
 
-    content.add(Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-      Expanded(child: Container(),),
-      GroupMembershipAddButton(
-        height: 26 + MediaQuery.of(context).textScaler.scale(16),
-        title: Localization().getStringEx("panel.membership_questions.button.add_question.title", 'Add Question'),
-        onTap: _addQuestion,
-        enabled: _addButtonEnabled,
-      ),
-    ],));
+    content.add(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+        Expanded(child: Container(),),
+        GroupMembershipAddButton(
+          height: 26 + MediaQuery.of(context).textScaler.scale(16),
+          title: Localization().getStringEx("panel.membership_questions.button.add_question.title", 'Add Question'),
+          onTap: _addQuestion,
+          enabled: _addButtonEnabled,
+        ),
+      ],),
+    ));
 
-    return Padding(padding: EdgeInsets.all(32),
+    return Padding(padding: const EdgeInsets.only(left: 32, right: 32, bottom: 32,),
       child: Column(crossAxisAlignment:CrossAxisAlignment.start, children: content),
     );
   }
@@ -152,33 +155,28 @@ class _GroupMembershipQuestionsPanelState extends State<GroupMembershipQuestions
         Padding(padding: EdgeInsets.only(bottom: 4),
           child: Text(Localization().getStringEx("panel.membership_questions.label.question", 'QUESTION #')+(index+1).toString(), style: Styles().textStyles.getTextStyle("widget.title.light.tiny.fat")),
         ),
-        Stack(children: <Widget>[
-          TextField(
-            maxLines: 2,
-            controller: _controllers![index],
-            focusNode: _focusNodes![index],
-            onChanged: _onTextChanged,
-            textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(
-              fillColor: Styles().colors.surface,
-              filled: true,
-              border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.0))
-            ),
-            style: Styles().textStyles.getTextStyle("widget.item.regular.thin")),
-          Align(alignment: Alignment.topRight,
-            child: GestureDetector(onTap: () { _removeQuestion(index: index); },
-              child: Container(width: 36, height: 36,
-                child: Align(alignment: Alignment.center,
-                  child:Semantics(
-                    label: Localization().getStringEx("panel.membership_questions.button.clear.hint", "clear"),
-                    button: true,
-                    excludeSemantics: true,
-                    child: Text('X', style: Styles().textStyles.getTextStyle("widget.title.dark.regular")),
-                )),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Expanded(
+            child: TextField(
+              maxLines: 2,
+              controller: _controllers![index],
+              focusNode: _focusNodes![index],
+              onChanged: _onTextChanged,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: InputDecoration(
+                fillColor: Styles().colors.surface,
+                filled: true,
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black, width: 1.0))
               ),
+              style: Styles().textStyles.getTextStyle("widget.item.regular.thin")
             ),
           ),
-        ],),
+          Semantics(label: Localization().getStringEx('dialog.close.title', 'Close'), hint: Localization().getStringEx('dialog.close.hint', ''), inMutuallyExclusiveGroup: true, button: true, child:
+            InkWell(onTap : () => _removeQuestion(index: index), child:
+              Padding(padding: const EdgeInsets.all(16), child: Styles().images.getImage('close-x-white'),),
+            ),
+          ),
+        ],)
       ],),);
   }
 
