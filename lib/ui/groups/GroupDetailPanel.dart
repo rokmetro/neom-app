@@ -1784,9 +1784,15 @@ class _GroupEventsState extends State<_GroupEventsContent> with  NotificationsLi
 
     if (CollectionUtils.isNotEmpty(_groupEvents)) {
       for (Event2 groupEvent in _groupEvents!) {
-        content.add(Padding(padding: EdgeInsets.only(bottom: 16),
-            child: Event2Card(groupEvent, group: widget.group,
-                onTap: () => _onTapEvent(groupEvent))));
+        content.add(Padding(
+          padding: EdgeInsets.only(bottom: 16),
+          child: Event2Card(
+            groupEvent,
+            key: ValueKey(groupEvent.id),
+            group: widget.group,
+            onTap: () => _onTapEvent(groupEvent),
+          ),
+        ));
       }
 
       content.add(Padding(padding: EdgeInsets.only(top: 16), child:
