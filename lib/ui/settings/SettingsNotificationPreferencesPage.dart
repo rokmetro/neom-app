@@ -165,11 +165,20 @@ class _SettingsNotificationPreferencesPageState extends State<SettingsNotificati
                   ))))
     ]));
     */
+    //TODO
+    widgets.add(_CustomToggleButton(
+        enabled: true,
+        borderRadius: _topRounding,
+        label: Localization().getStringEx("", "Conversation messages"),
+        toggled: true,
+        onTap: null,
+        textStyle: true ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
+    ));
     widgets.add(Container(color:Styles().colors.surfaceAccent,height: 1));
     widgets.add(_CustomToggleButton(
           enabled: _toggleButtonEnabled,
           borderRadius: _topRounding,
-          label: Localization().getStringEx("panel.settings.notifications.reminders", "Event Reminders"),
+          label: Localization().getStringEx("panel.settings.notifications.reminders", "Event reminders"),
           toggled: FirebaseMessaging().notifyEventReminders,
           onTap: _toggleButtonEnabled?_onEventRemindersToggled : null,
           textStyle: _toggleButtonEnabled? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")

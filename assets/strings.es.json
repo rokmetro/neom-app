@@ -2084,6 +2084,7 @@
     "panel.settings.notifications.group_updates.polls.label": "Encuestas",
     "panel.settings.notifications.group_updates.messages.label": "Messages",
     "panel.settings.notifications.pause_notifications": "Pausar todas las notificaciones",
+    "panel.settings.notifications.conversations.messages":"Mensajes de conversación",
 
     "panel.settings.privacy.privacy.label.title": "Elija su nivel de privacidad",
     "panel.settings.privacy.privacy.label.slider_help": "Ajuste el control deslizante para cambiar su nivel de privacidad",

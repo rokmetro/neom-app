@@ -2079,7 +2079,7 @@
     "panel.settings.notifications.appointments.reminders.morning_of.label":"Morning Of (8:00 AM)",
     "panel.settings.notifications.appointments.reminders.night_before.label":"Night Before (9:00 PM)",
     "panel.settings.notifications.appointments.description.label":"MyMcKinley appointment reminder settings only apply within the {{app_title}} app.",
-    "panel.settings.notifications.reminders":"Event Reminders",
+    "panel.settings.notifications.reminders":"Event reminders",
     "panel.settings.notifications.athletics_updates":"Athletics Updates",
     "panel.settings.notifications.athletics_updates.description.label": "Based on your favorite sports",
     "panel.settings.notifications.athletics_updates.start.label": "Start",
@@ -2095,6 +2095,7 @@
     "panel.settings.notifications.group_updates.polls.label": "Polls",
     "panel.settings.notifications.group_updates.messages.label": "Messages",
     "panel.settings.notifications.pause_notifications": "Pause all notifications",
+    "panel.settings.notifications.conversations.messages":"Conversation messages",
 
     "panel.settings.privacy.privacy.label.title": "Choose Your Privacy Level",
     "panel.settings.privacy.privacy.label.slider_help": "Adjust slider to change your privacy level.",

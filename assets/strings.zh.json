@@ -2072,6 +2072,7 @@
 	"panel.settings.notifications.group_updates.polls.label": "投票",
 	"panel.settings.notifications.group_updates.messages.label": "Messages",
 	"panel.settings.notifications.pause_notifications": "暂停所有通知",
+	"panel.settings.notifications.conversations.messages":"對話訊息",
 
 	"panel.settings.privacy.privacy.label.title": "选择您的隐私级别",
 	"panel.settings.privacy.privacy.label.slider_help": "调整滑块以更改您的隐私级别",
