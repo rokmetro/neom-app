@@ -332,12 +332,12 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
           if (poll == null) {
             AppAlert.showDialogResult(context, Localization().getStringEx('panel.poll_pin_bouble.unable_to_load_poll', 'Unable to load poll'));
           }
-          // else if (poll.status == PollStatus.created) {
-          //   AppAlert.showDialogResult(context, Localization().getStringEx('panel.poll_pin_bouble.poll_not_opened', 'Poll is not opened yet'));
-          // }
-          // else if (poll.status == PollStatus.closed) {
-          //   AppAlert.showDialogResult(context, Localization().getStringEx('panel.poll_pin_bouble.poll_closed', 'Poll is already closed'));
-          // }
+          else if (poll.status == PollStatus.created) {
+            AppAlert.showDialogResult(context, Localization().getStringEx('panel.poll_pin_bouble.poll_not_opened', 'Poll is not opened yet'));
+          }
+          else if (poll.status == PollStatus.closed) {
+            AppAlert.showDialogResult(context, Localization().getStringEx('panel.poll_pin_bouble.poll_closed', 'Poll is already closed'));
+          }
           else {
             Navigator.of(context).pop(poll);
           }
