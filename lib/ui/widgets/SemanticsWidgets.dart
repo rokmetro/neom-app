@@ -1,10 +1,9 @@
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/service/styles.dart';
+import 'package:universal_io/io.dart';
 
 /// //Approach with SemanticsPagesController
 /// semanticsController: SemanticsPagesController(pageKeys: _groupCardKeys.values.toList()),
