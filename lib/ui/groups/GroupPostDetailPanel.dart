@@ -826,10 +826,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
     String? imageUrl = _replyEditData?.imageUrl;
 
     if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
-      String validationMsg = ((_editingReply != null))
-          ? Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image")
-          : Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image");
-      AppAlert.showDialogResult(context, validationMsg);
+      AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image"));
       return;
     }
 
