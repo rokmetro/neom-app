@@ -41,6 +41,8 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
   
   List<TextEditingController> _digitControllers = [];
   List<FocusNode> _digitFocusNodes = [];
+  List<FocusNode> _keyboardListenerFocusNodes = [];
+  List<bool> _digitFieldConsumedEvent = [];
   RegExp _digitRegExp = RegExp('[0-9]{1}');
 
   bool _initialAnnounced = false;
@@ -54,6 +56,8 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
     for (int digit = 0; digit < _digitsCount; digit++) {
       _digitControllers.add(TextEditingController());
       _digitFocusNodes.add(FocusNode());
+      _keyboardListenerFocusNodes.add(FocusNode());
+      _digitFieldConsumedEvent.add(false);
     }
 
     _digitFocusNodes.first.requestFocus();
@@ -69,6 +73,11 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
       digitFocusNode.dispose();
     }
     _digitFocusNodes.clear();
+
+    for (FocusNode keyboardListenerFocusNode in _keyboardListenerFocusNodes) {
+      keyboardListenerFocusNode.dispose();
+    }
+    _keyboardListenerFocusNodes.clear();
 
     super.dispose();
   }
@@ -221,13 +230,9 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
 
   Widget _buildPinField(TextEditingController controller, FocusNode focusNode, FocusNode? prevFocusNode, FocusNode? nextFocusNode, {int position = 0}){
     Function nextCallBack = (){
-      if(_isDigit(controller.value.text)){
-        if(nextFocusNode != null) {
-          nextFocusNode.requestFocus();
-        }
-        else{
-          focusNode.unfocus();
-        }
+      _digitFieldConsumedEvent[position] = true;
+      if (_isDigit(controller.value.text) && nextFocusNode != null) {
+        nextFocusNode.requestFocus();
       }
     };
     return Container(
@@ -235,24 +240,39 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
       child: Semantics(
         label: _initialSemanticsAnnouncement(position),
         hint: " ${position + 1} of $_digitsCount",
-        child: TextFormField(
-          controller: controller,
-          focusNode: focusNode,
-          keyboardType: TextInputType.number,
-          inputFormatters: [new LengthLimitingTextInputFormatter(1),],
-          textAlign: TextAlign.center,
-          onEditingComplete: ()=> nextCallBack(),
-          onChanged: (values)=> nextCallBack(),
-          decoration: new InputDecoration(
-            filled: true,
-            fillColor: Styles().colors.surface,
-            border: new OutlineInputBorder(
-              borderRadius: const BorderRadius.all(
-                const Radius.circular(4),
+        child: KeyboardListener(
+          focusNode: _keyboardListenerFocusNodes[position],
+          autofocus: false,
+          onKeyEvent: (event) {
+            if (event.logicalKey == LogicalKeyboardKey.backspace && controller.value.text.isEmpty && prevFocusNode != null && !_digitFieldConsumedEvent[position]) {
+              prevFocusNode.requestFocus();
+            }
+            _digitFieldConsumedEvent[position] = false;
+          },
+          child: TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              keyboardType: TextInputType.number,
+              inputFormatters: [new LengthLimitingTextInputFormatter(1),],
+              textAlign: TextAlign.center,
+              onEditingComplete: ()=> nextCallBack(),
+              onChanged: (_) => nextCallBack(),
+              onFieldSubmitted: (_) {
+                if (_isDigit(controller.value.text) && position + 1 == _digitsCount) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              },
+              decoration: new InputDecoration(
+                filled: true,
+                fillColor: Styles().colors.surface,
+                border: new OutlineInputBorder(
+                  borderRadius: const BorderRadius.all(
+                    const Radius.circular(4),
+                  ),
+                ),
               ),
-            ),
+              style: Styles().textStyles.getTextStyle("panel.poll.bubble.pin.field.text")
           ),
-          style: Styles().textStyles.getTextStyle("panel.poll.bubble.pin.field.text")
         ),
       )
     );
@@ -264,11 +284,11 @@ class _PollBubblePinPanelState extends State<PollBubblePinPanel> {
         child: RoundedButton(
             label: Localization().getStringEx('dialog.continue.title', 'Continue'),
             hint: Localization().getStringEx('dialog.continue.hint', ''),
-            textStyle: Styles().textStyles.getTextStyle("widget.button.title.enabled"),
-            backgroundColor: Styles().colors.fillColorSecondaryVariant,
+            textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
+            backgroundColor: Styles().colors.background,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             progress: _loading,
-            borderColor: Styles().colors.fillColorSecondaryVariant,
+            borderColor: Styles().colors.fillColorSecondary,
             onTap: _onContinue
           ),       
       );
