@@ -167,12 +167,12 @@ class _SettingsNotificationPreferencesPageState extends State<SettingsNotificati
     */
     //TODO
     widgets.add(_CustomToggleButton(
-        enabled: true,
+        enabled: _toggleButtonEnabled,
         borderRadius: _topRounding,
         label: Localization().getStringEx("", "Conversation messages"),
-        toggled: true,
-        onTap: null,
-        textStyle: true ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
+        toggled: FirebaseMessaging().notifyConversationMessagesUpdates,
+        onTap: _toggleButtonEnabled ? _onConversationsUpdatesMessagesToggled : null,
+        textStyle: _toggleButtonEnabled ? Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.enabled") : Styles().textStyles.getTextStyle("panel.settings.toggle_button.title.fat.disabled")
     ));
     widgets.add(Container(color:Styles().colors.surfaceAccent,height: 1));
     widgets.add(_CustomToggleButton(
@@ -402,6 +402,13 @@ class _SettingsNotificationPreferencesPageState extends State<SettingsNotificati
   }
   */
 
+  void _onConversationsUpdatesMessagesToggled() {
+    if(_notificationsEnabled) {
+      Analytics().logSelect(target: "Conversation Messages");
+      FirebaseMessaging().notifyConversationMessagesUpdates = !FirebaseMessaging().notifyConversationMessagesUpdates!;
+    }
+  }
+
   void _onEventRemindersToggled() {
     if(!_notificationsEnabled)
       return ;
@@ -473,14 +480,14 @@ class _SettingsNotificationPreferencesPageState extends State<SettingsNotificati
   void _onGroupsUpdatesPollsToggled() {
     if(!_notificationsEnabled)
       return ;
-    Analytics().logSelect(target: "Invitations updates");
+    Analytics().logSelect(target: "Polls updates");
     FirebaseMessaging().notifyGroupPollsUpdates = !FirebaseMessaging().notifyGroupPollsUpdates!;
   }
 
   void _onGroupsUpdatesMessagesToggled() {
     if(!_notificationsEnabled)
       return ;
-    Analytics().logSelect(target: "Invitations updates");
+    Analytics().logSelect(target: "Messages updates");
     FirebaseMessaging().notifyGroupMessagesUpdates = !FirebaseMessaging().notifyGroupMessagesUpdates!;
   }
 
