@@ -99,7 +99,7 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
 
     if (0 < pollsLength) {
       _polls!.forEach((poll) {
-        content.add(PollCard(poll: poll, group: widget.group, showGroupName: false,));
+        content.add(PollCard(poll: poll, group: widget.group,));
         content.add(_constructListSeparator());
       });
     }

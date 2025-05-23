@@ -370,9 +370,9 @@ class _PollsHomePanelState extends State<PollsHomePanel> with NotificationsListe
   Widget _buildCreatePollButton() {
     return Container(padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16), color:Styles().colors.background,child:
       RoundedButton(label:Localization().getStringEx("panel.polls_home.text.create_poll","Create a Poll"),
-          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
-          borderColor: Styles().colors.fillColorSecondaryVariant,
-          backgroundColor: Styles().colors.fillColorSecondaryVariant,
+          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
+          borderColor: Styles().colors.fillColorSecondary,
+          backgroundColor: Styles().colors.background,
         onTap:_onCreatePollTapped
     ));
   }
@@ -714,7 +714,7 @@ class _PollsHomePanelFilterTab extends StatelessWidget {
         child: Semantics(label: text, hint:hint, button:true, excludeSemantics: true, child:Container(
           height: 48,
           decoration: BoxDecoration(
-            color: selected ? Colors.white : Styles().colors.lightGray,
+            color: selected ? Styles().colors.surface : Styles().colors.surfaceAccent,
             border: Border.all(color: Styles().colors.surfaceAccent, width: 1.5, style: BorderStyle.solid),
             borderRadius: _borderRadius,
           ),

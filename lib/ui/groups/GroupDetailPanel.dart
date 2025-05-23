@@ -2224,7 +2224,7 @@ class _GroupPollsState extends State<_GroupPollsContent> with NotificationsListe
       for (Poll? groupPoll in _groupPolls!) {
         if (groupPoll != null) {
           pollsContentList.add(Container(height: 10));
-          pollsContentList.add(PollCard(poll: groupPoll, group: _group, isAdmin: widget.groupAdmins?.map((Member admin) => admin.userId == groupPoll.creatorUserUuid).isNotEmpty,));
+          pollsContentList.add(PollCard(poll: groupPoll, group: _group,));
         }
       }
 
