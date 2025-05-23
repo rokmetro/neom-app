@@ -336,7 +336,7 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
 
     if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
       AppAlert.showDialogResult(context,
-          Localization().getStringEx('', "Please add a message or an image"));
+          Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image"));
       return;
     }
 

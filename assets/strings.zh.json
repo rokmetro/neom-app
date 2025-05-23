@@ -3111,7 +3111,7 @@
 	"panel.group.detail.post.create.body.field.hint": "输入贴文 ...",
 	"panel.group.detail.post.reply.create.body.field.hint": "输入回复 ...",
 	"panel.group.detail.post.create.validation.subject.msg": "贴文标题为必填项目",
-	"panel.group.detail.post.create.validation.body.msg": "贴文内容为必填项目",
+	"panel.group.detail.post.create.validation.body.msg": "请添加消息或图片",
 	"panel.group.detail.post.create.reply.validation.body.msg": "回复内容为必填项目",
 	"panel.group.detail.post.create.post.failed.msg": "无法创建新的贴文。",
 	"panel.group.detail.post.create.reply.failed.msg": "无法创建新的回复。",

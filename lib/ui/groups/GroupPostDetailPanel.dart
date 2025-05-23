@@ -752,7 +752,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
     String? imageUrl = _mainPostUpdateData?.imageUrl ?? _post?.imageUrl;
     List<Member>? toMembers = _mainPostUpdateData?.members;
     if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
-      String? validationMsg = Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', 'Post message required');
+      String? validationMsg = Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', 'Please add a message or an image');
       AppAlert.showDialogResult(context, validationMsg);
       return;
     }
@@ -827,8 +827,8 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
 
     if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
       String validationMsg = ((_editingReply != null))
-          ? Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Post message required")
-          : Localization().getStringEx('panel.group.detail.post.create.reply.validation.body.msg', "Reply message required");
+          ? Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image")
+          : Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image");
       AppAlert.showDialogResult(context, validationMsg);
       return;
     }

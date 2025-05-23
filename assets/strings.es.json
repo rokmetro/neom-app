@@ -3133,7 +3133,7 @@
     "panel.group.detail.post.create.body.field.hint": "Escribe una Publicación ...",
     "panel.group.detail.post.reply.create.body.field.hint": "Escribe una Respuesta ...",
     "panel.group.detail.post.create.validation.subject.msg": "Se requiere el asunto de la publicación",
-    "panel.group.detail.post.create.validation.body.msg": "Se requiere el mensaje de la publicación",
+    "panel.group.detail.post.create.validation.body.msg": "Por favor, añade un mensaje o una imagen.",
     "panel.group.detail.post.create.reply.validation.body.msg": "Se requiere el mensaje de respuesta",
     "panel.group.detail.post.create.post.failed.msg": "No se pudo crear una nueva publicación.",
     "panel.group.detail.post.create.reply.failed.msg": "No se pudo crear una nueva respuesta.",
