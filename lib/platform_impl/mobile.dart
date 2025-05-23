@@ -12,12 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:io';
-import 'package:flutter/foundation.dart';
-
 import 'package:illinois/platform_impl/base.dart';
-
-import 'package:path_provider/path_provider.dart';
 
 class FileHelper extends BaseFileHelper {
   @override

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -21,6 +20,7 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sms_mms/sms_mms.dart';
+import 'package:universal_io/io.dart';
 //import 'package:share_plus/share_plus.dart';
 
 class ProfileInfoShareSheet extends StatelessWidget {

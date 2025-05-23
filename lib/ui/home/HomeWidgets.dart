@@ -1,7 +1,6 @@
 
 
 import 'dart:collection';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:collection/collection.dart';
@@ -22,6 +21,7 @@ import 'package:rokwire_plugin/service/notification_service.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/widgets/triangle_painter.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
+import 'package:universal_io/io.dart';
 
 ////////////////////////////
 // HomeHandleWidget

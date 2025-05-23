@@ -1,6 +1,4 @@
 
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -31,6 +29,7 @@ import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/ui/widgets/triangle_painter.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:universal_io/io.dart';
 
 enum DirectoryDisplayMode { browse, select }
 
