@@ -751,13 +751,13 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
     String? body = _mainPostUpdateData?.body;
     String? imageUrl = _mainPostUpdateData?.imageUrl ?? _post?.imageUrl;
     List<Member>? toMembers = _mainPostUpdateData?.members;
-    if (StringUtils.isEmpty(body)) {
-      String? validationMsg = Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', 'Post message required');
+    if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
+      String? validationMsg = Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', 'Please add a message or an image');
       AppAlert.showDialogResult(context, validationMsg);
       return;
     }
 
-    String htmlModifiedBody = HtmlUtils.replaceNewLineSymbols(body);
+    String htmlModifiedBody = body?.isNotEmpty == true? HtmlUtils.replaceNewLineSymbols(body) : "";
     _setLoading(true);
     _post!.body = htmlModifiedBody;
     _post!.imageUrl = imageUrl;
@@ -823,18 +823,15 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
     FocusScope.of(context).unfocus();
 
     String? body = _replyEditData?.body;
-    String? imageUrl;
+    String? imageUrl = _replyEditData?.imageUrl;
 
-    if (StringUtils.isEmpty(body)) {
-      String validationMsg = ((_editingReply != null))
-          ? Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Post message required")
-          : Localization().getStringEx('panel.group.detail.post.create.reply.validation.body.msg', "Reply message required");
-      AppAlert.showDialogResult(context, validationMsg);
+    if (StringUtils.isEmpty(body) && StringUtils.isEmpty(imageUrl)) {
+      AppAlert.showDialogResult(context, Localization().getStringEx('panel.group.detail.post.create.validation.body.msg', "Please add a message or an image"));
       return;
     }
 
     _setLoading(true);
-    String htmlModifiedBody = HtmlUtils.replaceNewLineSymbols(body);
+    String htmlModifiedBody = body?.isNotEmpty == true? HtmlUtils.replaceNewLineSymbols(body) : "";
     if (_editingReply != null) {
       imageUrl = StringUtils.isNotEmpty(_replyEditData?.imageUrl) ? _replyEditData?.imageUrl : _editingReply?.imageUrl;
       _editingReply!.body = htmlModifiedBody;
