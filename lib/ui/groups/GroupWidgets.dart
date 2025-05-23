@@ -382,9 +382,9 @@ class GroupsConfirmationDialog extends StatelessWidget{
                       Expanded(child:
                         RoundedButton(
                           label: Localization().getStringEx('headerbar.back.title', "Back"),
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.thin"),
+                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.thin"),
                           borderColor: Styles().colors.surface,
-                          backgroundColor: Styles().colors.surface,
+                          backgroundColor: Styles().colors.background,
                           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           onTap: (){
                             Analytics().logAlert(text: message, selection: "Back");
@@ -395,9 +395,9 @@ class GroupsConfirmationDialog extends StatelessWidget{
                       Expanded(child:
                         RoundedButton(
                           label: buttonTitle ?? '',
-                          textStyle: Styles().textStyles.getTextStyle("widget.button.title.large.fat"),
+                          textStyle: Styles().textStyles.getTextStyle("widget.button.light.title.large.fat"),
                           borderColor: Styles().colors.fillColorSecondary,
-                          backgroundColor: Styles().colors.surface,
+                          backgroundColor: Styles().colors.background,
                           padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           onTap: (){
                             Analytics().logAlert(text: message, selection: buttonTitle);

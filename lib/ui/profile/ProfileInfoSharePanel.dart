@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:illinois/ext/Auth2.dart';
 import 'package:illinois/service/Analytics.dart';
+import 'package:illinois/service/Auth2.dart';
 import 'package:illinois/ui/directory/DirectoryWidgets.dart';
 import 'package:illinois/ui/profile/ProfileHomePanel.dart';
 import 'package:illinois/ui/profile/ProfileInfoPage.dart';
@@ -189,7 +190,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
       Column(children: [
         Padding(padding: EdgeInsets.symmetric(horizontal: widget.contentPaddingX), child:
           RepaintBoundary(key: _repaintBoundaryKey, child:
-            DirectoryAccountContactCard(account: Auth2PublicAccount(profile: widget.profile), printMode: true,),
+            DirectoryAccountContactCard(account: Auth2PublicAccount(id: Auth2().accountId, profile: widget.profile), printMode: true,),
           ),
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
