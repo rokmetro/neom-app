@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [TC-004g] Error saving business card QR code [#90](https://github.com/rokmetro/neom-app/issues/90)
 - Profile image issues [#116](https://github.com/rokmetro/neom-app/issues/116)
 ### Added
+- Allow attachments without messages in conversations [#85](https://github.com/rokmetro/neom-app/issues/85)
 - Notification toggle for conversations [#114](https://github.com/rokmetro/neom-app/issues/114)
 
 ## [0.5.18] = 2025-05-17
