@@ -72,23 +72,20 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
     return Scaffold(
       backgroundColor: Styles().colors.background,
       appBar: HeaderBar(),
-      body: Container(
-        color:  Styles().colors.surface,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                    children: <Widget>[
-                      _buildHeading(),
-                      _buildDetails(),
-                    ],
-                ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                  children: <Widget>[
+                    _buildHeading(),
+                    _buildDetails(),
+                  ],
               ),
             ),
-            _buildBottomButtons(context)
-          ],
-        )
+          ),
+          _buildBottomButtons(context)
+        ],
       ),
     );
   }
@@ -160,21 +157,23 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
   }
 
   Widget _buildApproval(){
-    return Container(color: Styles().colors.surface, padding: EdgeInsets.symmetric(horizontal: 16), child:
+    return Padding(padding: EdgeInsets.symmetric(horizontal: 16), child:
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         Container(height: 28,),
         Row(children: [
           Styles().images.getImage('user-check', excludeFromSemantics: true) ?? Container(),
           Container(width: 8,),
           Text(_isResearchProject ? "Participant Approval" : Localization().getStringEx("panel.pending_member_detail.label.approval", "Member Approval"), style:
-            Styles().textStyles.getTextStyle("widget.title.dark.regular.fat"),
+            Styles().textStyles.getTextStyle("widget.title.regular.fat"),
           ),
         ],),
         Container(height: 21,),
         ToggleRibbonButton(
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: Styles().colors.fillColorPrimary),
-          label: Localization().getStringEx("panel.pending_member_detail.button.approve.text", "Approve "),
+          border: Border.all(color: Styles().colors.surface),
+          backgroundColor: Styles().colors.background,
+          label: Localization().getStringEx("panel.pending_member_detail.button.approve.text", "Approve"),
+          textStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.fat'),
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           toggled: _approved,
           onTap: () {
@@ -186,11 +185,13 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
           }
         ),
         Container(height: 21,),
-        Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Styles().colors.fillColorPrimary),), child:
+        Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Styles().colors.surface),), child:
           Column(children: [
             ToggleRibbonButton(
               label: Localization().getStringEx("panel.pending_member_detail.button.deny.text", "Deny"),
               borderRadius: BorderRadius.circular(4),
+              backgroundColor: Styles().colors.background,
+              textStyle: Styles().textStyles.getTextStyle('widget.button.title.medium.fat'),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               toggled: _denied,
               onTap: () {
@@ -201,31 +202,29 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
                 });
               }
             ),
-            Container(padding: EdgeInsets.symmetric(horizontal: 13), child:
+            Container(padding: EdgeInsets.symmetric(horizontal: 16), child:
               Text(
                 Localization().getStringEx("panel.pending_member_detail.deny.description", "If you choose not to accept this person, please provide a reason."),
-                style: Styles().textStyles.getTextStyle("widget.info.dark.small")
+                style: Styles().textStyles.getTextStyle("widget.info.small")
               )
             ),
             Container(height: 8,),
             Container(height: 114, padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12), child:
-              Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Styles().colors.fillColorPrimary), ), child:
-                Row(children: [
-                  Expanded(child:
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: TextField(
-                        controller: _reasonController,
-                        decoration: InputDecoration(border: InputBorder.none),
-                        style: Styles().textStyles.getTextStyle("widget.title.dark.regular"),
-                        onChanged: (text){setState(() {});},
-                        minLines: 4,
-                        maxLines: 999,
-                      ),
+              Row(children: [
+                Expanded(child:
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: TextField(
+                      controller: _reasonController,
+                      decoration: InputDecoration(border: OutlineInputBorder(borderSide: BorderSide(color: Styles().colors.surface, width: 1.0))),
+                      style: Styles().textStyles.getTextStyle("widget.title.regular"),
+                      onChanged: (text){setState(() {});},
+                      minLines: 4,
+                      maxLines: 999,
                     ),
                   ),
-                ],)
-              ),
+                ),
+              ],),
             ),
             Container(height: 13,)
           ],)
@@ -235,8 +234,7 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
   }
 
   Widget _buildBottomButtons(BuildContext context){
-    return SafeArea(child: Container(
-      color: Styles().colors.surface,
+    return SafeArea(child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         children: <Widget>[
@@ -244,8 +242,8 @@ class _GroupPendingMemberPanelState extends State<GroupPendingMemberPanel> {
               RoundedButton(
                 label: _continueButtonText ?? '',
                 hint: Localization().getStringEx("panel.pending_member_detail.button.add.hint", ""),
-                textStyle: _canContinue ? Styles().textStyles.getTextStyle("widget.button.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.large.fat"),
-                backgroundColor: Styles().colors.surface,
+                textStyle: _canContinue ? Styles().textStyles.getTextStyle("widget.button.light.title.large.fat") : Styles().textStyles.getTextStyle("widget.button.title.large.fat.variant3"),
+                backgroundColor: Styles().colors.background,
                 borderColor: _canContinue? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
                 progress: _updating,

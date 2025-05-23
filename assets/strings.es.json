@@ -2084,6 +2084,7 @@
     "panel.settings.notifications.group_updates.polls.label": "Encuestas",
     "panel.settings.notifications.group_updates.messages.label": "Messages",
     "panel.settings.notifications.pause_notifications": "Pausar todas las notificaciones",
+    "panel.settings.notifications.conversations.messages":"Mensajes de conversación",
 
     "panel.settings.privacy.privacy.label.title": "Elija su nivel de privacidad",
     "panel.settings.privacy.privacy.label.slider_help": "Ajuste el control deslizante para cambiar su nivel de privacidad",
@@ -3130,8 +3131,8 @@
     "panel.group.detail.post.reply.edit.label": "Editar",
     "panel.group.detail.post.create.subject.label": "Asunto",
     "panel.group.detail.post.create.subject.field.hint": "Escribe un Asunto",
-    "panel.group.detail.post.create.body.field.hint": "Escribe una Publicación ...",
-    "panel.group.detail.post.reply.create.body.field.hint": "Escribe una Respuesta ...",
+    "panel.group.detail.post.create.body.field.hint": "Escribe una publicación...",
+    "panel.group.detail.post.reply.create.body.field.hint": "Escribe una respuesta...",
     "panel.group.detail.post.create.validation.subject.msg": "Se requiere el asunto de la publicación",
     "panel.group.detail.post.create.validation.body.msg": "Por favor, añade un mensaje o una imagen.",
     "panel.group.detail.post.create.reply.validation.body.msg": "Se requiere el mensaje de respuesta",

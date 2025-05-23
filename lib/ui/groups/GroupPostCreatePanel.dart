@@ -125,9 +125,8 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                   PostInputField(
                     title: widget.type == PostType.post ?  "" : "MESSAGE",
                     text: _postData.body,
-                    hint: "Write a post...",
                     onBodyChanged: (text) => _postData.body = text,
-                    // hint:  Localization().getStringEx( "panel.group.detail.post.create.body.field.hint",  "Write a Post ..."),
+                    hint:  Localization().getStringEx( "panel.group.detail.post.create.body.field.hint",  "Write a post..."),
                   ),
                   Container(height: 12,),
                   _buildScheduleWidget(),

@@ -1674,7 +1674,7 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
   void initState() {
     super.initState();
     // _padding = widget.padding ?? EdgeInsets.only(top: 5);
-    _hint = widget.hint;  /*?? Localization().getStringEx("panel.group.detail.post.reply.create.body.field.hint", "Write a Reply ...");*/
+    _hint = widget.hint;  /*?? Localization().getStringEx("panel.group.detail.post.reply.create.body.field.hint", "Write a reply...");*/
     _bodyController.text = widget.text ?? "";
   }
   
@@ -1890,6 +1890,7 @@ class _PostInputFieldState extends State<PostInputField>{ //TBD localize properl
 
   InputDecoration get _defaultInputDecoration => InputDecoration(
       hintText: _hint,
+      hintStyle: Styles().textStyles.getTextStyle('widget.message.regular'),
       border: InputBorder.none,
       contentPadding: EdgeInsets.all(8)
   );

@@ -140,23 +140,25 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging with NotificationsList
     _groupUpdatesEventsNotificationSetting : _groupUpdatesEventsNotificationSetting,
     _groupUpdatesPollsNotificationSetting : _groupUpdatesPollsNotificationSetting,
     _groupUpdatesMessagesNotificationSetting : _groupUpdatesMessagesNotificationSetting,
+    _conversationUpdatesMessagesNotificationSetting : _conversationUpdatesMessagesNotificationSetting,
   };
 
   // Settings entry : setting name (User.prefs.setting name)
   static const Map<String, String> _notifySettingNames = {
-    _eventRemindersUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.event_reminders.enabled',
-    _diningSpecialsUpdatesNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.dining_specials.enabled',
-    _groupUpdatesPostsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.posts.enabled',
-    _groupUpdatesPollsNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.group.polls.enabled',
-    _groupUpdatesMessagesNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.group.messages.enabled',
-    _groupUpdatesInvitationsNotificationSetting : 'edu.illinois.rokwire.settings.inbox.notification.group.invitations.enabled',
-    _groupUpdatesEventsNotificationSetting      : 'edu.illinois.rokwire.settings.inbox.notification.group.events.enabled',
-    _athleticsUpdatesStartNotificationSetting   : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.start.enabled',
-    _athleticsUpdatesEndNotificationSetting     : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.end.enabled',
-    _athleticsUpdatesNewsNotificationSetting    : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.news.enabled',
-    _athleticsUpdatesNotificationKey            : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.main.notifications.enabled',
-    _groupUpdatesNotificationKey                : 'edu.illinois.rokwire.settings.inbox.notification.group.main.notifications.enabled',
-    _pauseNotificationKey                       : 'edu.illinois.rokwire.settings.inbox.notification.notifications.enabled',
+    _eventRemindersUpdatesNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.event_reminders.enabled',
+    _diningSpecialsUpdatesNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.dining_specials.enabled',
+    _groupUpdatesPostsNotificationSetting           : 'edu.illinois.rokwire.settings.inbox.notification.group.posts.enabled',
+    _groupUpdatesPollsNotificationSetting           : 'edu.illinois.rokwire.settings.inbox.notification.group.polls.enabled',
+    _groupUpdatesMessagesNotificationSetting        : 'edu.illinois.rokwire.settings.inbox.notification.group.messages.enabled',
+    _groupUpdatesInvitationsNotificationSetting     : 'edu.illinois.rokwire.settings.inbox.notification.group.invitations.enabled',
+    _groupUpdatesEventsNotificationSetting          : 'edu.illinois.rokwire.settings.inbox.notification.group.events.enabled',
+    _conversationUpdatesMessagesNotificationSetting : 'edu.illinois.rokwire.settings.inbox.notification.conversation.messages.enabled',
+    _athleticsUpdatesStartNotificationSetting       : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.start.enabled',
+    _athleticsUpdatesEndNotificationSetting         : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.end.enabled',
+    _athleticsUpdatesNewsNotificationSetting        : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.news.enabled',
+    _athleticsUpdatesNotificationKey                : 'edu.illinois.rokwire.settings.inbox.notification.athletic_updates.main.notifications.enabled',
+    _groupUpdatesNotificationKey                    : 'edu.illinois.rokwire.settings.inbox.notification.group.main.notifications.enabled',
+    _pauseNotificationKey                           : 'edu.illinois.rokwire.settings.inbox.notification.notifications.enabled',
   };
 
   static const Map<String, bool> _defaultNotificationSettings = {
@@ -170,6 +172,7 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging with NotificationsList
 
   static const String _athleticsUpdatesNotificationKey = 'athletic_updates';
   static const String _groupUpdatesNotificationKey = 'group';
+  static const String _conversationUpdatesNotificationKey = 'conversation';
 
   // Athletics Notification updates
   static const String _athleticsStartNotificationKey = 'start';
@@ -196,6 +199,11 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging with NotificationsList
   static const String _groupUpdatesEventsNotificationSetting = '$_groupUpdatesNotificationKey.$_groupEventsNotificationKey';
   static const String _groupUpdatesPollsNotificationSetting = '$_groupUpdatesNotificationKey.$_groupPollsNotificationKey';
   static const String _groupUpdatesMessagesNotificationSetting = '$_groupUpdatesNotificationKey.$_groupMessagesNotificationKey';
+
+  // Conversation Notification updates
+  static const String _conversationMessagesNotificationKey = 'messages';
+
+  static const String _conversationUpdatesMessagesNotificationSetting = '$_conversationUpdatesNotificationKey.$_conversationMessagesNotificationKey';
 
   // Payload types
   static const String payloadTypeConfigUpdate = 'config_update';
@@ -734,6 +742,9 @@ class FirebaseMessaging extends rokwire.FirebaseMessaging with NotificationsList
 
   bool? get notifyGroupEventsUpdates          { return _getNotifySetting(_groupUpdatesEventsNotificationSetting); }
   set notifyGroupEventsUpdates(bool? value)   { _setNotifySetting(_groupUpdatesEventsNotificationSetting, value); }
+
+  bool? get notifyConversationMessagesUpdates          { return _getNotifySetting(_conversationUpdatesMessagesNotificationSetting); }
+  set notifyConversationMessagesUpdates(bool? value)   { _setNotifySetting(_conversationUpdatesMessagesNotificationSetting, value); }
 
   bool? get notifyDiningSpecials               { return _getNotifySetting('dining_specials'); } 
        set notifyDiningSpecials(bool? value)   { _setNotifySetting('dining_specials', value); }
