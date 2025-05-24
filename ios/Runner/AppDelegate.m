@@ -36,9 +36,9 @@
 #import <Firebase/Firebase.h>
 #import <ZXingObjC/ZXingObjC.h>
 
-#import <UserNotifications/UserNotifications.h>
+//#import <UserNotifications/UserNotifications.h>
 
-static NSString *const kFIRMessagingFCMTokenNotification = @"com.firebase.iid.notif.fcm-token";
+//static NSString *const kFIRMessagingFCMTokenNotification = @"com.firebase.iid.notif.fcm-token";
 
 @interface RootNavigationController : UINavigationController
 - (void)setNeedsUpdateOfSupportedInterfaceOrientationsIfPossible;
@@ -54,7 +54,7 @@ NSString* _interfaceOrientationToString(UIInterfaceOrientation value);
 UIInterfaceOrientation _interfaceOrientationFromMask(UIInterfaceOrientationMask value);
 UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation value);
 
-@interface AppDelegate()<UINavigationControllerDelegate, UNUserNotificationCenterDelegate, FIRMessagingDelegate> {
+@interface AppDelegate()<UINavigationControllerDelegate> {
 }
 
 // Flutter
@@ -86,9 +86,9 @@ UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation va
 //	[GMSServices provideAPIKey:kGoogleAPIKey];
 
 	// Initialize Firebase SDK
-	[FIRApp configure];
-	[FIRMessaging messaging].delegate = self;
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveFCMTokenNotification:) name:kFIRMessagingFCMTokenNotification object:nil];
+//	[FIRApp configure];
+//	[FIRMessaging messaging].delegate = self;
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveFCMTokenNotification:) name:kFIRMessagingFCMTokenNotification object:nil];
 	
 	// Initialize Flutter plugins
 	[GeneratedPluginRegistrant registerWithRegistry:self];
@@ -129,14 +129,14 @@ UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation va
 	}];
 	
 	// Push Notifications
-	[UNUserNotificationCenter currentNotificationCenter].delegate = self;
-	[UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings* settings) {
-		if ((settings.authorizationStatus != UNAuthorizationStatusNotDetermined) && (settings.authorizationStatus != UNAuthorizationStatusDenied)) {
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[weakSelf registerForRemoteNotifications];
-			});
-		}
-	}];
+//	[UNUserNotificationCenter currentNotificationCenter].delegate = self;
+//	[UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings* settings) {
+//		if ((settings.authorizationStatus != UNAuthorizationStatusNotDetermined) && (settings.authorizationStatus != UNAuthorizationStatusDenied)) {
+//			dispatch_async(dispatch_get_main_queue(), ^{
+//				[weakSelf registerForRemoteNotifications];
+//			});
+//		}
+//	}];
 	
 	return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
@@ -144,11 +144,11 @@ UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation va
 - (void)applicationWillTerminate:(UIApplication *)application {
 
 	// Push Notifications
-	if (UNUserNotificationCenter.currentNotificationCenter.delegate == self) {
-		UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
-	}
+//	if (UNUserNotificationCenter.currentNotificationCenter.delegate == self) {
+//		UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
+//	}
 
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	[_backgroundOperationQueue cancelAllOperations];
 
@@ -485,21 +485,21 @@ UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation va
 }
 */
 
-#pragma mark Push Notifications
-
-- (void)registerForRemoteNotifications {
-    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
-	[[UIApplication sharedApplication] registerForRemoteNotifications];
-}
-
-- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
-	NSLog(@"UIApplication didRegisterForRemoteNotificationsWithDeviceToken: %@", [NSString stringWithFormat:@"%@", deviceToken]);
-	[FIRMessaging messaging].APNSToken = deviceToken;
-}
-
-- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
-	NSLog(@"UIApplication didFailToRegisterForRemoteNotificationsWithError: %@", error);
-}
+//#pragma mark Push Notifications
+//
+//- (void)registerForRemoteNotifications {
+//    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+//	[[UIApplication sharedApplication] registerForRemoteNotifications];
+//}
+//
+//- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken {
+//	NSLog(@"UIApplication didRegisterForRemoteNotificationsWithDeviceToken: %@", [NSString stringWithFormat:@"%@", deviceToken]);
+//	[FIRMessaging messaging].APNSToken = deviceToken;
+//}
+//
+//- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error {
+//	NSLog(@"UIApplication didFailToRegisterForRemoteNotificationsWithError: %@", error);
+//}
 
 #pragma mark Deep Links
 
@@ -544,31 +544,31 @@ UIInterfaceOrientationMask _interfaceOrientationToMask(UIInterfaceOrientation va
 }
 
 
-#pragma mark UNUserNotificationCenterDelegate
+//#pragma mark UNUserNotificationCenterDelegate
+//
+//- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
+//	NSDictionary *userInfo = notification.request.content.userInfo;
+//	NSData *userInfoData = [NSJSONSerialization dataWithJSONObject:userInfo options:0 error:NULL];
+//	NSString *userInfoString = [[NSString alloc] initWithData:userInfoData encoding:NSUTF8StringEncoding];
+//	NSLog(@"UIApplication: UNUserNotificationCenter willPresentNotification:\n%@", userInfoString);
+//
+//	completionHandler(UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound);
+//}
 
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-	NSDictionary *userInfo = notification.request.content.userInfo;
-	NSData *userInfoData = [NSJSONSerialization dataWithJSONObject:userInfo options:0 error:NULL];
-	NSString *userInfoString = [[NSString alloc] initWithData:userInfoData encoding:NSUTF8StringEncoding];
-	NSLog(@"UIApplication: UNUserNotificationCenter willPresentNotification:\n%@", userInfoString);
-	
-	completionHandler(UNNotificationPresentationOptionAlert|UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound);
-}
+//#pragma mark FIRMessagingDelegate
+//
+//- (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)fcmToken {
+//	NSLog(@"UIApplication: FIRMessaging: didReceiveRegistrationToken: %@", fcmToken);
+//    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:fcmToken forKey:@"token"];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"FCMToken" object:nil userInfo:userInfo];
+//}
 
-#pragma mark FIRMessagingDelegate
-
-- (void)messaging:(FIRMessaging *)messaging didReceiveRegistrationToken:(NSString *)fcmToken {
-	NSLog(@"UIApplication: FIRMessaging: didReceiveRegistrationToken: %@", fcmToken);
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:fcmToken forKey:@"token"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"FCMToken" object:nil userInfo:userInfo];
-}
-
-#pragma mark NSNotificationCenter
-
-- (void)didReceiveFCMTokenNotification:(NSNotification *)notification {
-	NSString *fcmToken = [notification.object isKindOfClass:[NSString class]] ? notification.object : nil;
-	NSLog(@"UIApplication: didReceiveFCMTokenNotification: %@", fcmToken);
-}
+//#pragma mark NSNotificationCenter
+//
+//- (void)didReceiveFCMTokenNotification:(NSNotification *)notification {
+//	NSString *fcmToken = [notification.object isKindOfClass:[NSString class]] ? notification.object : nil;
+//	NSLog(@"UIApplication: didReceiveFCMTokenNotification: %@", fcmToken);
+//}
 
 @end
 
