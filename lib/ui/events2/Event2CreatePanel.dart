@@ -2227,8 +2227,8 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
 
   Widget? _buildSponsorshipAndContactsSectionBody() {
     List<InlineSpan> descriptionList = <InlineSpan>[];
-    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.tiny.fat");
-    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.small.regular");
+    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat");
+    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
 
 //	"panel.event2.create.button.sponsorship_and_contacts.label.sponsor": "Sponsor: ",
 //	"panel.event2.create.button.sponsorship_and_contacts.label.speaker": "Speaker: ",
