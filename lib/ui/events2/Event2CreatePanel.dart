@@ -1328,7 +1328,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
           splashColor: Colors.transparent,
           onTap: () => _onToggleWeekDay(day),
           child: Padding(
-              padding: EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Styles().images.getImage(imageKey) ?? Container(),
                 Padding(padding: EdgeInsets.only(left: 6), child: Text(
@@ -1337,7 +1337,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                 ))
               ]))));
     }
-    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 6, children: daysWidgets);
+    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, alignment: WrapAlignment.spaceBetween, runSpacing: 6, children: daysWidgets);
   }
 
   Widget _buildRecurrenceEveryDaySectionWidget() {
