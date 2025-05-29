@@ -325,7 +325,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   void _onLongPressMessage(Message message) {
-    Analytics().logSelect(target: 'Copy To Clipboard');
+    Analytics().logSelect(target: 'Assistant: Copy To Clipboard');
     if (!_canCopyMessage(message)) {
       return;
     }
@@ -431,6 +431,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   void _onTapSourcesAndLinksLabel(Message message) {
+    Analytics().logSelect(target: 'Assistant: Sources and Links');
     setStateIfMounted(() {
       message.sourcesExpanded = !(message.sourcesExpanded ?? false);
       int msgsLength = _messages.length;
@@ -483,6 +484,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   void _sendFeedback(Message message, bool good) {
+    Analytics().logSelect(target: 'Assistant: Thumb ${good ? 'Up' : 'Down'}');
     if ((_provider == null) || message.feedbackExplanation != null) {
       return;
     }
@@ -573,6 +575,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
             color: Styles().colors.surface,
             child: InkWell(
                 onTap: () {
+                  Analytics().logSelect(target: 'Assistant: Open Source Link');
                   UriExt.launchExternal(uri);
                 },
                 borderRadius: BorderRadius.circular(22),
@@ -612,6 +615,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
             child: InkWell(
                 borderRadius: BorderRadius.circular(10.0),
                 onTap: () {
+                  Analytics().logSelect(target: 'Assistant: Open Deep Link');
                   NotificationService().notify('${FirebaseMessaging.notifyBase}.${link.link}', link.params);
                 },
                 child: Padding(
@@ -767,6 +771,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   Future<void> _showContext() {
+    Analytics().logSelect(target: 'Assistant: Show Context');
     List<String> userContextKeys = _userContext?.keys.toList() ?? [];
     List<String> userContextVals = _userContext?.values.toList() ?? [];
     return showDialog<void>(
@@ -814,6 +819,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
                     child: RoundedButton(
                       label: Localization().getStringEx('panel.assistant.dialog.context.button.add.title', 'Add'),
                       onTap: () {
+                        Analytics().logSelect(target: 'Assistant: Add Context');
                         setStateForDialog(() {
                           userContextKeys.add('');
                           userContextVals.add('');
@@ -830,6 +836,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
                       child: RoundedButton(
                         label: Localization().getStringEx('panel.assistant.dialog.context.button.default.title', 'Default'),
                         onTap: () {
+                          Analytics().logSelect(target: 'Assistant: Default Context');
                           _userContext = _getUserContext();
                           Navigator.of(context).pop();
                           _showContext();
@@ -848,6 +855,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
                       child: RoundedButton(
                         label: Localization().getStringEx('panel.assistant.dialog.context.button.profile1.title', 'Profile 1'),
                         onTap: () {
+                          Analytics().logSelect(target: 'Assistant: Context Profile 1');
                           _userContext = _getUserContext(
                               name: 'John Doe', netID: 'jdoe', college: 'Media', department: 'Journalism', studentLevel: 'Sophomore');
                           Navigator.of(context).pop();
@@ -865,6 +873,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
                       child: RoundedButton(
                         label: Localization().getStringEx('panel.assistant.dialog.context.button.profile2.title', 'Profile 2'),
                         onTap: () {
+                          Analytics().logSelect(target: 'Assistant: Context Profile 2');
                           _userContext = _getUserContext(
                               name: 'Jane Smith',
                               netID: 'jsmith',
@@ -884,6 +893,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
                 child: RoundedButton(
                   label: Localization().getStringEx('panel.assistant.dialog.context.button.save.title', 'Save'),
                   onTap: () {
+                    Analytics().logSelect(target: 'Assistant: Save Context');
                     _userContext = {};
                     for (int i = 0; i < userContextKeys.length; i++) {
                       String key = userContextKeys[i];
@@ -907,6 +917,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   Future<void> _submitMessage({required String message, required AssistantProvider provider}) async {
+    Analytics().logSelect(target: 'Assistant: Send query');
     FocusScope.of(context).requestFocus(FocusNode());
     if ((_provider == null) || _loadingResponse) {
       return;
@@ -966,6 +977,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   Future<void> _submitNegativeFeedbackMessage({required Message systemMessage, required String negativeFeedbackExplanation}) async {
+    Analytics().logSelect(target: 'Assistant: Submit feedback');
     if ((_provider == null) || (_feedbackMessage == null) || StringUtils.isEmpty(negativeFeedbackExplanation) || _loadingResponse) {
       return;
     }
@@ -1005,6 +1017,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
   }
 
   void _onTapCloseNegativeFeedbackForm(Message message) {
+    Analytics().logSelect(target: 'Assistant: Close Feedback Form');
     if (_provider != null) {
       Assistant().removeMessage(provider: _provider!, message: message);
       setStateIfMounted(() {
@@ -1136,7 +1149,7 @@ class _AssistantConversationContentWidgetState extends State<AssistantConversati
     return _hideChatBar ? 0 : _keyboardHeight;
   }
 
-  double get _keyboardHeight => context.mounted ? MediaQuery.of(context).viewInsets.bottom : 0;
+  double get _keyboardHeight => (mounted && context.mounted) ? MediaQuery.of(context).viewInsets.bottom : 0;
 
   double get _chatBarHeight {
     RenderObject? chatBarRenderBox = _chatBarKey.currentContext?.findRenderObject();

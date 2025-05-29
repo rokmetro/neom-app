@@ -93,15 +93,15 @@ class ExploreMapPanel extends StatefulWidget with AnalyticsInfo {
   @override
   State<StatefulWidget> createState() => _ExploreMapPanelState();
 
-  AnalyticsFeature? get analyticsFeature =>
-    (_state?._selectedMapType ?? _selectedExploreType())?.analyticsFeature ?? AnalyticsFeature.Map;
+  AnalyticsFeature? get analyticsFeature => _state?._selectedMapType?.analyticsFeature ??
+    _selectedExploreType(exploreTypes: _buildExploreTypes())?.analyticsFeature ??
+    AnalyticsFeature.Map;
 
-  ExploreMapType? _selectedExploreType({List<ExploreMapType>? exploreTypes}) {
-    exploreTypes ??= _buildExploreTypes();
-    return _ensureExploreType(_targetExploreType, exploreTypes: exploreTypes) ??
-      _ensureExploreType(Storage()._selectedMapExploreType, exploreTypes: exploreTypes) ??
-      _ensureExploreType(_defaultMapType, exploreTypes: exploreTypes);
-  }
+  ExploreMapType? _selectedExploreType({ List<ExploreMapType>? exploreTypes }) =>
+    _targetExploreType?._ensure(availableTypes: exploreTypes) ??
+    Storage()._selectedMapExploreType?._ensure(availableTypes: exploreTypes) ??
+    _defaultMapType._ensure(availableTypes: exploreTypes) ??
+    ((exploreTypes?.isNotEmpty == true) ? exploreTypes?.first : null);
 
   ExploreMapType? get _targetExploreType => _exploreTypeFromParam(params[selectParamKey]);
 
@@ -121,9 +121,6 @@ class ExploreMapPanel extends StatefulWidget with AnalyticsInfo {
     exploreTypes.sortAlphabetical();
     return exploreTypes;
   }
-
-  ExploreMapType? _ensureExploreType(ExploreMapType? exploreType, { required List<ExploreMapType> exploreTypes }) =>
-    ((exploreType != null) && exploreTypes.contains(exploreType)) ? exploreType : null;
 
   // _ExploreMapPanelState access
 
@@ -1686,7 +1683,8 @@ class _ExploreMapPanelState extends State<ExploreMapPanel>
       else {
         setStateIfMounted(() {
           _exploreTypes = exploreTypes;
-          Storage()._selectedMapExploreType = _selectedMapType = widget._ensureExploreType(ExploreMapPanel._defaultMapType, exploreTypes: exploreTypes);
+          _selectedMapType = ExploreMapPanel._defaultMapType._ensure(availableTypes: exploreTypes) ??
+              (exploreTypes.isNotEmpty ? exploreTypes.first : null);
         });
         _initExplores();
       }
@@ -2749,6 +2747,9 @@ extension ExploreMapTypeImpl on ExploreMapType {
     case ExploreMapType.StoriedSites:        return AnalyticsFeature.StoriedSites;
     }
   }
+
+  ExploreMapType? _ensure({List<ExploreMapType>? availableTypes}) =>
+      (availableTypes?.contains(this) != false) ? this : null;
 }
 
 extension _ExploreMapTypeList on List<ExploreMapType> {

@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:illinois/model/Analytics.dart';
 import 'package:illinois/ui/polls/PollWidgets.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:illinois/ext/Group.dart';
 import 'package:rokwire_plugin/model/poll.dart';
@@ -27,7 +28,7 @@ import 'package:rokwire_plugin/service/styles.dart';
 import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/utils/utils.dart';
-import 'package:illinois/service/Polls.dart' as neom;
+import 'package:illinois/service/Polls.dart' as illinois;
 
 class GroupPollListPanel extends StatefulWidget with AnalyticsInfo {
   final Group group;
@@ -153,24 +154,23 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
 
   void _loadPolls() {
     if (((_polls == null) || (_pollsCursor != null)) && !_pollsLoading) {
-      String? groupId = widget.group.id;
-      if (StringUtils.isNotEmpty(groupId)) {
-        _setGroupPollsLoading(true);
-        Polls().getGroupPolls(groupIds: {groupId!}, cursor: _pollsCursor)?.then((PollsChunk? result) {
-          if (result != null) {
-            if (_polls == null) {
-              _polls = [];
-            }
-            _polls!.addAll(result.polls!);
-            _pollsCursor = (0 < result.polls!.length) ? result.cursor : null;
-            _pollsError = null;
-          }
-        }).catchError((e) {
-          _pollsError = neom.Polls.localizedErrorString(e);
-        }).whenComplete(() {
-          _setGroupPollsLoading(false);
-        });
-      }
+      setStateIfMounted((){
+        _pollsLoading = true;
+      });
+
+      dynamic result = widget.group.loadPolls(cursor: _pollsCursor);
+      setStateIfMounted((){
+        if (result is PollsChunk) {
+          _polls ??= [];
+          _polls?.addAll(result.polls ?? []);
+          _pollsCursor = (result.polls?.isNotEmpty == true) ? result.cursor : null;
+          _pollsError = null;
+        }
+        else {
+          _pollsError = illinois.Polls.localizedErrorString(result);
+        }
+        _pollsLoading = false;
+      });
     }
   }
 
@@ -198,13 +198,6 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
   void _scrollListener() {
     if (_scrollController!.offset >= _scrollController!.position.maxScrollExtent) {
       _loadPolls();
-    }
-  }
-
-  void _setGroupPollsLoading(bool loading) {
-    _pollsLoading = loading;
-    if (mounted) {
-      setState(() {});
     }
   }
 
