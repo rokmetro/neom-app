@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased - NEOM U
-
+### Fixed
+- [BUG] Visual Cleanup (Group) [#83](https://github.com/rokmetro/neom-app/issues/83)
 ## [0.5.19] = 2025-05-23
 ### Fixed
 - [TC-020a] Editing group membership questions does not work [#110](https://github.com/rokmetro/neom-app/issues/110)
