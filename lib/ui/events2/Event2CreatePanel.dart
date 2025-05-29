@@ -2527,11 +2527,12 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
     Padding(padding: Event2CreatePanel.sectionPadding, child: _buildPublishSubEventsToggle()));
 
   Widget _buildPublishSubEventsToggle() => Semantics(toggled: _publishSubEvents, excludeSemantics: true,
-      label: Localization().getStringEx("panel.event2.create.publish_sub_events.toggle", "Publish All Linked Sub-Events"),
+      label: Localization().getStringEx("panel.event2.create.publish_sub_events.toggle", "Publish all linked sub-events"),
       hint: Localization().getStringEx("panel.event2.create.publish_sub_events.toggle.hint", ""),
       child: ToggleRibbonButton(
-        label: Localization().getStringEx("panel.event2.create.publish_sub_events.toggle", "Publish All Linked Sub-Events"),
-        textStyle: _publishSubEventsEnabled ? Styles().textStyles.getTextStyle("widget.button.title.enabled") : Styles().textStyles.getTextStyle("widget.button.title.disabled"),
+        label: Localization().getStringEx("panel.event2.create.publish_sub_events.toggle", "Publish all linked sub-events"),
+        textStyle: _publishSubEventsEnabled ? Styles().textStyles.getTextStyle('widget.item.light.regular.fat') : Styles().textStyles.getTextStyle('widget.toggle_button.title.regular.disabled'),
+        backgroundColor: Styles().colors.background,
         padding: _togglePadding,
         toggled: _publishSubEvents && _publishSubEventsEnabled,// show as untoggled when disabled ,
         onTap: _publishSubEventsEnabled ? _onTapPublishSubEvents : (){},
