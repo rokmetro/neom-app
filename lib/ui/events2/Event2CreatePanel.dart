@@ -1265,7 +1265,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                 ? DateFormat("EEE, MMM dd, yyyy").format(_recurrenceEndDate!)
                                 : Localization().getStringEx('panel.event2.create.label.recurrence.end_date.label', 'End Date'),
                             style: _hasRecurrenceEndDate
-                                ? Styles().textStyles.getTextStyle('widget.button.title.small.fat')
+                                ? Styles().textStyles.getTextStyle('widget.button.light.title.small.fat')
                                 : Event2CreatePanel.headingDisabledTextStyle)
                       ])))
             ])));
