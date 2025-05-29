@@ -1154,7 +1154,7 @@ class _GroupPostCardState extends State<GroupPostCard> {
                               Container(
                                 padding: EdgeInsets.only(top: 14),
                                 child: _imageWidget
-                              ),
+ ),
                             if (!kIsWeb)
                               WebEmbed(body: htmlBody),
                             // Container(

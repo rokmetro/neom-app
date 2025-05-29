@@ -67,6 +67,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   String? _newGroupId;
   GlobalKey? _newGroupKey;
 
+  late List<rokwire.GroupsContentType> _contentTypes;
   rokwire.GroupsContentType? _selectedContentType;
 
   GestureRecognizer? _loginRecognizer;
@@ -113,11 +114,11 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
 
   @override
   void dispose() {
+    NotificationService().unsubscribe(this);
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     _scrollController.dispose();
 
-    NotificationService().unsubscribe(this);
     _loginRecognizer?.dispose();
     _selectAllRecognizer?.dispose();
     super.dispose();
@@ -209,7 +210,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   // Content Building
 
   Widget _buildContent(){
-    List<Widget> tabs = _tabNames.map((e) => TextTabButton(title: e)).toList();
+    List<Widget> tabs = _contentTypes.map((e) => TextTabButton(title: e.displayTitle)).toList();
     return Column(children: <Widget>[
       TextTabBar(tabs: tabs, controller: _tabController, isScrollable: false, onTap: (index){_onTabChanged();}),
       _buildFunctionalBar(),
