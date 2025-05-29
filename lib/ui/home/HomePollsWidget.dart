@@ -121,8 +121,10 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> with Noti
 
     if (Connectivity().isOnline) {
       _loadingPolls = true;
-      Polls().getRecentPolls(cursor: PollsCursor(offset: 0, limit: Config().homeRecentPollsCount + 1))?.then((PollsChunk? result) {
+      int limit = Config().homeRecentPollsCount + 1;
+      Polls().getRecentPolls(cursor: PollsCursor(offset: 0, limit: limit))?.then((PollsChunk? result) {
         setStateIfMounted(() {
+          _hasMorePolls = (result?.polls?.length ?? 0) >= limit;
           _recentPolls = result?.polls;
         });
       }).catchError((_){
@@ -345,21 +347,28 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> with Noti
           _loadingPolls = true;
         });
       }
-      Polls().getRecentPolls(cursor: PollsCursor(offset: 0, limit: max(_recentPolls?.length ?? 0, Config().homeRecentPollsCount + 1)))?.then((PollsChunk? result) {
+      int limit = max(_recentPolls?.length ?? 0, Config().homeRecentPollsCount + 1);
+      Polls().getRecentPolls(cursor: PollsCursor(offset: 0, limit: limit))?.then((PollsChunk? result) {
         if (initResult || ((result?.polls != null) && !DeepCollectionEquality().equals(_recentPolls, result?.polls))) {
           setStateIfMounted(() {
+            _hasMorePolls = (result?.polls?.length ?? 0) >= limit;
             _recentPolls = result?.polls;
             _pageViewKey = UniqueKey();
-            _pageController?.jumpToPage(0);
+            if (_pageController?.hasClients ?? false) {
+              _pageController?.jumpToPage(0);
+            }
             _contentKeys.clear();
           });
         }
       }).catchError((_){
         if (initResult) {
           setStateIfMounted(() {
+            _hasMorePolls = true;
             _recentPolls = null;
             _pageViewKey = UniqueKey();
-            _pageController?.jumpToPage(0);
+            if (_pageController?.hasClients ?? false) {
+              _pageController?.jumpToPage(0);
+            }
             _contentKeys.clear();
           });
         }
@@ -378,10 +387,11 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> with Noti
       setStateIfMounted(() {
         _loadingPollsPage = true;
       });
-      Polls().getRecentPolls(cursor: PollsCursor(offset: _recentPolls?.length, limit: Config().homeRecentPollsCount + 1))?.then((PollsChunk? result) {
+      int limit = Config().homeRecentPollsCount + 1;
+      Polls().getRecentPolls(cursor: PollsCursor(offset: _recentPolls?.length, limit: limit))?.then((PollsChunk? result) {
         setStateIfMounted(() {
           if (result?.polls != null) {
-            _hasMorePolls = result?.polls?.isNotEmpty ?? false;
+            _hasMorePolls = (result?.polls?.length ?? 0) >= limit;
             if (_recentPolls != null) {
               _recentPolls?.addAll(result!.polls!);
             }
