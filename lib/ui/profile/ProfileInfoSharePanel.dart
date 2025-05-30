@@ -398,6 +398,9 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
           final String saveFileName = '${widget.profile?.vcardFullName} ${DateTimeUtils.localDateTimeFileStampToString(DateTime.now())}';
           final String fullPath = '$dir/$saveFileName.png';
           File capturedFile = File(fullPath);
+          if (await capturedFile.exists()) {
+            await capturedFile.delete();
+          }
           await capturedFile.writeAsBytes(buffer);
           if (addToGallery) {
             await Gal.putImage(capturedFile.path);
