@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## NEOM U
 ## Unreleased
+### Fixed
+- Issues with polls (UI and data sync issues) [#93](https://github.com/rokmetro/neom-app/issues/93)
 
 ## [0.5.19] = 2025-05-23
 ### Fixed
