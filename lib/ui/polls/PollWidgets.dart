@@ -23,6 +23,7 @@ class PollCard extends StatefulWidget {
 class _PollCardState extends State<PollCard> {
   List<GlobalKey>? _progressKeys;
   double? _progressWidth;
+  List<double>? _progressHeights;
 
   bool _showStartPollProgress = false;
   bool _showEndPollProgress = false;
@@ -34,7 +35,7 @@ class _PollCardState extends State<PollCard> {
   void initState() {
     _loadGroupStats();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _evalProgressWidths();
+      _evalProgressDimensions();
     });
     super.initState();
   }
@@ -46,6 +47,9 @@ class _PollCardState extends State<PollCard> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    });
+
     String pollVotesStatus = _pollVotesStatus;
 
     List<Widget> footerWidgets = [];
@@ -142,7 +146,7 @@ class _PollCardState extends State<PollCard> {
 
     return Semantics(container: true, child:
     Column(children: <Widget>[
-      Container(decoration: BoxDecoration(color: Styles().colors.white, borderRadius: BorderRadius.circular(5)), child:
+      Container(decoration: BoxDecoration(color: Styles().colors.surface, borderRadius: BorderRadius.circular(5)), child:
       contentWidget
       ),
     ],),
@@ -203,7 +207,7 @@ class _PollCardState extends State<PollCard> {
                 flex: 5,
                 key: progressKey, child:
             Stack(alignment: Alignment.centerLeft, children: <Widget>[
-              CustomPaint(painter: PollProgressPainter(backgroundColor: Styles().colors.white, progressColor: useCustomColor ?Styles().colors.fillColorPrimary:Styles().colors.lightGray, progress: votesPercent / 100.0), child: Container(height:30, width: _progressWidth),),
+              CustomPaint(painter: PollProgressPainter(backgroundColor: Styles().colors.surface, progressColor: useCustomColor ?Styles().colors.fillColorPrimary:Styles().colors.textBackground, progress: votesPercent / 100.0), child: Container(height:_progressHeights?[optionIndex] ?? 30, width: _progressWidth),),
               Container(/*height: 15+ 16*MediaQuery.of(context).textScaleFactor,*/ child:
               Padding(padding: EdgeInsets.only(left: 5), child:
               Row(children: <Widget>[
@@ -245,7 +249,7 @@ class _PollCardState extends State<PollCard> {
     Stack(children: <Widget>[
       Container(padding: EdgeInsets.symmetric(vertical: 5, horizontal: 16),
         decoration: BoxDecoration(
-          color: Styles().colors.white,
+          color: Styles().colors.surface,
           border: Border.all(color: enabled? Styles().colors.fillColorSecondary :Styles().colors.surfaceAccent, width: 2.0),
           borderRadius: BorderRadius.circular(24.0),
         ),
@@ -369,14 +373,19 @@ class _PollCardState extends State<PollCard> {
     Polls().presentPollVote(widget.poll);
   }
 
-  void _evalProgressWidths() {
+  void _evalProgressDimensions() {
     if (_progressKeys != null) {
       double progressWidth = -1.0;
-      for (GlobalKey progressKey in _progressKeys!) {
+      for (int i = 0; i < (_progressKeys?.length ?? 0); i++) {
+        GlobalKey progressKey = _progressKeys![i];
         final RenderObject? progressRender = progressKey.currentContext?.findRenderObject();
-        if ((progressRender is RenderBox) && progressRender.hasSize && (0 < progressRender.size.width)) {
-          if ((progressWidth < 0.0) || (progressRender.size.width < progressWidth)) {
+        if ((progressRender is RenderBox) && progressRender.hasSize) {
+          if ((0 < progressRender.size.width) && ((progressWidth < 0.0) || (progressRender.size.width < progressWidth))) {
             progressWidth = progressRender.size.width;
+          }
+          if (0 < progressRender.size.height) {
+            _progressHeights ??= List.filled(_progressKeys?.length ?? 0, 30.0);
+            _progressHeights?[i] = progressRender.size.height;
           }
         }
       }
