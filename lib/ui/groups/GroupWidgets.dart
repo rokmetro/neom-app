@@ -2038,14 +2038,7 @@ class _PostInputFieldState extends State<PostInputField> {
           child: TextField(
             controller: _linkTextController,
             maxLines: 1,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Styles().colors.mediumGray,
-                  width: 0.0,
-                ),
-              ),
-            ),
+            decoration: _linkDialogInputDecoration,
             style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
           ),
         ),
@@ -2064,14 +2057,7 @@ class _PostInputFieldState extends State<PostInputField> {
           child: TextField(
             controller: _linkUrlController,
             maxLines: 1,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Styles().colors.mediumGray,
-                  width: 0.0,
-                ),
-              ),
-            ),
+            decoration: _linkDialogInputDecoration,
             style: Styles().textStyles.getTextStyle('widget.input_field.text.regular'),
           ),
         ),
@@ -2079,11 +2065,19 @@ class _PostInputFieldState extends State<PostInputField> {
     );
   }
 
-  InputDecoration get _defaultInputDecoration => InputDecoration(
-      hintText: _hint,
-      hintStyle: Styles().textStyles.getTextStyle('widget.message.regular'),
-      border: InputBorder.none,
-      contentPadding: EdgeInsets.all(8)
+  InputDecoration get _linkDialogInputDecoration => InputDecoration(
+    enabledBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Styles().colors.background,
+        width: 1.0,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Styles().colors.background,
+        width: 1.0,
+      ),
+    ),
   );
 }
 
