@@ -111,8 +111,8 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildSelfCheckSection()),
             //if (_isEditing)
             //  Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakerSection()),
-            _sectionDivider,
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakersSection()),
+            // _sectionDivider,
+            // Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakersSection()),
             _sectionDivider,
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildTrailingDescription()),
             Padding(padding: _sectionPadding),
@@ -391,6 +391,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
 
   // Attendance Takers
 
+  /*
   Widget _buildAttendanceTakersSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.setup.attendance.takers.label.title', 'Netids for additional attendance takers:')),
     body: Event2CreatePanel.buildTextEditWidget(_attendanceTakersController, keyboardType: TextInputType.text, maxLines: null),
@@ -409,6 +410,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
   );
 
   TextStyle? get _infoTextStyle => Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic');
+  */
 
   // HeaderBar
 
