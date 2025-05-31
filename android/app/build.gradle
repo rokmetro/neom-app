@@ -68,6 +68,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     compileSdkVersion 35
+    ndkVersion = "27.0.12077973"
 
     namespace 'com.rokmetro.university.neom'
 
