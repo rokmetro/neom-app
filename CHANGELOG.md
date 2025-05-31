@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add Firebase performance monitoring SDK [#121](https://github.com/rokmetro/neom-app/issues/121)
 ### Fixed
+- [TC-007a] Slow image/video/file display and upload for conversations and groups [#91](https://github.com/rokmetro/neom-app/issues/91)
 - Recurring events data display issues [#106](https://github.com/rokmetro/neom-app/issues/106)
 - Issues with polls (UI and data sync issues) [#93](https://github.com/rokmetro/neom-app/issues/93)
 
