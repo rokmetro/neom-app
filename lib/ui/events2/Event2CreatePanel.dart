@@ -1192,11 +1192,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: contentList);
   }
 
-  TextStyle? _dropDownItemTextStyle({bool textDark = true}) {
-    return textDark ?
-      Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular") :
-      Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.light.regular");
-  }
+  TextStyle? get _dropDownItemTextStyle => Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular");
 
   Widget _buildRepeatTypeDropDown() {
     String? title = Localization().getStringEx('panel.event2.create.label.repeat_type.title', 'REPEAT');
@@ -1269,7 +1265,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                 ? DateFormat("EEE, MMM dd, yyyy").format(_recurrenceEndDate!)
                                 : Localization().getStringEx('panel.event2.create.label.recurrence.end_date.label', 'End Date'),
                             style: _hasRecurrenceEndDate
-                                ? Styles().textStyles.getTextStyle('widget.button.title.small.fat')
+                                ? Styles().textStyles.getTextStyle('widget.button.light.title.small.fat')
                                 : Event2CreatePanel.headingDisabledTextStyle)
                       ])))
             ])));
@@ -1348,16 +1344,16 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
           splashColor: Colors.transparent,
           onTap: () => _onToggleWeekDay(day),
           child: Padding(
-              padding: EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Styles().images.getImage(imageKey) ?? Container(),
                 Padding(padding: EdgeInsets.only(left: 6), child: Text(
                     day.name,
-                  style: Styles().textStyles.getTextStyle('panel.create_event.widget.regular.dark'),
+                  style: Styles().textStyles.getTextStyle('panel.create_event.widget.regular'),
                 ))
               ]))));
     }
-    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, runSpacing: 6, children: daysWidgets);
+    return Wrap(crossAxisAlignment: WrapCrossAlignment.center, alignment: WrapAlignment.spaceBetween, runSpacing: 6, children: daysWidgets);
   }
 
   Widget _buildRecurrenceEveryDaySectionWidget() {
@@ -1395,7 +1391,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                       style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                       hint: Text(
                         _getEveryDayRecurrencePeriod(_dailyRepeatPeriod),
-                        style: _dropDownItemTextStyle(),
+                        style: _dropDownItemTextStyle,
                       ),
                       selectedItemBuilder: (_) {
                         return _buildDailyRecurrenceDropDownItems(selectedItem: true) ?? [];
@@ -1441,7 +1437,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                               style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                               hint: Text(
                                 _getEveryWeekRecurrencePeriod(_weeklyRepeatPeriod),
-                                style: _dropDownItemTextStyle(),
+                                style: _dropDownItemTextStyle,
                               ),
                               selectedItemBuilder: (_) {
                                 return _buildWeeklyRecurrenceDropDownItems(selectedItem: true) ?? [];
@@ -1453,7 +1449,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
   }
 
   List<DropdownMenuItem<int?>>? _buildWeeklyRecurrenceDropDownItems({bool selectedItem = false}) {
-    TextStyle? textStyle = _dropDownItemTextStyle(textDark: true);
+    TextStyle? textStyle = _dropDownItemTextStyle;
     List<DropdownMenuItem<int?>> menuItems = <DropdownMenuItem<int?>>[];
     for (int i = 1; i<= _maxRecurrenceWeeksValue; i++) {
       menuItems.add(DropdownMenuItem<int?>(value: i, child: Text(
@@ -1466,7 +1462,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
   }
 
   List<DropdownMenuItem<int?>>? _buildDailyRecurrenceDropDownItems({bool selectedItem = false}) {
-    TextStyle? textStyle = _dropDownItemTextStyle(textDark: true);
+    TextStyle? textStyle = _dropDownItemTextStyle;
     List<DropdownMenuItem<int?>> menuItems = <DropdownMenuItem<int?>>[];
     for (int i = 1; i <= _maxRecurrenceDaysValue; i++) {
       menuItems.add(DropdownMenuItem<int?>(
@@ -1573,7 +1569,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                 style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                                 hint: Text(_getRecurrenceMonthlyDayLabel(
                                     _recurrenceRepeatDay),
-                                  style: _dropDownItemTextStyle(),
+                                  style: _dropDownItemTextStyle,
                                 ),
                                 selectedItemBuilder: (_) {
                                   return _buildRecurrenceMonthDayDropDownItems() ?? [];
@@ -1609,7 +1605,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                 style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                                 hint: Text(
                                     _recurrenceOrdinalNumberToDisplayString(_recurrenceOrdinalNumber),
-                                  style: _dropDownItemTextStyle(),
+                                  style: _dropDownItemTextStyle,
                                 ),
                                 selectedItemBuilder: (_) {
                                   return _buildRecurrenceOrdinalNumberDropDownItems() ?? [];
@@ -1632,7 +1628,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                 style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                                 hint: Text(
                                     _recurrenceMonthWeekDayToDisplayString(_recurrenceMonthWeekDay),
-                                  style: _dropDownItemTextStyle(),
+                                  style: _dropDownItemTextStyle,
                                 ),
                                 selectedItemBuilder: (_) {
                                   return _buildRecurrenceMonthWeekDayDropDownItems() ?? [];
@@ -1649,7 +1645,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
     for (int i = 1; i <= _maxRecurrenceRepeatDayValue; i++) {
       menuItems.add(DropdownMenuItem<int?>(value: i, child: Text(
           _getRecurrenceMonthlyDayLabel(i),
-        style: _dropDownItemTextStyle(textDark: textDark),
+        style: _dropDownItemTextStyle,
       )));
     }
 
@@ -1662,7 +1658,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
       menuItems.add(DropdownMenuItem<_RecurrenceOrdinalNumber>(
           value: number, child: Text(
           _recurrenceOrdinalNumberToDisplayString(number),
-        style: _dropDownItemTextStyle(textDark: textDark),
+        style: _dropDownItemTextStyle,
       )));
     }
 
@@ -1675,7 +1671,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
       menuItems.add(DropdownMenuItem<_RecurrenceMonthWeekDay>(
           value: weekDay, child: Text(
           _recurrenceMonthWeekDayToDisplayString(weekDay),
-          style: _dropDownItemTextStyle(textDark: textDark),
+          style: _dropDownItemTextStyle,
       )));
     }
 
@@ -1710,7 +1706,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
                                   style: Styles().textStyles.getTextStyle("panel.create_event.dropdown_button.title.regular"),
                                   hint: Text(
                                     _getEveryMonthRecurrencePeriod(_monthlyRepeatPeriod),
-                                    style: _dropDownItemTextStyle(),
+                                    style: _dropDownItemTextStyle,
                                   ),
                                   selectedItemBuilder: (_) {
                                     return _buildMonthlyRecurrenceDropDownItems(selectedItem: true) ?? [];
@@ -1722,7 +1718,7 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
   }
 
   List<DropdownMenuItem<int?>>? _buildMonthlyRecurrenceDropDownItems({bool selectedItem = false}) {
-    TextStyle? textStyle = _dropDownItemTextStyle(textDark: selectedItem);
+    TextStyle? textStyle = _dropDownItemTextStyle;
     List<DropdownMenuItem<int?>> menuItems = <DropdownMenuItem<int?>>[];
     for (int i = 1; i <= _maxRecurrenceMonthsValue; i++) {
       menuItems.add(DropdownMenuItem<int?>(value: i, child: Text(
@@ -2247,8 +2243,8 @@ class _Event2CreatePanelState extends State<Event2CreatePanel> {
 
   Widget? _buildSponsorshipAndContactsSectionBody() {
     List<InlineSpan> descriptionList = <InlineSpan>[];
-    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.tiny.fat");
-    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.small.regular");
+    TextStyle? boldStyle = Styles().textStyles.getTextStyle("widget.card.title.light.tiny.fat");
+    TextStyle? regularStyle = Styles().textStyles.getTextStyle("widget.card.detail.light.small.regular");
 
 //	"panel.event2.create.button.sponsorship_and_contacts.label.sponsor": "Sponsor: ",
 //	"panel.event2.create.button.sponsorship_and_contacts.label.speaker": "Speaker: ",

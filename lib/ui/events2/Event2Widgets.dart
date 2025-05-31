@@ -332,7 +332,7 @@ class _Event2CardState extends State<Event2Card>  with NotificationsListener {
     else if (widget.linkType == Event2GroupingType.recurrence) {
       title = _event.shortDisplayDate;
     }
-    return Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.regular.fat"), maxLines: 2, overflow: TextOverflow.ellipsis,);
+    return Text(title ?? '', style: Styles().textStyles.getTextStyle("widget.title.dark.regular.fat"), maxLines: 2, overflow: TextOverflow.ellipsis,);
   }
 
   Widget get _linkDetailWidget {
