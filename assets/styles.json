@@ -822,10 +822,10 @@
     "panel.poll.bubble.prompt.detail.large.fat": {"font_family": "regular", "size": 24.0, "color": "white", "weight" :  "w900" },
     "panel.poll.bubble.prompt.voting.result": {"font_family": "regular", "size": 15.0, "color": "white"},
 
-    "panel.polls.home.check": {"font_family": "regular", "size": 16.0, "color": "textBackground", "height":  1.25, "weight" :  "w500" },
-    "panel.polls.home.check.accent": {"font_family": "regular", "size": 16.0, "color": "white", "height":  1.25, "weight" :  "w500" },
-    "panel.polls.home.description": {"font_family": "regular", "size": 16.0, "color": "white"},
-    "panel.polls.home.card.percentage.title": {"font_family": "regular", "size": 14.0, "color": "textBackground", "weight" :  "w500", "height": 1.29 },
+    "panel.polls.home.check": {"font_family": "regular", "size": 16.0, "color": "textDark", "height":  1.25, "weight" :  "w500" },
+    "panel.polls.home.check.accent": {"font_family": "regular", "size": 16.0, "color": "textLight", "height":  1.25, "weight" :  "w500" },
+    "panel.polls.home.description": {"font_family": "regular", "size": 16.0, "color": "textLight"},
+    "panel.polls.home.card.percentage.title": {"font_family": "regular", "size": 14.0, "color": "textDark", "weight" :  "w500", "height": 1.29 },
     "panel.polls.home.card.button.create.title": {"font_family": "bold", "size": 16.0, "color": "textDark", "height": 1.38 },
 
     "panel.onboarding.profile_info.heading.title": {"extends": "widget.title.light.huge.fat", "letter_spacing": 5.0},

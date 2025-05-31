@@ -1948,9 +1948,9 @@ class _GroupPostsState extends State<_GroupPostsContent> with NotificationsListe
           child: Semantics(label: title, button: true, excludeSemantics: true,
               child: InkWell(onTap: _loadNextPostsPage,
                   child: Container(height: 36,
-                    child: Align(alignment: Alignment.topCenter,
+                    child: Align(alignment: Alignment.center,
                       child: (_loadingPostsPage == true) ?
-                      SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.fillColorPrimary), )) :
+                      SizedBox(height: 16, width: 16, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color?>(Styles().colors.surface), )) :
                       Text(title, style: Styles().textStyles.getTextStyle('panel.group.button.show_older.title'),),
                     ),
                   )
@@ -2215,7 +2215,7 @@ class _GroupPollsState extends State<_GroupPollsContent> with NotificationsListe
       for (Poll? groupPoll in _groupPolls!) {
         if (groupPoll != null) {
           pollsContentList.add(Container(height: 10));
-          pollsContentList.add(PollCard(poll: groupPoll, group: _group,));
+          pollsContentList.add(PollCard(key: ValueKey(groupPoll.pollId), poll: groupPoll, group: _group,));
         }
       }
 
@@ -2225,7 +2225,7 @@ class _GroupPollsState extends State<_GroupPollsContent> with NotificationsListe
             child: RoundedButton(
                 label: Localization().getStringEx('panel.group_detail.button.all_polls.title', 'See all polls'),
                 textStyle: Styles().textStyles.getTextStyle("widget.button.title.medium.fat"),
-                backgroundColor: Styles().colors.surface,
+                backgroundColor: Styles().colors.background,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                 borderColor: Styles().colors.fillColorSecondary,
                 borderWidth: 2,
@@ -2271,15 +2271,20 @@ class _GroupPollsState extends State<_GroupPollsContent> with NotificationsListe
     _loadPolls();
   }
 
-  void _onPollUpdated(String? pollId) {
-    if ((pollId != null) && (_groupPolls != null) && (_groupPolls?.firstWhere((element) => (pollId == element.pollId)) != null)) { //This is Group poll
+  Future<void> _onPollUpdated(String? pollId) async {
+    try {
+      if ((pollId != null) && (_groupPolls != null) && (_groupPolls?.firstWhere((element) => (pollId == element.pollId)) != null)) { //This is Group poll
 
-      Poll? poll = Polls().getPoll(pollId: pollId);
-      if (poll != null) {
-        setStateIfMounted(() {
-          _updatePollInList(poll);
-        });
+        Poll? poll = Polls().getPoll(pollId: pollId);
+        poll ??= await _group?.loadPoll(pollId: pollId);
+        if (poll != null) {
+          setStateIfMounted(() {
+            _updatePollInList(poll);
+          });
+        }
       }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -2626,7 +2631,7 @@ class _GroupScheduledPostsState extends State<_GroupScheduledPostsContent> with 
                           width: 16,
                           child: CircularProgressIndicator(strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color?>(
-                                Styles().colors.fillColorPrimary),)) :
+                                Styles().colors.surface),)) :
                       Text(title, style: Styles().textStyles.getTextStyle(
                           'panel.group.button.show_older.title'),),
                     ),

@@ -437,11 +437,12 @@ class _HomeRecentPollsWidgetState extends State<HomeRecentPollsWidget> with Noti
     _refreshPolls();
   }
 
-  void _onPollUpdated(String? pollId) {
+  Future<void> _onPollUpdated(String? pollId) async {
     Poll? poll = Polls().getPoll(pollId: pollId);
+    poll ??= (pollId != null) ? await Polls().loadById(pollId) : null;
     if (poll != null) {
       setState(() {
-        _updatePoll(poll);
+        _updatePoll(poll!);
       });
     }
   }

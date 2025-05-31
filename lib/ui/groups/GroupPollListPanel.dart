@@ -56,7 +56,7 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
   @override
   void initState() {
     super.initState();
-    NotificationService().subscribe(this, [Polls.notifyCreated, Polls.notifyStatusChanged, Polls.notifyVoteChanged, Polls.notifyResultsChanged]);
+    NotificationService().subscribe(this, [Polls.notifyCreated, Polls.notifyDeleted, Polls.notifyStatusChanged, Polls.notifyVoteChanged, Polls.notifyResultsChanged]);
     _loadPolls();
     _scrollController = ScrollController();
     _scrollController!.addListener(_scrollListener);
@@ -68,12 +68,15 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
         appBar: HeaderBar(
             title: Localization().getStringEx('panel.group_polls.label.heading', 'All Polls'),
         ),
-        body: CustomScrollView(controller: _scrollController, slivers: <Widget>[
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Column(children: <Widget>[_buildPollsContent()])
-          ]))
-        ]),
+        body: RefreshIndicator(
+          onRefresh: _onPullToRefresh,
+          child: CustomScrollView(controller: _scrollController, slivers: <Widget>[
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Column(children: <Widget>[_buildPollsContent()])
+            ]))
+          ])
+        ),
         backgroundColor: Styles().colors.background,
         bottomNavigationBar: uiuc.TabBar());
   }
@@ -130,7 +133,7 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
               style: Styles().textStyles.getTextStyle("widget.title.extra_large.extra_fat")),
           Container(height: 16),
           Text(description,
-              textAlign: TextAlign.center, style:Styles().textStyles.getTextStyle("widget.item.regular.thin"))
+              textAlign: TextAlign.center, style:Styles().textStyles.getTextStyle("widget.item.light.regular.thin"))
         ]));
   }
 
@@ -148,17 +151,17 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
               style: Styles().textStyles.getTextStyle("widget.title.extra_large.extra_fat")),
           Container(height: 16),
           Text(StringUtils.ensureNotEmpty(_pollsError),
-              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle("widget.item.regular.thin"))
+              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle("widget.item.light.regular.thin"))
         ]));
   }
 
-  void _loadPolls() {
+  Future<void> _loadPolls() async {
     if (((_polls == null) || (_pollsCursor != null)) && !_pollsLoading) {
       setStateIfMounted((){
         _pollsLoading = true;
       });
 
-      dynamic result = widget.group.loadPolls(cursor: _pollsCursor);
+      dynamic result = await widget.group.loadPolls(cursor: _pollsCursor);
       setStateIfMounted((){
         if (result is PollsChunk) {
           _polls ??= [];
@@ -174,12 +177,13 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
     }
   }
 
-  void _onPollUpdated(String? pollId) {
+  Future<void> _onPollUpdated(String? pollId) async {
     Poll? poll = Polls().getPoll(pollId: pollId);
+    poll ??= (pollId != null) ? await Polls().loadById(pollId) : null;
     if (poll != null) {
       if (mounted) {
         setState(() {
-          _updatePoll(poll);
+          _updatePoll(poll!);
         });
       }
     }
@@ -201,9 +205,21 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
     }
   }
 
+  void _reloadPolls() {
+    _polls = null;
+    _pollsCursor = null;
+    _loadPolls();
+  }
+
+  Future<void> _onPullToRefresh() async {
+    _reloadPolls();
+  }
+
   @override
   void onNotification(String name, param) {
-    if((name == Polls.notifyCreated) || (name == Polls.notifyStatusChanged) || (name == Polls.notifyVoteChanged) || (name == Polls.notifyResultsChanged)) {
+    if ((name == Polls.notifyCreated) || (name == Polls.notifyDeleted)) {
+      _reloadPolls();
+    } else if((name == Polls.notifyStatusChanged) || (name == Polls.notifyVoteChanged) || (name == Polls.notifyResultsChanged)) {
       _onPollUpdated(param);
     }
   }
