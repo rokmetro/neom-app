@@ -487,7 +487,7 @@ class _Event2SetupRegistrationPanelState extends State<Event2SetupRegistrationPa
         Text(_hasError ?
         Localization().getStringEx("panel.event2.setup.registration.guest.failed.text", "Failed to load guests list.") :
         Localization().getStringEx("panel.event2.setup.registration.guest.empty.text", "There are no users registered for this event yet."),
-          textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.thin.italic'),),
+          textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic'),),
         )
       ],)
       );
