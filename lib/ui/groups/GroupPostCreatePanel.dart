@@ -145,11 +145,9 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled"),
                           backgroundColor: Styles().colors.background,
                           onTap: () {
-                            if(mounted){
-                              setState(() {
-                                _pinPost = !_pinPost;
-                              });
-                            }
+                            setStateIfMounted(() {
+                              _pinPost = !_pinPost;
+                            });
                           }
                       ),
                     )
@@ -168,11 +166,9 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
                             Styles().textStyles.getTextStyle("panel.group_member_notifications.toggle_button.title.small.disabled"),
                             backgroundColor: Styles().colors.background,
                             onTap: () {
-                              if(mounted){
-                                setState(() {
-                                  _allowSenPostToOtherGroups = !_allowSenPostToOtherGroups;
-                                });
-                              }
+                              setStateIfMounted(() {
+                                _allowSenPostToOtherGroups = !_allowSenPostToOtherGroups;
+                              });
                             }
                         ),
                       )
@@ -266,9 +262,10 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
   }
 
   void _onMembersSelectionChanged(List<Member>? selectedMembers){
-    _selectedMembers = selectedMembers;
-    _clearScheduleDate(); //Members Selection disables scheduling
-    setStateIfMounted();
+    setStateIfMounted(() {
+      _selectedMembers = selectedMembers;
+      _clearScheduleDate(); //Members Selection disables scheduling
+    });
   }
 
   List<DropdownMenuItem<GroupPostNudge?>> get _nudgesDropDownItems {
@@ -292,9 +289,10 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
       body = _selectedNudge?.body;
       _showPollConfirmationDialogIfNeeded();
     }
-    _postData.subject = subject;
-    _postData.body = body;
-    setStateIfMounted();
+    setStateIfMounted(() {
+      _postData.subject = subject;
+      _postData.body = body;
+    });
   }
 
   void _showPollConfirmationDialogIfNeeded() {
@@ -312,8 +310,9 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
         String pollNudgeBodyMsg = sprintf(
             Localization().getStringEx('panel.group.detail.post.create.nudges.poll.body.msg', 'Please participate in the course Poll, #%s'),
             [StringUtils.ensureNotEmpty(poll.pinCode?.toString())]);
-        _postData.body = StringUtils.ensureNotEmpty(_postData.body) + '\n\n $pollNudgeBodyMsg';
-        setStateIfMounted();
+        setStateIfMounted(() {
+          _postData.body = StringUtils.ensureNotEmpty(_postData.body) + '\n\n $pollNudgeBodyMsg';
+        });
       }
     });
   }
@@ -432,13 +431,15 @@ class _GroupPostCreatePanelState extends State<GroupPostCreatePanel>{
   }
 
   void _increaseProgress() {
-    _progressLoading++;
-    setStateIfMounted();
+    setStateIfMounted(() {
+      _progressLoading++;
+    });
   }
 
   void _decreaseProgress() {
-    _progressLoading--;
-    setStateIfMounted();
+    setStateIfMounted(() {
+      _progressLoading--;
+    });
   }
 
   bool get _isLoading {

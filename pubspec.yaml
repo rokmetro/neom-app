@@ -77,6 +77,9 @@ dependencies:
   sms_mms: ^0.0.3
   pdf: ^3.11.3
   printing: ^5.14.2
+  flutter_quill_delta_from_html: ^1.5.2
+  flutter_quill: ^11.4.1
+  vsc_quill_delta_to_html: ^1.0.5
   file_picker: ^8.3.5
   image_picker: ^1.1.2
   mime: ^1.0.0

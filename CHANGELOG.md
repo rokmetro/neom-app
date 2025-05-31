@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Add Firebase performance monitoring SDK [#121](https://github.com/rokmetro/neom-app/issues/121)
+- Group post text formatting UX [#5194](https://github.com/rokwire/illinois-app/issues/5194)
 ### Fixed
 - [TC-007a] Slow image/video/file display and upload for conversations and groups [#91](https://github.com/rokmetro/neom-app/issues/91)
 - [TC-004g] Error saving business card QR code [#90](https://github.com/rokmetro/neom-app/issues/90)
@@ -230,7 +231,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 <!-- The next version number should be the version already set in pubspec.yaml -->
 ### Added
+- Group post text formatting UX [#5194](https://github.com/rokwire/illinois-app/issues/5194)
 - Add group members from directory [#5098](https://github.com/rokwire/illinois-app/issues/5098)
+## [7.1.12] - 2025-05-30
+### Fixed
+- Associate Group Event/Post/Poll Cards with the post/poll/event object [#4991](https://github.com/rokwire/illinois-app/issues/4991).
 
 ## [7.1.11] - 2025-05-28
 ### Changed

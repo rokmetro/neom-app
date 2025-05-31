@@ -22,6 +22,7 @@ import 'package:flutter/rendering.dart';
 import 'package:illinois/model/Analytics.dart';
 import 'package:illinois/service/Auth2.dart';
 import 'package:illinois/ui/groups/GroupPostReportAbuse.dart';
+import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/model/social.dart';
 import 'package:illinois/ext/Group.dart';
@@ -120,11 +121,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            leading: HeaderBackButton(),
-            title: Text(_panelTitle ?? "",
-                style: Styles().textStyles.getTextStyle('widget.heading.regular.extra_fat')),
-            centerTitle: false),
+        appBar: RootHeaderBar(title: _panelTitle, leading: RootHeaderBarLeading.Back,),
         backgroundColor: Styles().colors.background,
         bottomNavigationBar: uiuc.TabBar(),
         body: _buildContent());
@@ -279,6 +276,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
                               children: [
                                 Container(
                                     padding: EdgeInsets.only(top: 8, bottom: _outerPadding),
+                                    color: Styles().colors.background,
                                     child: PostInputField(
                                       onBodyChanged: (txt) => _mainPostUpdateData?.body = txt,
                                       text:  _mainPostUpdateData?.body ?? '',
@@ -286,7 +284,7 @@ class _GroupPostDetailPanelState extends State<GroupPostDetailPanel> with Notifi
                                       maxLines: null,
                                       autofocus: true,
                                       style: Styles().textStyles.getTextStyle("widget.input_field.text.regular"),
-                                      boxDecoration: BoxDecoration(color: Styles().colors.background),
+                                      boxDecoration: BoxDecoration(color: Styles().colors.surface),
                                       inputDecoration: InputDecoration(
                                           hintText: Localization().getStringEx("panel.group.detail.post.edit.hint", "Edit the post"),
                                           fillColor: Styles().colors.surface,
