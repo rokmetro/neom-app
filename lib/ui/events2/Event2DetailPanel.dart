@@ -19,7 +19,6 @@ import 'package:illinois/ui/events2/Even2SetupSuperEvent.dart';
 import 'package:illinois/ui/events2/Event2AdvancedSettingsPanel.dart';
 import 'package:illinois/ui/events2/Event2ManageDataPanel.dart';
 import 'package:illinois/ui/profile/ProfileHomePanel.dart';
-import 'package:illinois/ui/settings/SettingsPrivacyPanel.dart';
 import 'package:illinois/ui/surveys/SurveyPanel.dart';
 import 'package:illinois/ui/events2/Event2AttendanceTakerPanel.dart';
 import 'package:illinois/ui/events2/Event2CreatePanel.dart';
@@ -1229,7 +1228,7 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
   }
 
   Future<bool> _checkSelfCheckInPrerequirements() async {
-    if (!Auth2().isOidcLoggedIn) {
+    if (!Auth2().isLoggedIn) {
       await Event2Popup.showWindow(context,
         content: _selfCheckIn_SignedOut,
         analyticsMessage: _selfCheckIn_SignedOutTitle(language: 'en')
@@ -1248,9 +1247,9 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
 
   Widget get _selfCheckIn_SignedOut {
     final String linkLoginMacro = "{{link.login}}";
-    final String linkPrivacyMacro = "{{link.privacy}}";
-    String descriptionTemplate = Localization().getStringEx('panel.event2.detail.self_checkin.massage.signed_out.description', 'Please $linkLoginMacro with your NetID at a $linkPrivacyMacro.');
-    List<InlineSpan> descriptionList = StringUtils.split<InlineSpan>(descriptionTemplate, macros: [linkLoginMacro, linkPrivacyMacro], builder: (String entry) {
+    // final String linkPrivacyMacro = "{{link.privacy}}";
+    String descriptionTemplate = Localization().getStringEx('panel.event2.detail.self_checkin.massage.signed_out.description', 'Please $linkLoginMacro.');
+    List<InlineSpan> descriptionList = StringUtils.split<InlineSpan>(descriptionTemplate, macros: [linkLoginMacro], builder: (String entry) {
       if (entry == linkLoginMacro) {
         return TextSpan(
           text: Localization().getStringEx('panel.event2.detail.self_checkin.massage.signed_out.link.login', "sign in"),
@@ -1258,13 +1257,13 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
           recognizer: _signInRecognizer ??= (TapGestureRecognizer()..onTap = _onTapPopupSignIn),
         );
       }
-      else if (entry == linkPrivacyMacro) {
-        return TextSpan(
-          text: Localization().getStringEx('panel.event2.detail.self_checkin.massage.signed_out.link.privacy', "privacy level 4 or 5"),
-          style : Styles().textStyles.getTextStyle("widget.link.button.title.regular"),
-          recognizer: _privacyRecognizer ??= (TapGestureRecognizer()..onTap = _onTapPopupProfile),
-        );
-      }
+      // else if (entry == linkPrivacyMacro) {
+      //   return TextSpan(
+      //     text: Localization().getStringEx('panel.event2.detail.self_checkin.massage.signed_out.link.privacy', "privacy level 4 or 5"),
+      //     style : Styles().textStyles.getTextStyle("widget.link.button.title.regular"),
+      //     recognizer: _privacyRecognizer ??= (TapGestureRecognizer()..onTap = _onTapPopupProfile),
+      //   );
+      // }
       else {
         return TextSpan(text: entry);
       }
@@ -1287,10 +1286,10 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
     ProfileHomePanel.present(context, contentType: ProfileContentType.login);
   }
 
-  void _onTapPopupProfile() {
-    Analytics().logSelect(target: 'Privacy Level');
-    Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.regular,)));
-  }
+  // void _onTapPopupProfile() {
+  //   Analytics().logSelect(target: 'Privacy Level');
+  //   Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => SettingsPrivacyPanel(mode: SettingsPrivacyPanelMode.regular,)));
+  // }
 
   Future<void> _showPopupMessage({ String Function({String? lng})? title,  String Function({String? lng})? description }) =>
     Event2Popup.showWindow(context,

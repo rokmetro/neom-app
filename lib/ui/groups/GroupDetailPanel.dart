@@ -1074,7 +1074,7 @@ class _GroupDetailPanelState extends State<GroupDetailPanel> with NotificationsL
   }
 
   Widget _buildCancelMembershipRequest() {
-    if (Auth2().isOidcLoggedIn && _group!.currentUserIsPendingMember) {
+    if (Auth2().isLoggedIn && _group!.currentUserIsPendingMember) {
       return Container(decoration: BoxDecoration(color: Styles().colors.surface, border: Border(top: BorderSide(color: Styles().colors.surfaceAccent, width: 1))), child:
       Padding(padding: EdgeInsets.all(16), child:
       RoundedButton(label: Localization().getStringEx("panel.group_detail.button.cancel_request.title",  'Cancel Request'),
