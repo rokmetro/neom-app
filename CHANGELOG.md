@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## NEOM U
 ## Unreleased
+### Added
+- Add Firebase performance monitoring SDK [#121](https://github.com/rokmetro/neom-app/issues/121)
 ### Fixed
 - Recurring events data display issues [#106](https://github.com/rokmetro/neom-app/issues/106)
 
