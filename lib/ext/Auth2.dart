@@ -2,7 +2,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
+import 'package:rokwire_plugin/model/auth2.directory.dart';
 import 'package:rokwire_plugin/service/localization.dart';
 import 'package:rokwire_plugin/utils/utils.dart';
 
@@ -37,7 +39,8 @@ extension Auth2UserProfileExt on Auth2UserProfile {
 }
 
 extension Auth2UserProfileVCard on Auth2UserProfile {
-  String toDigitalCard({Uint8List? photoImageData,}) {
+  String toDigitalCard({Uint8List? photoImageData,
+    List<Auth2PublicAccountIdentifier>? identifiers}) {
     // https://en.wikipedia.org/wiki/VCard
     String vcfContent = "";
     vcfContent += _fieldValue('BEGIN', 'VCARD');
@@ -47,6 +50,14 @@ extension Auth2UserProfileVCard on Auth2UserProfile {
     vcfContent += _fieldValue('TITLE', title);
     vcfContent += _fieldValue('ORG', _vcardOrg);
     vcfContent += _fieldValue('ADR', _vcardAddr);
+    String? email = identifiers?.firstWhereOrNull((e) => e.code == Auth2Identifier.typeEmail)?.identifier;
+    if (email?.isNotEmpty == true) {
+      vcfContent += _fieldValue('EMAIL;TYPE=primary', email);
+    }
+    String? phone = identifiers?.firstWhereOrNull((e) => e.code == Auth2Identifier.typePhone)?.identifier;
+    if (phone?.isNotEmpty == true) {
+      vcfContent += _fieldValue('TEL', phone);
+    }
     // vcfContent += _fieldValue('EMAIL;TYPE=primary', email);
     // vcfContent += _fieldValue('EMAIL;TYPE=secondary', email2);
     // vcfContent += _fieldValue('TEL', phone);
@@ -100,7 +111,7 @@ extension Auth2UserProfileVCard on Auth2UserProfile {
 }
 
 extension Auth2UserProfileDisplayText on Auth2UserProfile {
-  String toDisplayText() {
+  String toDisplayText({List<Auth2PublicAccountIdentifier>? identifiers}) {
     String displayText = "";
     displayText += _fieldValue(displayFullName, delimiter: '\n\n');
 
@@ -108,6 +119,14 @@ extension Auth2UserProfileDisplayText on Auth2UserProfile {
 
     displayText += _fieldValue(displayAddressSection, delimiter: '\n\n');
 
+    String? email = identifiers?.firstWhereOrNull((e) => e.code == Auth2Identifier.typeEmail)?.identifier;
+    if (email?.isNotEmpty == true) {
+      displayText += _fieldValue(email, label: Localization().getStringEx('generic.app.field.email', 'Email'));
+    }
+    String? phone = identifiers?.firstWhereOrNull((e) => e.code == Auth2Identifier.typePhone)?.identifier;
+    if (phone?.isNotEmpty == true) {
+      displayText += _fieldValue(phone, label: Localization().getStringEx('generic.app.field.phone', 'Phone'));
+    }
     // displayText += _fieldValue(phone, label: Localization().getStringEx('generic.app.field.phone', 'Phone'));
     // displayText += _fieldValue(email, label: Localization().getStringEx('generic.app.field.email', 'Email'));
     displayText += _fieldValue(email2, label: Localization().getStringEx('generic.app.field.email2', 'Email2'));

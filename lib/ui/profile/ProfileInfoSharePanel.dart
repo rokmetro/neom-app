@@ -185,12 +185,19 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
   Widget build(BuildContext context) =>
     _panelContent;
 
+  List<Auth2PublicAccountIdentifier>? get _identifiers =>
+      Auth2().account?.identifiers?.where((e) =>
+        Auth2().account?.privacy?.fieldsVisibility?.identifiers?[e.id]
+            == Auth2FieldVisibility.public).map((e) =>
+              Auth2PublicAccountIdentifier(id: e.id, code: e.code,
+                  identifier: e.identifier)).toList();
+
   Widget get _panelContent => SingleChildScrollView(child:
     Padding(padding: EdgeInsets.only(top: widget.topOffset, bottom: 16), child:
       Column(children: [
         Padding(padding: EdgeInsets.symmetric(horizontal: widget.contentPaddingX), child:
           RepaintBoundary(key: _repaintBoundaryKey, child:
-            DirectoryAccountContactCard(account: Auth2PublicAccount(id: Auth2().accountId, profile: widget.profile), printMode: true,),
+            DirectoryAccountContactCard(account: Auth2PublicAccount(id: Auth2().accountId, profile: widget.profile, identifiers: _identifiers), printMode: true,),
           ),
         ),
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child:
@@ -276,6 +283,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
       profile: widget.profile,
       photoImageData: widget.photoImageData,
       pronunciationAudioData: widget.pronunciationAudioData,
+      identifiers: _identifiers,
     );
   }
 
@@ -319,7 +327,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
       });
 
       final Email email = Email(
-        body: widget.profile?.toDisplayText() ?? '',
+        body: widget.profile?.toDisplayText(identifiers: _identifiers) ?? '',
         attachmentPaths: [
           if (imageFilePath != null)
             imageFilePath,
@@ -345,7 +353,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
       });
       SmsMms.send(
         recipients: [],
-        message: widget.profile?.toDisplayText() ?? '',
+        message: widget.profile?.toDisplayText(identifiers: _identifiers) ?? '',
         filePath: imagePath,
       );
     }
@@ -417,6 +425,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
     try {
       String? vcfContent = widget.profile?.toDigitalCard(
         photoImageData: widget.photoImageData,
+        identifiers: _identifiers,
       );
       if ((vcfContent != null) && vcfContent.isNotEmpty) {
         final String dir = (await getApplicationDocumentsDirectory()).path;
@@ -433,7 +442,7 @@ class _ProfileInfoShareWidgetState extends State<ProfileInfoShareWidget> {
 
   Future<bool> _copyTextToClipbiard() async {
     try {
-      await Clipboard.setData(ClipboardData(text: widget.profile?.toDisplayText() ?? ''));
+      await Clipboard.setData(ClipboardData(text: widget.profile?.toDisplayText(identifiers: _identifiers) ?? ''));
       return true;
     }
     catch(e) {
