@@ -47,9 +47,6 @@ class _PollCardState extends State<PollCard> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    });
-
     String pollVotesStatus = _pollVotesStatus;
 
     List<Widget> footerWidgets = [];
