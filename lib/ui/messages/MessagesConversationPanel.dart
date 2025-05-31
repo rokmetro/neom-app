@@ -842,7 +842,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
   }
 
   void _onTapUploadImageOrVideo() async {
-    List<XFile> media = await ImagePicker().pickMultipleMedia(limit: 10);
+    List<XFile> media = await ImagePicker().pickMultipleMedia(limit: 10, imageQuality: 60, maxHeight: 1080, maxWidth: 1080);
     _addAttachedFiles(media);
     Navigator.of(context).pop();
   }
@@ -852,7 +852,7 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
     if (isVideo) {
       media = await ImagePicker().pickVideo(source: ImageSource.camera);
     } else {
-      media = await ImagePicker().pickImage(source: ImageSource.camera);
+      media = await ImagePicker().pickImage(source: ImageSource.camera, imageQuality: 60, maxHeight: 1080, maxWidth: 1080);
     }
     if (media != null) {
       _addAttachedFiles([media]);
@@ -1104,6 +1104,22 @@ class _MessagesConversationPanelState extends State<MessagesConversationPanel>
         );
       } else if (kIsWeb || file is FileAttachment) {
         widget = Image.network(url ?? '', fit: BoxFit.cover,
+          loadingBuilder: (BuildContext context, Widget child,
+              ImageChunkEvent? loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Container(
+              color: Styles().colors.surfaceAccent,
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Styles().colors.fillColorSecondary,
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                      : null,
+                ),
+              ),
+            );
+          },
           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) =>
           _imageErrorBuilder,
         );

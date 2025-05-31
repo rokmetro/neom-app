@@ -230,9 +230,9 @@ class _Event2SetupRegistrationPanelState extends State<Event2SetupRegistrationPa
     return Visibility(visible: (_registrationType == Event2RegistrationType.internal), child:
       Container(decoration: Event2CreatePanel.sectionSplitterDecoration, padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24), child:
         Column(children: [
-         _buildCapacitySection(),
+          _buildCapacitySection(),
           _buildGuestListDropDownSection(),
-         _buildRegistrantsSection(),
+          // _buildRegistrantsSection(),
         ],),
       ),
     );
@@ -256,6 +256,7 @@ class _Event2SetupRegistrationPanelState extends State<Event2SetupRegistrationPa
 
   // Event Registrants
 
+  /*
   Widget _buildRegistrantsSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.setup.registration.registrants.label.title', 'ADD AND REGISTER NETID(S)')),
     body: Event2CreatePanel.buildTextEditWidget(_registrantsController, keyboardType: TextInputType.text, maxLines: null,
@@ -272,6 +273,7 @@ class _Event2SetupRegistrationPanelState extends State<Event2SetupRegistrationPa
       )
     ],),
   );
+  */
 
 
   // External Details
@@ -485,7 +487,7 @@ class _Event2SetupRegistrationPanelState extends State<Event2SetupRegistrationPa
         Text(_hasError ?
         Localization().getStringEx("panel.event2.setup.registration.guest.failed.text", "Failed to load guests list.") :
         Localization().getStringEx("panel.event2.setup.registration.guest.empty.text", "There are no users registered for this event yet."),
-          textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.thin.italic'),),
+          textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic'),),
         )
       ],)
       );

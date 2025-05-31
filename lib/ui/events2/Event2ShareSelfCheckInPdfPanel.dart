@@ -70,7 +70,7 @@ class _Event2ShareSelfCheckInPdfPanelState extends State<Event2ShareSelfCheckInP
   Map<String, Uint8List?>? _imagesData;
   Map<String, pw.Font?>? _fontsData;
 
-  static const String _universityLogoKey = 'images/university-dark.png';
+  static const String _universityLogoKey = 'images/university-logo.png';
   static const String _appStoreKey = 'images/app-store.png';
   static const String _googlePlayKey = 'images/google-play.png';
 
@@ -194,7 +194,7 @@ class _Event2ShareSelfCheckInPdfPanelState extends State<Event2ShareSelfCheckInP
             ),
             pw.Container(color: bottomBackColor, padding: const pw.EdgeInsets.all(24), child:
               pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-                pw.Text(Localization().getStringEx('panel.event2.share.self_check.description.1', '1. To check in, you must be in signed in to the Illinois app at a privacy level 4 or 5.'), style: pw.TextStyle(fontSize: 16, color: bottomTextColor),),
+                pw.Text(Localization().getStringEx('panel.event2.share.self_check.description.1', '1. To check in, you must be in signed in to the NEOM U app.'), style: pw.TextStyle(fontSize: 16, color: bottomTextColor),),
                 pw.Padding(padding: const pw.EdgeInsets.only(top: 8),),
                 pw.Text(Localization().getStringEx('panel.event2.share.self_check.description.2', '2. Using your phone’s camera, scan the QR code.'), style: pw.TextStyle(fontSize: 16, color: bottomTextColor),),
                 pw.Padding(padding: const pw.EdgeInsets.only(top: 8),),
@@ -280,7 +280,7 @@ class _Event2ShareSelfCheckInPdfPanelState extends State<Event2ShareSelfCheckInP
     Analytics().logSelect(target: 'Save', source: runtimeType.toString());
   }*/
 
-  Widget get _shareButton => _iconButton('event-save-to-calendar',
+  Widget get _shareButton => _iconButton('share-light',
     label: Localization().getStringEx('dialog.share.title', 'Share'),
     hint: Localization().getStringEx('dialog.share.hint', ''),
     padding: const EdgeInsets.only(left: _barIconPadding, right: _barIconPadding / 2, top: _barIconPadding, bottom: _barIconPadding),
@@ -298,7 +298,7 @@ class _Event2ShareSelfCheckInPdfPanelState extends State<Event2ShareSelfCheckInP
     }
   }
 
-  Widget get _closeButton => _iconButton('close-circle',
+  Widget get _closeButton => _iconButton('close-circle-white',
     label: Localization().getStringEx('dialog.close.title', 'Close'),
     hint: Localization().getStringEx('dialog.close.hint', ''),
     iconSize: _barIconSize * 1.2,

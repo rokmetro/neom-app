@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 //import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:illinois/ext/Event2.dart';
@@ -75,12 +75,12 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   Timer? _processedTimer;
   String? _errorMessage;
 
-  bool _scanning = false;
-  bool _manualInputProgress = false;
+  // bool _scanning = false;
+  // bool _manualInputProgress = false;
   bool _loadingPeople = false;
   bool _attendeesSectionExpanded = false;
 
-  final GlobalKey _manualNetIdKey = GlobalKey();
+  // final GlobalKey _manualNetIdKey = GlobalKey();
   final TextEditingController _manualNetIdController = TextEditingController();
   final FocusNode _manualNetIdFocusNode = FocusNode();
 
@@ -140,7 +140,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       _buildEventDetailsSection(),
       _buildAttendeesListDropDownSection(),
-      _buildManualNetIdInputSection(),
+      // _buildManualNetIdInputSection(),
       _buildScanAndSelfCheckinPdfSection(),
     ]);
   }
@@ -415,6 +415,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
     return true;
   }
 
+  /*
   Widget _buildManualNetIdInputSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.detail.attendance.manual.netid.label', 'Add NetID(s) as attended:'),
       titleTextStyle: widget.manualCheckEnabled ? Event2CreatePanel.headingTextStyle : Event2CreatePanel.headingDisabledTextStyle,
@@ -544,13 +545,14 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
       Scrollable.ensureVisible(manualNetIdContext, duration: Duration(milliseconds: 10));
     }
   }
+  */
 
   Widget _buildScanAndSelfCheckinPdfSection() {
       return (_isAdmin && widget.showSelfCheckInPdf) ? Row(children: [
-        Expanded(flex: 50, child: _buildSelfCheckinPdfSection()),
-        Container(width: 6,),
-        Expanded(flex: 50, child: _buildScanIlliniIdSection()),
-      ],) : _buildScanIlliniIdSection(contentWeight: 0.5);
+        Expanded(child: _buildSelfCheckinPdfSection()),
+        // Container(width: 6,),
+        // Expanded(flex: 50, child: _buildScanIlliniIdSection()),
+      ],) : Container(); // _buildScanIlliniIdSection(contentWeight: 0.5);
   }
 
   Widget _buildSelfCheckinPdfSection({ double contentWeight = 1.0 }) => Event2CreatePanel.buildSectionWidget(
@@ -581,6 +583,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
     }
   }
 
+  /*
   Widget _buildScanIlliniIdSection({ double contentWeight = 1.0 }) => Event2CreatePanel.buildSectionWidget(
     body: RoundedButton(
       label: Localization().getStringEx('panel.event2.detail.attendance.scan.button', 'Scan ID'),
@@ -790,6 +793,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
       }
     });
   }
+  */
 
   bool get _isInternalRegisterationEvent =>
     widget.event?.registrationDetails?.type == Event2RegistrationType.internal;
@@ -797,8 +801,8 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   bool _isAttendeeNetIdRegistered(String attendeeNetId) =>
     _displayMap[attendeeNetId]?.registrationType != null;
 
-  bool _isAttendeeNetIdAttended(String attendeeNetId) =>
-    _atendeesNetIds.contains(attendeeNetId);
+  // bool _isAttendeeNetIdAttended(String attendeeNetId) =>
+  //   _atendeesNetIds.contains(attendeeNetId);
 
   bool? get _isEventCapacityReached {
     int attendeesCount = _atendeesNetIds.length;

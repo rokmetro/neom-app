@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:illinois/model/Analytics.dart';
 import 'package:illinois/ui/polls/PollWidgets.dart';
+import 'package:illinois/utils/AppUtils.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:illinois/ext/Group.dart';
 import 'package:rokwire_plugin/model/poll.dart';
@@ -27,7 +28,7 @@ import 'package:rokwire_plugin/service/styles.dart';
 import 'package:illinois/ui/widgets/HeaderBar.dart';
 import 'package:illinois/ui/widgets/TabBar.dart' as uiuc;
 import 'package:rokwire_plugin/utils/utils.dart';
-import 'package:illinois/service/Polls.dart' as neom;
+import 'package:illinois/service/Polls.dart' as illinois;
 
 class GroupPollListPanel extends StatefulWidget with AnalyticsInfo {
   final Group group;
@@ -55,7 +56,7 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
   @override
   void initState() {
     super.initState();
-    NotificationService().subscribe(this, [Polls.notifyCreated, Polls.notifyStatusChanged, Polls.notifyVoteChanged, Polls.notifyResultsChanged]);
+    NotificationService().subscribe(this, [Polls.notifyCreated, Polls.notifyDeleted, Polls.notifyStatusChanged, Polls.notifyVoteChanged, Polls.notifyResultsChanged]);
     _loadPolls();
     _scrollController = ScrollController();
     _scrollController!.addListener(_scrollListener);
@@ -67,12 +68,15 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
         appBar: HeaderBar(
             title: Localization().getStringEx('panel.group_polls.label.heading', 'All Polls'),
         ),
-        body: CustomScrollView(controller: _scrollController, slivers: <Widget>[
-          SliverList(
-              delegate: SliverChildListDelegate([
-            Column(children: <Widget>[_buildPollsContent()])
-          ]))
-        ]),
+        body: RefreshIndicator(
+          onRefresh: _onPullToRefresh,
+          child: CustomScrollView(controller: _scrollController, slivers: <Widget>[
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Column(children: <Widget>[_buildPollsContent()])
+            ]))
+          ])
+        ),
         backgroundColor: Styles().colors.background,
         bottomNavigationBar: uiuc.TabBar());
   }
@@ -129,7 +133,7 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
               style: Styles().textStyles.getTextStyle("widget.title.extra_large.extra_fat")),
           Container(height: 16),
           Text(description,
-              textAlign: TextAlign.center, style:Styles().textStyles.getTextStyle("widget.item.regular.thin"))
+              textAlign: TextAlign.center, style:Styles().textStyles.getTextStyle("widget.item.light.regular.thin"))
         ]));
   }
 
@@ -147,39 +151,39 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
               style: Styles().textStyles.getTextStyle("widget.title.extra_large.extra_fat")),
           Container(height: 16),
           Text(StringUtils.ensureNotEmpty(_pollsError),
-              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle("widget.item.regular.thin"))
+              textAlign: TextAlign.center, style: Styles().textStyles.getTextStyle("widget.item.light.regular.thin"))
         ]));
   }
 
-  void _loadPolls() {
+  Future<void> _loadPolls() async {
     if (((_polls == null) || (_pollsCursor != null)) && !_pollsLoading) {
-      String? groupId = widget.group.id;
-      if (StringUtils.isNotEmpty(groupId)) {
-        _setGroupPollsLoading(true);
-        Polls().getGroupPolls(groupIds: {groupId!}, cursor: _pollsCursor)?.then((PollsChunk? result) {
-          if (result != null) {
-            if (_polls == null) {
-              _polls = [];
-            }
-            _polls!.addAll(result.polls!);
-            _pollsCursor = (0 < result.polls!.length) ? result.cursor : null;
-            _pollsError = null;
-          }
-        }).catchError((e) {
-          _pollsError = neom.Polls.localizedErrorString(e);
-        }).whenComplete(() {
-          _setGroupPollsLoading(false);
-        });
-      }
+      setStateIfMounted((){
+        _pollsLoading = true;
+      });
+
+      dynamic result = await widget.group.loadPolls(cursor: _pollsCursor);
+      setStateIfMounted((){
+        if (result is PollsChunk) {
+          _polls ??= [];
+          _polls?.addAll(result.polls ?? []);
+          _pollsCursor = (result.polls?.isNotEmpty == true) ? result.cursor : null;
+          _pollsError = null;
+        }
+        else {
+          _pollsError = illinois.Polls.localizedErrorString(result);
+        }
+        _pollsLoading = false;
+      });
     }
   }
 
-  void _onPollUpdated(String? pollId) {
+  Future<void> _onPollUpdated(String? pollId) async {
     Poll? poll = Polls().getPoll(pollId: pollId);
+    poll ??= (pollId != null) ? await Polls().loadById(pollId) : null;
     if (poll != null) {
       if (mounted) {
         setState(() {
-          _updatePoll(poll);
+          _updatePoll(poll!);
         });
       }
     }
@@ -201,16 +205,21 @@ class _GroupPollListPanelState extends State<GroupPollListPanel> with Notificati
     }
   }
 
-  void _setGroupPollsLoading(bool loading) {
-    _pollsLoading = loading;
-    if (mounted) {
-      setState(() {});
-    }
+  void _reloadPolls() {
+    _polls = null;
+    _pollsCursor = null;
+    _loadPolls();
+  }
+
+  Future<void> _onPullToRefresh() async {
+    _reloadPolls();
   }
 
   @override
   void onNotification(String name, param) {
-    if((name == Polls.notifyCreated) || (name == Polls.notifyStatusChanged) || (name == Polls.notifyVoteChanged) || (name == Polls.notifyResultsChanged)) {
+    if ((name == Polls.notifyCreated) || (name == Polls.notifyDeleted)) {
+      _reloadPolls();
+    } else if((name == Polls.notifyStatusChanged) || (name == Polls.notifyVoteChanged) || (name == Polls.notifyResultsChanged)) {
       _onPollUpdated(param);
     }
   }
