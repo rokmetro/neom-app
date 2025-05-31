@@ -316,8 +316,6 @@ class _QrCodePanelState extends State<QrCodePanel> {
       );
       bool result = (updatedImageBytes != null);
       if (result) {
-        final file = File(widget.saveFileName);
-        if (await file.exists()) await file.delete();
         result = await ImageUtils.saveToFs(updatedImageBytes, widget.saveFileName) ?? false;
       }
 
