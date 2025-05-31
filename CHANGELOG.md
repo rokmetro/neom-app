@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Recurring events data display issues [#106](https://github.com/rokmetro/neom-app/issues/106)
 - Issues with polls (UI and data sync issues) [#93](https://github.com/rokmetro/neom-app/issues/93)
-- Visual Cleanup (Group) [#83](https://github.com/rokmetro/neom-app/issues/83)
+- Visual Cleanup (Groups and event registration and attendance) [#83](https://github.com/rokmetro/neom-app/issues/83)
 
 ## [0.5.19] = 2025-05-23
 ### Fixed
