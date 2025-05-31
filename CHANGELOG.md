@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## NEOM U
 ## Unreleased
+## [0.5.20] = 2025-05-31
 ### Added
 - Add Firebase performance monitoring SDK [#121](https://github.com/rokmetro/neom-app/issues/121)
 - Group post text formatting UX [#5194](https://github.com/rokwire/illinois-app/issues/5194)
