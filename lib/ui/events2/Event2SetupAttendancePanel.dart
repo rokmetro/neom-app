@@ -45,7 +45,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
   late bool _selfCheckEnabled;
   late bool _selfCheckLimitedToRegisteredOnly;
 
-  bool _scanningProgress = false;
+  // bool _scanningProgress = false;
   bool _manualCheckProgress = false;
   bool _selfCheckProgress = false;
   bool _selfCheckLimitedToRegisteredOnlyProgress = false;
@@ -104,15 +104,15 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildHeadingDescription()),
             _sectionDivider,
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildScanSection()),
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _dividerLine),
+            // Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildScanSection()),
+            // Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _dividerLine),
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildManualSection()),
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _dividerLine),
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildSelfCheckSection()),
             //if (_isEditing)
             //  Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakerSection()),
-            _sectionDivider,
-            Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakersSection()),
+            // _sectionDivider,
+            // Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildAttendanceTakersSection()),
             _sectionDivider,
             Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: _buildTrailingDescription()),
             Padding(padding: _sectionPadding),
@@ -134,7 +134,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
       Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(Localization().getStringEx('panel.event2.setup.attendance.header.description1', 'Attendance taking in the NEOM U app is limited to event attendees with NetIDs.'), style: _descriptionTextStyle,),
         Padding(padding: EdgeInsets.only(top: _sectionPaddingHeight)),
-        Text(Localization().getStringEx('panel.event2.setup.attendance.header.description2', 'If you are taking registration in the Illinois app or uploading a registration list to the Illinois app, scanning Illini IDs and using manual attendance will alert attendance takers if the individual has NOT registered for that event. The attendance taker can choose to mark the individual as attended or not.'), style: _descriptionTextStyle,),
+        Text(Localization().getStringEx('panel.event2.setup.attendance.header.description2', 'If you are taking registration in the NEOM U app or uploading a registration list to the NEOM U app, scanning IDs and using manual attendance will alert attendance takers if the individual has NOT registered for that event. The attendance taker can choose to mark the individual as attended or not.'), style: _descriptionTextStyle,),
       ],),
     );
 
@@ -187,6 +187,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
 
   // Scan
 
+  /*
   Widget _buildScanSection() =>
     Padding(padding: _sectionPadding, child:
       _buildScanToggle(),
@@ -229,6 +230,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
       );
     }
   }
+  */
 
   // Manual
 
@@ -391,6 +393,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
 
   // Attendance Takers
 
+  /*
   Widget _buildAttendanceTakersSection() => Event2CreatePanel.buildSectionWidget(
     heading: Event2CreatePanel.buildSectionHeadingWidget(Localization().getStringEx('panel.event2.setup.attendance.takers.label.title', 'Netids for additional attendance takers:')),
     body: Event2CreatePanel.buildTextEditWidget(_attendanceTakersController, keyboardType: TextInputType.text, maxLines: null),
@@ -409,6 +412,7 @@ class _Event2SetupAttendancePanelState extends State<Event2SetupAttendancePanel>
   );
 
   TextStyle? get _infoTextStyle => Styles().textStyles.getTextStyle('widget.item.small.light.thin.italic');
+  */
 
   // HeaderBar
 

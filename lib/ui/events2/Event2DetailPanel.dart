@@ -666,7 +666,7 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
       else {
         return <Widget>[
           InkWell(onTap: _selfCheckingIn ? null : _onSelfCheckIn, child:
-             _buildTextDetailWidget(Localization().getStringEx('panel.event2.detail.general.self_checkin.title', 'Check In with QR Code'), 'camera-viewfinder', underlined: true, showProgress: _selfCheckingIn)
+             _buildTextDetailWidget(Localization().getStringEx('panel.event2.detail.general.self_checkin.title', 'Check In with QR Code'), 'qrcode', underlined: true, showProgress: _selfCheckingIn)
           ),
           _detailSpacerWidget
         ];

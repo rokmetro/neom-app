@@ -467,6 +467,7 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
                       controller: _linkController,
                       decoration: _fieldInputDecorationEx(
                         hintText:  Localization().getStringEx("panel.groups_settings.link.hint", "Add URL"),
+                        hintStyle: Styles().textStyles.getTextStyle("widget.item.regular.thin"),
                         contentPadding: EdgeInsets.symmetric(horizontal: 8)
                       ),
                       style: Styles().textStyles.getTextStyle("widget.item.regular.thin"),
@@ -1452,6 +1453,6 @@ class _GroupCreatePanelState extends State<GroupCreatePanel> {
   InputDecoration get _fieldSmallInputDecoration =>
     _fieldInputDecorationEx(contentPadding: EdgeInsets.symmetric(horizontal: 8));
 
-  InputDecoration _fieldInputDecorationEx({ String? hintText, EdgeInsetsGeometry contentPadding = const EdgeInsets.symmetric(horizontal: 8, vertical: 12) }) =>
-    InputDecoration(border: InputBorder.none, hintText: hintText, contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0));
+  InputDecoration _fieldInputDecorationEx({ String? hintText, EdgeInsetsGeometry contentPadding = const EdgeInsets.symmetric(horizontal: 8, vertical: 12), TextStyle? hintStyle}) =>
+    InputDecoration(border: InputBorder.none, hintText: hintText, hintStyle: hintStyle, contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0));
 }
