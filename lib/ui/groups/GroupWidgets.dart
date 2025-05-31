@@ -1083,7 +1083,6 @@ class _GroupPostCardState extends State<GroupPostCard> {
   @override
   Widget build(BuildContext context) {
     String? htmlBody = widget.post?.body;
-    String? imageUrl = widget.post?.imageUrl;
     List<String>? memberIds = widget.group.id != null ? widget.post?.getMemberAccountIds(groupId: widget.group.id!) : null;
     int visibleRepliesCount = (widget.post?.commentsCount ?? 0);
     bool isRepliesLabelVisible = (visibleRepliesCount > 0);
@@ -1151,11 +1150,11 @@ class _GroupPostCardState extends State<GroupPostCard> {
                               //   ),
                               // }, onLinkTap: (url, context, attributes, element) => _onLinkTap(url))
 
-                            Visibility(visible: StringUtils.isNotEmpty(imageUrl),
-                              child: Container(
+                            if (StringUtils.isNotEmpty(widget.post?.imageUrl))
+                              Container(
                                 padding: EdgeInsets.only(top: 14),
-                                child: Image.network(imageUrl!, alignment: Alignment.center, fit: BoxFit.fitWidth, headers: Config().networkAuthHeaders, excludeFromSemantics: true)
-                            )),
+                                child: _imageWidget
+ ),
                             if (!kIsWeb)
                               WebEmbed(body: htmlBody),
                             // Container(
@@ -1214,6 +1213,9 @@ class _GroupPostCardState extends State<GroupPostCard> {
                   ]))))),
     ]);
   }
+
+  Widget get _imageWidget => (widget.isClickable != true) ? ModalImageHolder(child: _rawImageWidget) : _rawImageWidget;
+  Widget get _rawImageWidget => Image.network(widget.post?.imageUrl ?? '', alignment: Alignment.center, fit: BoxFit.fitWidth, headers: Config().networkAuthHeaders, excludeFromSemantics: true);
 
   //ReactionWidget //TBD move to GroupReaction when ready to hook BB
 
@@ -2893,7 +2895,7 @@ class _GroupMemberProfileImageState extends State<GroupMemberProfileImage> with 
   void _onImageTap() {
     Analytics().logSelect(target: "Group Member Image");
     if (_imageBytes != null) {
-      Navigator.push(context, PageRouteBuilder(opaque: false, pageBuilder: (context, _, __) => ModalImagePanel(image: Image.memory(_imageBytes!).image, networkImageHeaders: Auth2().networkAuthHeaders, onCloseAnalytics: () => Analytics().logSelect(target: "Close Group Member Image"))));
+      Navigator.push(context, PageRouteBuilder(opaque: false, pageBuilder: (context, _, __) => ModalPhotoImagePanel(image: Image.memory(_imageBytes!).image, networkImageHeaders: Auth2().networkAuthHeaders, onCloseAnalytics: () => Analytics().logSelect(target: "Close Group Member Image"))));
     }
   }
 

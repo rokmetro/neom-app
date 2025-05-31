@@ -77,10 +77,10 @@ packages:
     dependency: transitive
     description:
       name: async
-      sha256: "758e6d74e971c3e5aceb4110bfd6698efc7f501675bcfe0c775459a8140750eb"
+      sha256: d2872f9c19731c2e5f10444b14686eb7cc85c76274bd6c16e1816bff9a3bab63
       url: "https://pub.dev"
     source: hosted
-    version: "2.13.0"
+    version: "2.12.0"
   audio_session:
     dependency: transitive
     description:
@@ -373,10 +373,10 @@ packages:
     dependency: transitive
     description:
       name: fake_async
-      sha256: "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44"
+      sha256: "6a95e56b2449df2273fd8c45a662d6947ce1ebb7aafe80e550a3f68297f3cacc"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.3"
+    version: "1.3.2"
   ffi:
     dependency: transitive
     description:
@@ -497,6 +497,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.6"
+  firebase_performance:
+    dependency: "direct main"
+    description:
+      name: firebase_performance
+      sha256: "960f6043dc1723521bb5a569cdcb495b98df902f59804917bc71a671b800270c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1+6"
+  firebase_performance_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_performance_platform_interface
+      sha256: c85abc1cf6f5592854e0151583a9e6e13c15b295cb5c1a0915784799e27a8b55
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.5+6"
+  firebase_performance_web:
+    dependency: transitive
+    description:
+      name: firebase_performance_web
+      sha256: "963d454bb6af78e1aba10bdc1c3ec4c483e145d050e5dcf92160a4aeb224160d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.7+12"
   fixnum:
     dependency: transitive
     description:
@@ -890,39 +914,35 @@ packages:
   google_maps_flutter_android:
     dependency: transitive
     description:
-      path: "packages/google_maps_flutter/google_maps_flutter_android"
-      ref: "google_maps_flutter/add-poi-tap-callback-2.9.0"
-      resolved-ref: bbc04e0e6fe0c702cf129f31dabf44061977eeaf
-      url: "https://github.com/rokwire/packages.git"
-    source: git
-    version: "2.13.0"
+      name: google_maps_flutter_android
+      sha256: ab83128296fbeaa52e8f2b3bf53bcd895e64778edddcdc07bc8f33f4ea78076c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.16.1"
   google_maps_flutter_ios:
     dependency: transitive
     description:
-      path: "packages/google_maps_flutter/google_maps_flutter_ios"
-      ref: "google_maps_flutter/add-poi-tap-callback-2.9.0"
-      resolved-ref: bbc04e0e6fe0c702cf129f31dabf44061977eeaf
-      url: "https://github.com/rokwire/packages.git"
-    source: git
-    version: "2.12.0"
+      name: google_maps_flutter_ios
+      sha256: c7433645c4c9b61c587938cb06072f3dad601239e596b090c0f8f206c1f2ade7
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.15.2"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
-      path: "packages/google_maps_flutter/google_maps_flutter_platform_interface"
-      ref: "google_maps_flutter/add-poi-tap-callback-2.9.0"
-      resolved-ref: bbc04e0e6fe0c702cf129f31dabf44061977eeaf
-      url: "https://github.com/rokwire/packages.git"
-    source: git
-    version: "2.9.0"
+      name: google_maps_flutter_platform_interface
+      sha256: "970c8f766c02909c7be282dea923c971f83a88adaf07f8871d0aacebc3b07bb2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.11.1"
   google_maps_flutter_web:
     dependency: transitive
     description:
-      path: "packages/google_maps_flutter/google_maps_flutter_web"
-      ref: "google_maps_flutter/add-poi-tap-callback-2.9.0"
-      resolved-ref: bbc04e0e6fe0c702cf129f31dabf44061977eeaf
-      url: "https://github.com/rokwire/packages.git"
-    source: git
-    version: "0.5.10"
+      name: google_maps_flutter_web
+      sha256: a45786ea6691cc7cdbe2cf3ce2c2daf4f82a885745666b4a36baada3a4e12897
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.12"
   gtk:
     dependency: transitive
     description:
@@ -1079,10 +1099,10 @@ packages:
     dependency: "direct main"
     description:
       name: intl
-      sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.2"
+    version: "0.19.0"
   js:
     dependency: transitive
     description:
@@ -1127,10 +1147,10 @@ packages:
     dependency: transitive
     description:
       name: leak_tracker
-      sha256: "6bb818ecbdffe216e81182c2f0714a2e62b593f4a4f13098713ff1685dfb6ab0"
+      sha256: c35baad643ba394b40aac41080300150a4f08fd0fd6a10378f8f7c6bc161acec
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.9"
+    version: "10.0.8"
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
@@ -1427,6 +1447,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.0"
+  photo_view:
+    dependency: transitive
+    description:
+      name: photo_view
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   pinch_zoom:
     dependency: "direct main"
     description:
@@ -1617,7 +1645,7 @@ packages:
       path: plugin
       relative: true
     source: path
-    version: "1.10.0"
+    version: "1.11.0"
   roundcheckbox:
     dependency: "direct main"
     description:
@@ -1875,10 +1903,10 @@ packages:
     dependency: "direct main"
     description:
       name: table_calendar
-      sha256: "0c0c6219878b363a2d5f40c7afb159d845f253d061dc3c822aa0d5fe0f721982"
+      sha256: b2896b7c86adf3a4d9c911d860120fe3dbe03c85db43b22fd61f14ee78cdbb63
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "3.1.3"
   term_glyph:
     dependency: transitive
     description:
@@ -2083,10 +2111,10 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: ddfa8d30d89985b96407efce8acbdd124701f96741f2d981ca860662f1c0dc02
+      sha256: "0968250880a6c5fe7edc067ed0a13d4bae1577fe2771dcf3010d52c4a9d3ca14"
       url: "https://pub.dev"
     source: hosted
-    version: "15.0.0"
+    version: "14.3.1"
   wakelock_plus:
     dependency: transitive
     description:

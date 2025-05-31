@@ -67,6 +67,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   String? _newGroupId;
   GlobalKey? _newGroupKey;
 
+  late List<rokwire.GroupsContentType> _contentTypes;
   rokwire.GroupsContentType? _selectedContentType;
 
   GestureRecognizer? _loginRecognizer;
@@ -81,20 +82,8 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   late TabController _tabController;
   int _selectedTab = 0;
 
-  final List<String> _tabNames = [
-    Localization().getStringEx("panel.groups_home.button.all_groups.title", 'All Groups'),
-    Localization().getStringEx("panel.groups_home.button.my_groups.title", 'My Groups'),
-  ];
-
   @override
   void initState() {
-    if (widget.contentType == rokwire.GroupsContentType.my) {
-      _selectedTab = 1;
-    }
-    _tabController = TabController(length: 2, initialIndex: _selectedTab, vsync: this);
-    _tabController.addListener(_onTabChanged);
-
-    super.initState();
     NotificationService().subscribe(this, [
       Groups.notifyUserMembershipUpdated,
       Groups.notifyGroupCreated,
@@ -108,7 +97,16 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
     _loginRecognizer = TapGestureRecognizer()..onTap = _onTapLogin;
     _selectAllRecognizer = TapGestureRecognizer()..onTap = _onSelectAllGroups;
 
-    _selectedContentType = widget.contentType ?? _defaultContentType;
+    _contentTypes = _GroupsContentTypeList.fromContentTypes(GroupsContentType.values);
+    _selectedContentType = widget.contentType?._ensure(availableTypes: _contentTypes) ??
+      _defaultContentType._ensure(availableTypes: _contentTypes) ??
+      (_contentTypes.isNotEmpty ? _contentTypes.first : null);
+
+    if (_selectedContentType == rokwire.GroupsContentType.my) {
+      _selectedTab = 1;
+    }
+    _tabController = TabController(length: 2, initialIndex: _selectedTab, vsync: this);
+    _tabController.addListener(_onTabChanged);
 
     _reloadGroupsContent();
     super.initState();
@@ -116,11 +114,11 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
 
   @override
   void dispose() {
+    NotificationService().unsubscribe(this);
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     _scrollController.dispose();
 
-    NotificationService().unsubscribe(this);
     _loginRecognizer?.dispose();
     _selectAllRecognizer?.dispose();
     super.dispose();
@@ -212,7 +210,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   // Content Building
 
   Widget _buildContent(){
-    List<Widget> tabs = _tabNames.map((e) => TextTabButton(title: e)).toList();
+    List<Widget> tabs = _contentTypes.map((e) => TextTabButton(title: e.displayTitle)).toList();
     return Column(children: <Widget>[
       TextTabBar(tabs: tabs, controller: _tabController, isScrollable: false, onTap: (index){_onTabChanged();}),
       _buildFunctionalBar(),
@@ -613,7 +611,7 @@ class _GroupsHomePanelState extends State<GroupsHomePanel> with TickerProviderSt
   void _onTapImage(Group? group){
     Analytics().logSelect(target: "Image");
     if(group?.imageURL!=null){
-      Navigator.push(context, PageRouteBuilder( opaque: false, pageBuilder: (context, _, __) => ModalImagePanel(imageUrl: group!.imageURL!, onCloseAnalytics: () => Analytics().logSelect(target: "Close Image"))));
+      Navigator.push(context, PageRouteBuilder( opaque: false, pageBuilder: (context, _, __) => ModalPhotoImagePanel(imageUrl: group!.imageURL!, onCloseAnalytics: () => Analytics().logSelect(target: "Close Image"))));
     }
   }
 
@@ -734,6 +732,9 @@ extension GroupsContentTypeImpl on GroupsContentType {
       case rokwire.GroupsContentType.all: return AnalyticsFeature.GroupsAll;
     }
   }
+
+  GroupsContentType? _ensure({List<GroupsContentType>? availableTypes}) =>
+    (availableTypes?.contains(this) != false) ? this : null;
 }
 
 extension _GroupsContentTypeList on List<GroupsContentType> {

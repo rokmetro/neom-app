@@ -19,12 +19,15 @@ import 'dart:ui';
 import 'package:flutter/painting.dart';
 import 'package:illinois/service/Analytics.dart';
 import 'package:illinois/ui/groups/GroupDetailPanel.dart';
+import 'package:rokwire_plugin/model/poll.dart';
 import 'package:rokwire_plugin/service/app_datetime.dart';
 import 'package:rokwire_plugin/service/groups.dart';
 import 'package:rokwire_plugin/service/localization.dart';
+import 'package:rokwire_plugin/service/polls.dart';
 import 'package:rokwire_plugin/service/styles.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:intl/intl.dart';
+import 'package:rokwire_plugin/utils/utils.dart';
 import 'package:sprintf/sprintf.dart';
 
 extension GroupExt on Group {
@@ -180,6 +183,36 @@ extension GroupExt on Group {
     return ((currentUserIsAdmin == true) ||
         (currentUserIsMember == true &&
             isMemberAllowedToReplyToPost == true));
+  }
+
+  // Returns PollsChunk? or PollsException?
+  Future<dynamic>? loadPolls({PollsCursor? cursor}) async {
+    try {
+      return (id != null) ? Polls().getGroupPolls(
+        groupIds: {id!},
+        pollStatuses: currentUserIsAdmin ? null /* no status filter */ : { PollStatus.opened },
+        cursor: cursor,
+      ) : null;
+    }
+    catch (e) {
+      return e;
+    }
+  }
+
+  Future<dynamic>? loadPoll({String? pollId}) async {
+    try {
+      PollsChunk? pollsChunk = (id != null && pollId != null) ? await Polls().getGroupPolls(
+        groupIds: {id!},
+        pollIds: {pollId},
+      ) : null;
+      if (CollectionUtils.isNotEmpty(pollsChunk?.polls)) {
+        return pollsChunk?.polls?.first;
+      }
+      return null;
+    }
+    catch (e) {
+      return e;
+    }
   }
 }
 
