@@ -19,6 +19,7 @@ import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rokwire_plugin/model/auth2.dart';
+import 'package:rokwire_plugin/model/auth2.directory.dart';
 import 'package:rokwire_plugin/model/event2.dart';
 import 'package:rokwire_plugin/model/group.dart';
 import 'package:rokwire_plugin/model/places.dart' as places;
@@ -147,10 +148,14 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     description: Localization().getStringEx('panel.qr_code.feature.description.label', 'Want to invite other NEOM U app users to view this feature? Use one of the sharing options below.'),
   );
 
-  factory QrCodePanel.fromProfile({ Key? key, Auth2UserProfile? profile, Uint8List? photoImageData, Uint8List? pronunciationAudioData, bool modalSheet = false, AnalyticsFeature? analyticsFeature}) => QrCodePanel(
+  factory QrCodePanel.fromProfile({ Key? key, Auth2UserProfile? profile,
+    List<Auth2PublicAccountIdentifier>? identifiers,
+    Uint8List? photoImageData, Uint8List? pronunciationAudioData,
+    bool modalSheet = false, AnalyticsFeature? analyticsFeature}) => QrCodePanel(
     key: key, modalSheet: modalSheet,
-    digitalCardQrCode: profile?.toDigitalCard(), // photoImageData: photoImageData
-    digitalCardShare: profile?.toDigitalCard(photoImageData: photoImageData),
+    digitalCardQrCode: profile?.toDigitalCard(identifiers: identifiers), // photoImageData: photoImageData
+    digitalCardShare: profile?.toDigitalCard(photoImageData: photoImageData,
+        identifiers: identifiers),
     saveFileName: profile?.vcardFullName ?? 'Digital Business Card',
     saveWatermarkText: profile?.vcardFullName,
     backgroundColor: Styles().colors.background,
@@ -159,7 +164,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
     description: Localization().getStringEx('panel.qr_code.digital_card.description.label', 'Scan the QR code image below to import your Digital Business Card.'),
   );
 
-  static void presentProfile(BuildContext context, { Key? key, Auth2UserProfile? profile, Uint8List? photoImageData, Uint8List? pronunciationAudioData, AnalyticsFeature? analyticsFeature}) {
+  static void presentProfile(BuildContext context, { Key? key, Auth2UserProfile? profile, List<Auth2PublicAccountIdentifier>? identifiers, Uint8List? photoImageData, Uint8List? pronunciationAudioData, AnalyticsFeature? analyticsFeature}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -172,6 +177,7 @@ class QrCodePanel extends StatefulWidget with AnalyticsInfo { //TBD localize
         photoImageData: photoImageData,
         pronunciationAudioData: pronunciationAudioData,
         modalSheet: true,
+        identifiers: identifiers,
       ),
     );
   }
@@ -244,16 +250,17 @@ class _QrCodePanelState extends State<QrCodePanel> {
             ),
           ),
         ),
-        Padding(padding: EdgeInsets.only(top: 24), child:
-          RoundedButton(
-            label: Localization().getStringEx('panel.qr_code.button.save.title', 'Save QR Code'),
-            hint: '',
-            textStyle: Styles().textStyles.getTextStyle("widget.title.regular.fat"),
-            backgroundColor: _backgroundColor,
-            borderColor: Styles().colors.fillColorSecondary,
-            onTap: _onTapSave,
+        if (!kIsWeb)
+          Padding(padding: EdgeInsets.only(top: 24), child:
+            RoundedButton(
+              label: Localization().getStringEx('panel.qr_code.button.save.title', 'Save QR Code'),
+              hint: '',
+              textStyle: Styles().textStyles.getTextStyle("widget.title.regular.fat"),
+              backgroundColor: _backgroundColor,
+              borderColor: Styles().colors.fillColorSecondary,
+              onTap: _onTapSave,
+            ),
           ),
-        ),
         if (_canShareLink)
           Padding(padding: EdgeInsets.only(top: 12), child:
             RoundedButton(
