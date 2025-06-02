@@ -937,8 +937,8 @@ class Event2DetailPanelState extends Event2Selector2State<Event2DetailPanel> wit
           RoundedButton(
               label: StringUtils.ensureNotEmpty(title),
               hint: hint,
-              textStyle: enabled ? Styles().textStyles.getTextStyle("widget.button.title.small.fat") : Styles().textStyles.getTextStyle("widget.button.disabled.title.small.fat"),
-              backgroundColor: enabled ? Colors.white : Styles().colors.background,
+              textStyle: enabled ? Styles().textStyles.getTextStyle("widget.button.light.title.small.fat") : Styles().textStyles.getTextStyle("widget.button.title.small.fat.variant"),
+              backgroundColor: Styles().colors.background,
               borderColor: enabled ? Styles().colors.fillColorSecondary : Styles().colors.surfaceAccent,
               rightIcon:externalLink? Styles().images.getImage(enabled ? 'external-link' : 'external-link-dark' ) : null,
               padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),

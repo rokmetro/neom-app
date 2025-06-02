@@ -492,6 +492,7 @@
     "widget.button.title.small.fat": { "font_family": "bold", "size": 14.0, "color": "textDark"},
     "widget.button.title.small.fat.underline": { "font_family": "bold", "size": 14.0, "color": "textDark", "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.button.title.small.fat.underline.highlight": { "extends": "widget.button.title.small.fat.underline", "color": "textPrimary", "decoration_color":  "textPrimary"},
+    "widget.button.title.small.fat.variant": { "font_family": "bold", "size": 14.0, "color": "surfaceAccent"},
     "widget.button.title.small.semi_fat": { "font_family": "medium", "size": 14.0, "color": "textDark"},
     "widget.button.title.small.semi_fat.underline": { "font_family": "medium", "size": 14.0, "color": "textDark",  "decoration": "underline", "decoration_style":  "solid", "decoration_thickness" : 1.0, "decoration_color":  "fillColorSecondary"},
     "widget.button.title.small.semi_fat.underline.highlight": { "extends": "widget.button.title.small.semi_fat.underline", "color": "textPrimary", "decoration_color":  "textPrimary"},

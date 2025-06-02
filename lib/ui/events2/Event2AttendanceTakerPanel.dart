@@ -69,9 +69,9 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   Event2PersonsResult? _persons;
   Map<String, Event2Person> _displayMap = <String, Event2Person>{};
   List<Event2Person> _displayList = <Event2Person>[];
-  Set<String> _atendeesNetIds = <String>{};
-  Set<String> _processingNetIds = <String>{};
-  String? _processedNetId;
+  Set<String> _attendeesIds = <String>{};
+  Set<String> _processingIds = <String>{};
+  String? _processedId;
   Timer? _processedTimer;
   String? _errorMessage;
 
@@ -81,8 +81,8 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   bool _attendeesSectionExpanded = false;
 
   // final GlobalKey _manualNetIdKey = GlobalKey();
-  final TextEditingController _manualNetIdController = TextEditingController();
-  final FocusNode _manualNetIdFocusNode = FocusNode();
+  // final TextEditingController _manualNetIdController = TextEditingController();
+  // final FocusNode _manualNetIdFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
               _persons = result;
               _displayMap = result.buildDisplayMap();
               _displayList = _displayMap.buildDisplayList();
-              _atendeesNetIds = Event2Person.netIdsFromList(result.attendees) ?? <String>{};
+              _attendeesIds = Event2Person.accountIdsFromList(result.attendees) ?? <String>{};
             });
           }
           else {
@@ -124,8 +124,8 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
 
   @override
   void dispose() {
-    _manualNetIdController.dispose();
-    _manualNetIdFocusNode.dispose();
+    // _manualNetIdController.dispose();
+    // _manualNetIdFocusNode.dispose();
     _processedTimer?.cancel();
     _processedTimer = null;
     super.dispose();
@@ -148,7 +148,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   Widget _buildEventDetailsSection() {
     String? attendeesStatus;
     TextStyle? attendeesTextStyle, attendeesStatusTextStyle = Styles().textStyles.getTextStyle('widget.label.small.fat.spaced');
-    int attendeesCount = _atendeesNetIds.length;
+    int attendeesCount = _attendeesIds.length;
     int? eventCapacity = widget.event?.registrationDetails?.eventCapacity;
     if (eventCapacity != null) {
       if (eventCapacity < attendeesCount) {
@@ -250,9 +250,9 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
       }
       contentList.add(_AttendeeListItemWidget(displayPerson,
         enabled: widget.manualCheckEnabled,
-        selected: _atendeesNetIds.contains(displayPerson.identifier?.netId),
-        processing: _processingNetIds.contains(displayPerson.identifier?.netId),
-        highlighted: (_processedNetId == displayPerson.identifier?.netId),
+        selected: _attendeesIds.contains(displayPerson.identifier?.accountId),
+        processing: _processingIds.contains(displayPerson.identifier?.accountId),
+        highlighted: (_processedId == displayPerson.identifier?.accountId),
         onTap: () => _onTapAttendeeListItem(displayPerson),
       ));
     }
@@ -287,64 +287,64 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
     Event2CreatePanel.hideKeyboard(context);
     String? eventId = widget.event?.id;
     Event2PersonIdentifier? personIdentifier = person.identifier;
-    String? netId = personIdentifier?.netId;
+    String? accountId = personIdentifier?.accountId;
     if (widget.manualCheckEnabled != true) {
       Event2Popup.showMessage(context,
         title: Localization().getStringEx("panel.event2.detail.attendance.message.not_available.title", "Not Available"),
         message: Localization().getStringEx("panel.event2.detail.attendance.manual_check.disabled", "Manual check is not enabled for this event."));
     }
-    else if ((eventId != null) && (netId != null) && (personIdentifier != null) && !_processingNetIds.contains(netId))  {
-      if (_atendeesNetIds.contains(netId)) {
-        _unattendEvent(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+    else if ((eventId != null) && (accountId != null) && (personIdentifier != null) && !_processingIds.contains(accountId))  {
+      if (_attendeesIds.contains(accountId)) {
+        _unattendEvent(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
       }
       else {
-        _attendEvent_CheckAttendee(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+        _attendEvent_CheckAttendee(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
       }
     }
   }
   
   // In _attendEvent_CheckAttendee we check if the attendee candidate is already registered or already attended the event
-  void _attendEvent_CheckAttendee({required String eventId, required String netId, required Event2PersonIdentifier personIdentifier}) {
-    if (_isInternalRegisterationEvent && !_isAttendeeNetIdRegistered(netId)) {
+  void _attendEvent_CheckAttendee({required String eventId, required String accountId, required Event2PersonIdentifier personIdentifier}) {
+    if (_isInternalRegisterationEvent && !_isAttendeeIdRegistered(accountId)) {
       _promptUnregisteredAttendee().then((bool? result) {
         if ((result == true) && mounted) {
-          _attendEvent_CheckCapacity(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+          _attendEvent_CheckCapacity(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
         }
       });
     }
     else {
-      _attendEvent_CheckCapacity(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+      _attendEvent_CheckCapacity(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
     }
   }
 
   // In _attendEvent_CheckCapacity we check if the event capacity is reached
-  void _attendEvent_CheckCapacity({required String eventId, required String netId, required Event2PersonIdentifier personIdentifier}) {
+  void _attendEvent_CheckCapacity({required String eventId, required String accountId, required Event2PersonIdentifier personIdentifier}) {
     if (_isInternalRegisterationEvent && (_isEventCapacityReached == true)) {
       _promptCapacityReached().then((bool? result) {
         if ((result == true) && mounted) {
-          _attendEvent(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+          _attendEvent(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
         }
       });
     }
     else {
-      _attendEvent(eventId: eventId, netId: netId, personIdentifier: personIdentifier);
+      _attendEvent(eventId: eventId, accountId: accountId, personIdentifier: personIdentifier);
     }
   }
   
   // In _attendEvent we call the Event2 service unconditionally
-  void _attendEvent({required String eventId, required String netId, required Event2PersonIdentifier personIdentifier}) {
+  void _attendEvent({required String eventId, required String accountId, required Event2PersonIdentifier personIdentifier}) {
     setState(() {
-      _processingNetIds.add(netId);
+      _processingIds.add(accountId);
     });
     Events2().attendEvent(eventId, personIdentifier: personIdentifier).then((dynamic result) {
       if (mounted) {
         setState(() {
-          _processingNetIds.remove(netId);
+          _processingIds.remove(accountId);
         });
 
         if (result is Event2Person) {
           setState(() {
-            _atendeesNetIds.add(netId);
+            _attendeesIds.add(accountId);
           });
           _beep(true);
         }
@@ -357,21 +357,21 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   }
 
   // In _unattendEvent we call the Event2 service unconditionally
-  void _unattendEvent({required String eventId, required String netId, Event2PersonIdentifier? personIdentifier}) {
+  void _unattendEvent({required String eventId, required String accountId, Event2PersonIdentifier? personIdentifier}) {
     setState(() {
-      _processingNetIds.add(netId);
+      _processingIds.add(accountId);
     });
     Events2().unattendEvent(eventId, personIdentifier: personIdentifier).then((dynamic result) {
       if (mounted) {
         setState(() {
-          _processingNetIds.remove(netId);
+          _processingIds.remove(accountId);
         });
 
         if (result == true) {
           setState(() {
-            _atendeesNetIds.remove(netId);
-            if (netId == _processedNetId) {
-              _processedNetId = null;
+            _attendeesIds.remove(accountId);
+            if (accountId == _processedId) {
+              _processedId = null;
             }
           });
           _beep(true);
@@ -798,14 +798,14 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
   bool get _isInternalRegisterationEvent =>
     widget.event?.registrationDetails?.type == Event2RegistrationType.internal;
 
-  bool _isAttendeeNetIdRegistered(String attendeeNetId) =>
-    _displayMap[attendeeNetId]?.registrationType != null;
+  bool _isAttendeeIdRegistered(String attendeeId) =>
+    _displayMap[attendeeId]?.registrationType != null;
 
   // bool _isAttendeeNetIdAttended(String attendeeNetId) =>
   //   _atendeesNetIds.contains(attendeeNetId);
 
   bool? get _isEventCapacityReached {
-    int attendeesCount = _atendeesNetIds.length;
+    int attendeesCount = _attendeesIds.length;
     int? eventCapacity = widget.event?.registrationDetails?.eventCapacity;
     return ((eventCapacity != null) && (0 < eventCapacity)) ? (eventCapacity <= attendeesCount) : null;
   }
@@ -847,7 +847,7 @@ class _Event2AttendanceTakerWidgetState extends State<Event2AttendanceTakerWidge
             _persons = result;
             _displayMap = result.buildDisplayMap();
             _displayList = _displayMap.buildDisplayList();
-            _atendeesNetIds = Event2Person.netIdsFromList(result.attendees) ?? <String>{};
+            _attendeesIds = Event2Person.accountIdsFromList(result.attendees) ?? <String>{};
           });
         }
         else {
@@ -894,22 +894,22 @@ class _AttendeeListItemWidget extends StatelessWidget {
         descriptionStyleKey = 'widget.label.regular.thin';
       }
       else {
-        titleStyleKey = 'widget.card.title.small.fat';
+        titleStyleKey = 'widget.card.title.light.small.fat';
         descriptionStyleKey = 'widget.detail.light.regular';
       }
     }
     else {
-      titleStyleKey = 'widget.card.title.small.fat';
-      descriptionStyleKey = 'widget.card.title.small';
+      titleStyleKey = 'widget.card.title.light.small.fat';
+      descriptionStyleKey = 'widget.card.title.light.small';
     }
 
-    String? registrantNetId = registrant.identifier?.netId;
+    String? registrantId = registrant.identifier?.accountId;
     String? registrantType = event2UserRegistrationToDisplayString(registrant.registrationType);
     return (registrantType != null) ? RichText(textScaler: MediaQuery.of(context).textScaler, text:
-      TextSpan(text: registrantNetId, style: Styles().textStyles.getTextStyle(titleStyleKey),  children: <InlineSpan>[
+      TextSpan(text: registrantId, style: Styles().textStyles.getTextStyle(titleStyleKey),  children: <InlineSpan>[
         TextSpan(text: " (${registrantType.toLowerCase()})", style: Styles().textStyles.getTextStyle(descriptionStyleKey),),
       ])
-    ) : Text(registrantNetId ?? '', style: Styles().textStyles.getTextStyle(titleStyleKey));
+    ) : Text(registrantId ?? '', style: Styles().textStyles.getTextStyle(titleStyleKey));
   }
 
   Widget get _checkMarkWidget => Padding(padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16), child:
@@ -956,18 +956,18 @@ extension Event2PersonsResultExt on Event2PersonsResult {
 
     if (registrants != null) {
       for (Event2Person registrant in registrants!) {
-        String? registrantNetId = registrant.identifier?.netId;
-        if ((registrantNetId != null) && !displayMap.containsKey(registrantNetId)) {
-          displayMap[registrantNetId] = registrant;
+        String? registrantId = registrant.identifier?.accountId;
+        if ((registrantId != null) && !displayMap.containsKey(registrantId)) {
+          displayMap[registrantId] = registrant;
         }
       }
     }
 
     if (attendees != null) {
       for (Event2Person attendee in attendees!) {
-        String? attendeeNetId = attendee.identifier?.netId;
-        if ((attendeeNetId != null) && !displayMap.containsKey(attendeeNetId)) {
-          displayMap[attendeeNetId] = attendee;
+        String? attendeeId = attendee.identifier?.accountId;
+        if ((attendeeId != null) && !displayMap.containsKey(attendeeId)) {
+          displayMap[attendeeId] = attendee;
         }
       }
     }
@@ -982,7 +982,7 @@ extension Event2PersonsMapExt on Map<String, Event2Person> {
     List<Event2Person> displayList = List.from(values);
 
     displayList.sort((Event2Person person1, Event2Person person2) =>
-      SortUtils.compare(person1.identifier?.netId, person2.identifier?.netId));
+      SortUtils.compare(person1.identifier?.accountId, person2.identifier?.accountId));
 
     return displayList;
   }
