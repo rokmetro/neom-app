@@ -1726,7 +1726,7 @@ class _GroupEventsContent extends StatefulWidget{
 
   const _GroupEventsContent({this.updateController, this.group, this.timeFilter, this.analyticsFeature });
 
-  String get _emptyText => Localization().getStringEx("", "No group events");
+  String get _emptyText => timeFilter == Event2TimeFilter.past ? Localization().getStringEx("", "No past group events") : Localization().getStringEx("", "No group events");
 
   String? get groupId => group?.id;
 

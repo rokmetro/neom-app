@@ -813,15 +813,12 @@ class _RootPanelState extends State<RootPanel> with NotificationsListener, Ticke
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: Container(
-                      color: Styles().colors.fillColorPrimary,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Center(
-                          child: Text(
-                            Localization().getStringEx("app.title", "Illinois"),
-                            style: Styles().textStyles.getTextStyle("widget.dialog.message.regular"),
-                          ),
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Center(
+                        child: Text(
+                          Localization().getStringEx("app.title", "Illinois"),
+                          style: Styles().textStyles.getTextStyle("widget.dialog.message.regular"),
                         ),
                       ),
                     ),
