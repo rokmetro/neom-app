@@ -7,9 +7,10 @@ firebase.initializeApp({
     apiKey: "AIzaSyA2jtU96o8YBeTCOnseW_CX3uocozE8UVU",
     authDomain: "neom-u.firebaseapp.com",
     projectId: "neom-u",
-    storageBucket: "neom-u.appspot.com",
+    storageBucket: "neom-u.firebasestorage.app",
     messagingSenderId: "776164375754",
-    appId: "1:776164375754:web:b37caf68c1255ba6b04833"
+    appId: "1:776164375754:web:b37caf68c1255ba6b04833",
+    measurementId: "G-PQV6HTCQG7"
 });
 
 const messaging = firebase.messaging();

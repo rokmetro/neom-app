@@ -62,9 +62,7 @@
   <script src="flutter_bootstrap.js" async>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('/neom/firebase-messaging-sw.js', {
-          scope: '/neom/firebase-cloud-messaging-push-scope',
-        });
+        navigator.serviceWorker.register('/firebase-messaging-sw.js');
       });
     }
   </script>
