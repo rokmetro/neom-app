@@ -30,6 +30,7 @@
 # Web related
 /web/sqflite_sw.js
 /web/sqlite3.wasm
+/web/firebase-messaging-sw.js
 
 # Symbolication related
 app.*.symbols
